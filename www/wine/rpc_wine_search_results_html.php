@@ -321,28 +321,21 @@ if($results){
                                     
                                     echo "<div class=\"clear\" ></div>";
 
-                                    echo "<div style=\"margin-top:7px; padding-left:10px; padding-right:5px; \">"; //second row
+                                    echo "<div style=\"margin-top:7px; \">"; //second row
 
-                                        echo "<div style=\"float:left; text-align:left; width:auto; margin-right:5px; \" >";
-                                            echo "<p style=\"font-size:80%; color:#B5ADAD;\" >Qty:</p>";
+                                        echo "<div style=\"float:left; width:24%; \" >";
+                                            echo "<p style=\"font-size:80%; display:inline; color:#B5ADAD;\" >Qty:</p>";
+                                            echo "<p style=\"font-size:80%; display:inline; \" > $acquire_qty</p>";
                                         echo "</div>";
-                                        echo "<div style=\"float:left; text-align:left; width:20px;\" >";
-                                            echo "<p style=\"font-size:80%;\" >$acquire_qty</p>";
-                                        echo "</div>";
-       
-                                        echo "<div style=\"float:right; text-align:right; width:55px; \" >";
-                                            echo "<p style=\"font-size:80%;\" >£ $discounted_price</p>";
-                                        echo "</div>";
-                                        echo "<div style=\"float:right; text-align:left; width:auto; margin-right:5px; \" >";
-                                            echo "<p style=\"font-size:80%; color:#B5ADAD;\" >Price Paid:</p>";
+            
+                                        echo "<div style=\"float:left; width:38%; \" >";
+                                            echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Price Paid:</p>";
+                                            echo "<p style=\"font-size:80%; display:inline;\" > £ $discounted_price</p>";
                                         echo "</div>";
 
-                                        echo "<div style=\"float:right; text-align:right; width:55px; margin-right:25px;\" >";
-                                            echo "<p style=\"font-size:80%;\" >£ $unit_price</p>";
-                                        echo "</div>";
-                                        
-                                        echo "<div style=\"float:right; text-align:left; width:auto; margin-right:5px; \" >";
-                                            echo "<p style=\"font-size:80%; color:#B5ADAD;\" >Full Price:</p>";
+                                        echo "<div style=\"float:left; text-align:left;  width:38%; \" >";
+                                            echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Full Price:</p>";
+                                            echo "<p style=\"font-size:80%; display:inline;\" > £ $unit_price</p>";
                                         echo "</div>";                                        
 
                                     echo "</div>";

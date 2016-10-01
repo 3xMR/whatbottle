@@ -58,20 +58,20 @@
 
 
 
-<div id="dialog-login" class="hidden" title="Login">
+<div id="dialog-login" class="hidden dialog-login" title="Login">
 
     <div style="margin-top:15px; margin-left:25px; margin-right:25px;">
         <h1>Login</h1>
         <div style="margin-top:25px;">
             <h4 style="margin-left:5px;"> Email address or username</h4>
             <div class="input-main" style="margin-top:10px;"  >
-                <input name="username" type="email" class="input_text" style="font-size:13pt;  padding:5px 5px 5px 5px; width:100%; box-sizing:border-box;" value="" placeholder="email" id="username" autocapitalize="off">
+                <input name="username" type="email" class="input_text"  style="width:300px;" value="" placeholder="email" id="username" autocapitalize="off">
             </div>
         </div>
         <div style="margin-top:25px; margin-bottom:25px;">
             <h4 style="margin-left:5px;">Password</h4>
-            <div class="input-main" style="margin-top:10px; ">
-                <input type="password" name="password" autocapitalize="off" class="input_text" style="font-size:13pt;  padding:5px 5px 5px 5px; width:100%; box-sizing:border-box;" value="" placeholder="password" id="password" >
+            <div class="input-main" style="margin-top:10px;">
+                <input type="password" name="password" autocapitalize="off" class="input_text"  style="width:300px;" value="" placeholder="password" id="password" >
             </div>
         </div>
 

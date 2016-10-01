@@ -101,9 +101,9 @@
                 var filter_input_width = (o.width - button_width)+'px';
                 console.log('filter_width='+filter_input_width);
                
-                   
+                //_ignore_dirty class prevents a search from triggering the is_dirty event
                 var filter =    "<div class=\"vertical-centre listBox_filter\" >\
-                                    <input style=\"width:"+filter_input_width+"; float:left; margin-left:5px;\" class='listBox_filter'  id='"+self.listBox_id+"_filter_input' autocomplete='off' placeholder='filter...' />\
+                                    <input style=\"width:"+filter_input_width+"; float:left; margin-left:5px;\" class='listBox_filter _ignore_dirty'  id='"+self.listBox_id+"_filter_input' autocomplete='off' placeholder='filter...' />\
                                     <image src='/images/delete_grey_flat_32.png' style='float:right; margin-right:8px;' class='click filterClear' id='"+self.listBox_id+"_btn_clear_filter' height='12px' width='12px' />\
                                 </div>";
 

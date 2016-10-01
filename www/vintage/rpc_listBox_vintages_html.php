@@ -47,7 +47,7 @@ if($rst){
     if($sql_error){
         echo $sql_error;
     }else{
-        echo "<p style=\"margin-top:5px; margin-left:5px; font-size:inherit;\">empty<p>";
+        echo "<p style=\"margin-top:5px; margin-left:5px; font-size:inherit;\">None<p>";
     }
     
 }

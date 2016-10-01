@@ -18,9 +18,9 @@ Borders: #D0D0D0
 
 
 body {
-    font-family: Arial;
-    font-size: 16px;
-    color: darkgray;
+    font-family: arial;
+    font-size:16px;
+    color:darkgray;
 }
 
 body a{
@@ -70,19 +70,16 @@ h5 {
     padding-bottom:5px;
 }
 
-input[type='text'], input[type='number'], select, textarea {
+input[type='text'], input[type='number'], input[type='password'],
+input[type='email'], input[type='button'], select, textarea {
     /*remove browser styling*/
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    font-family:inherit;
 }
 
-text_2 {
-    /*font-size:11pt;
-    color: #545454;
-    margin-top: 3px;
-    margin-bottom:3px;*/
-}
+
 
 .vintage_details .text_2 {
     padding-left:3px;
@@ -90,24 +87,19 @@ text_2 {
 }
 
 
-._old_find {
-     color: #999999;
 
-    font-size: 18px;
-}
-
-.error {
+old.error {
     color: red;
     font-weight: bold;
 }
 
-.validation_error {
+old.validation_error {
     color: red;
     font-weight: bold;
 }
 
 
-.list {
+old.list {
     font-size: 125%;
     list-style: none;
     margin: 0;
@@ -117,23 +109,23 @@ text_2 {
 
 }
 
-.list a{
+old.list a{
     text-decoration: none;
     /*color: graytext;*/
     display: block;
     padding:1px;
 }
 
-.list a:visited{
+old.list a:visited{
     text-decoration: none;
 }
 
 
-.list li {
+old.list li {
     margin-bottom: 2px;
 }
 
-.list li:hover {
+old.list li:hover {
     background-color: #D3D3D3;
     color: black;
 }
@@ -153,11 +145,6 @@ text_2 {
     background-color:#D3D3D3;
 }
 
-
-.highlight_input{
-    /*background-color:#87E400;*/
-    /*background-color:#C9F76F;*/
-}
 
 .highlight{
    background-color:#C9F76F;
@@ -614,15 +601,6 @@ div.arrow_down{
 }
 
 
-.input_text{
-    /*width:300px;
-    font-weight: 500;
-    padding:3px;
-    border: solid 1px gray;
-    border-radius: 3px;*/
-    
-    /*font-size: 16px;*/
-}
 
 .input_select select{
     width:300px;
@@ -686,6 +664,7 @@ div.selected{
 
 /*** Main Form Inputs ***/
 
+
 .input-main {
    /*background-color:lightseagreen;*/
    overflow:auto; /* Causes div to wrap around child divs that are floating */
@@ -713,6 +692,8 @@ div.selected{
 
 .input-main input[type=text],
 .input-main input[type=number],
+.input-main input[type=password],
+.input-main input[type=email],
 .input-main textarea{
     /*background-color:red;*/
     display:inline-block;
@@ -723,6 +704,8 @@ div.selected{
     border: solid 1px #D0D0D0;
     border-radius: 2px;
     font-size: 14px;
+    font-family:inherit;
+    color:inherit;
 }
 
 
@@ -736,6 +719,7 @@ div.selected{
     margin:0px;
     padding:4px;
     font-size: 14px;
+    color:inherit;
     border: solid 1px #D0D0D0;
     border-radius: 2px;
     background-color: white;
@@ -879,6 +863,7 @@ div.selected{
     -webkit-border-radius: 3px;
     border-radius:3px;
     color: #fff;
+    font-family:inherit;
     font-size: 15px;
     padding:3px 10px 4px 10px;
     margin-right:10px;
@@ -896,6 +881,7 @@ div.selected{
     -webkit-border-radius: 3px;
     border-radius:3px;
     color: #fff;
+    font-family:inherit;
     font-size: 15px;
     padding:3px 10px 4px 10px;
     margin-right:10px;
@@ -1725,6 +1711,10 @@ div.static-rating-small{
 
 /*** Pop-Up Menu ***/
 
+.ui-widget{
+    font-family:inherit;
+}
+
 .pop_up.ui-menu { 
     font-size: 14pt;
     border-radius: 5px; /* 1px larger than item radius so no gaps */
@@ -1743,7 +1733,7 @@ div.static-rating-small{
     border-width: 0px 0px 1px 0px;
     vertical-align: middle;
     line-height:26px;
-    font-family: sans-serif;
+    font-family: inherit;
     font-weight: normal;
 }
 
@@ -1774,7 +1764,7 @@ div.static-rating-small{
     background-color:#333333;
     border:solid 1px #333333;
     color:#C9C9C9;
-    font-family: sans-serif;
+    font-family:inherit;
     font-size: 12pt;
     padding-left:15px;
     

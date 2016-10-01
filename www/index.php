@@ -161,8 +161,8 @@ echo "<div class=\"page_container\">";
                 echo "</div>"; 
                 //search box
                 echo "<div class=\"search_box vertical-centre\" >";
-                    echo "<input name=\"search_text\" id=\"search_text\" value=\"$search_text\" placeholder=\"search wines...\"  />";
-                    echo "<img class=\"btn_reset_search search_button click\" id=\"btn_wine_search_reset\" style=\"float:right; margin-right:7px;\" src=\"/images/delete_grey_flat_32.png\" height=\"14px\" />";
+                    echo "<input name=\"search_text\" class=\"search_input\" id=\"search_text\" value=\"$search_text\" placeholder=\"search wines...\"  />";
+                    echo "<img class=\"btn_reset_search search_button click\" id=\"btn_wine_search_reset\" style=\"float:right; margin-right:7px;\" src=\"/images/delete_grey_flat_32.png\" height=\"16px\" />";
                     echo "<input type=\"hidden\" class=\"search_input\" name=\"wine_id\" id=\"wine_id\" >";
                 echo "</div>";
                 //buttons
@@ -187,7 +187,7 @@ echo "<div class=\"page_container\">";
             
             echo "<div class=\"input-main\">";
                 echo "<h3>Wine Type:</h3>";
-                echo "<select class=\"search_input__\" name=\"winetype_id\" id=\"winetype_id\">";
+                echo "<select class=\"search_input\" name=\"winetype_id\" id=\"winetype_id\">";
                     echo "<option value=\"0\">Any";
                     $obj = new winetype();
                     $sort = "winetype ASC";
