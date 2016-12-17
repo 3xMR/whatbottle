@@ -47,7 +47,7 @@ $(document).ready(function(){
             return save_page();
         },
         page_url: this_page, //set page url
-        no_dirty: false,
+        no_dirty: true,
         pop_up: true //return_url remains unchanged
     });
     
