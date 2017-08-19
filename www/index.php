@@ -1,12 +1,13 @@
 <?php
 /*
- * Release: 2.0
- * Released: TBC
- * Notes: Major release to make much more orientated for iPad
- *  New look, cleaner more square
- *  will render much larger on iPad better for touch
- *  search autocomplete now supports categories making it easier to search 
- *  Acquistions as slide out
+ * Release: 4.0
+ * Released: 19.08.2017
+ * Notes: 
+ *      Addition of 'available' concept to allowing tracking stock
+ *      Addition of 'Drinking To & From' dates to tblVintage and Vintage form
+ *      Changes to class_wine_search.php to support searching for Available and Drinking concepts
+ *      Modified wine search to remove text from search field
+ *      Validations changed for Wine and Vintage forms
  * 
  *
  */
@@ -134,6 +135,29 @@ echo "<html>";
             <input type="text" class="hidden" id="note_value" />
         </p>
     </div>
+    
+    
+    <div id="dialog-override" class="hidden" title="Override Available Bottles">
+        <div id="con_dialog_override" style="height:100px; width:100%; ">
+            <?php
+          
+                echo "<h1 id=\"override_dialog_title\" style=\"margin-bottom:15px; width:100%; text-align:center;\" >Set Available Bottles</h1>";
+                
+                echo "<div class=\"input-main vertical-centre bottom-spacer\" style=\"height:50px; width:123px; margin-left:auto; margin-right:auto;\" >";
+                    echo "<img src=\"/images/minus_grey_flat_32.png\" style=\"float:left; width:24px; height:24px; margin-right:15px; margin-left:0px; \" id=\"decrement_override\" class=\"ignore_dirty\" />";  
+                    echo "<input type=\"number\" step=\"0\" min=\"-1\" max=\"5\" id=\"available_bottles\" disabled=\"disabled\" style=\"float:left; text-align:center; width:35px; height:35px; font-size:200%;\" >";
+                    echo "<img src=\"/images/plus_grey_flat_32.png\" style=\"float:left; width:24px; height:24px; margin-left:15px; \" id=\"increment_override\" class=\"ignore_dirty\" />";  
+                echo "</div>";
+                echo "<div class=\"clear\" ></div>";
+            ?>
+        </div>  
+        
+        <input type="number" id="available_override" name="available_override" class="hidden">
+        <input type="number" id="net_available" name="net_available" class="hidden">
+        <input type="number" id="available_max" name="available_max" class="hidden">
+        <input type="number" id="vintage_id" name="vintage_id" class="hidden">
+    </div>
+
 
 
 
@@ -145,7 +169,6 @@ echo "<html>";
     }else{
         $search_text = "";
     }
-
 
 
 echo "<div class=\"page_container\">";
@@ -162,7 +185,7 @@ echo "<div class=\"page_container\">";
                 //search box
                 echo "<div class=\"search_box vertical-centre\" >";
                     echo "<input name=\"search_text\" class=\"search_input\" id=\"search_text\" value=\"$search_text\" placeholder=\"search wines...\"  />";
-                    echo "<img class=\"btn_reset_search search_button click\" id=\"btn_wine_search_reset\" style=\"float:right; margin-right:7px;\" src=\"/images/delete_grey_flat_32.png\" height=\"16px\" />";
+                    echo "<img class=\"btn_reset_search search_button click\" id=\"btn_wine_search_reset\" style=\"float:right; margin-right:7px; \" src=\"/images/delete_grey_flat_32.png\" height=\"16px\" />";
                     echo "<input type=\"hidden\" class=\"search_input\" name=\"wine_id\" id=\"wine_id\" >";
                 echo "</div>";
                 //buttons
@@ -197,7 +220,8 @@ echo "<div class=\"page_container\">";
                             //return list of award orgs
                             $item = $var_result['winetype'];
                             $key = $var_result['winetype_id'];
-                            echo ("<option value=".$key.">".$item);
+                            $winetype_selected = $_SESSION['var_wine_search_criteria']['winetype_id'] == $key ? "selected" : null; //persist search selection
+                            echo ("<option value=".$key." $winetype_selected>".$item);
                         }
                     }
                 echo "</select>";
@@ -215,7 +239,8 @@ echo "<div class=\"page_container\">";
                         //return list of award orgs
                         $item = $var_result['producer'];
                         $key = $var_result['producer_id'];
-                        echo ("<option value=".$key.">".$item);
+                        $producer_selected = $_SESSION['var_wine_search_criteria']['producer_id'] == $key ? "selected" : null; //persist search selection
+                        echo ("<option value=".$key." $producer_selected>".$item);
                     }
 
                 echo "</select>";
@@ -231,7 +256,8 @@ echo "<div class=\"page_container\">";
                         //return list of award orgs
                         $item = $var_merchant['merchant'];
                         $key = $var_merchant['merchant_id'];
-                        echo ("<option value=".$key.">".$item);
+                        $merchant_selected = $_SESSION['var_wine_search_criteria']['merchant_id'] == $key ? "selected" : null; //persist search selection
+                        echo ("<option value=".$key." $merchant_selected>".$item);
                     }
                 echo "</select>";
             echo "</div>";
@@ -249,8 +275,35 @@ echo "<div class=\"page_container\">";
                             $acquire_date = $var_result['acquire_date'];
                             $item = $merchant." ".$acquire_date;
                             $key = $var_result['acquire_id'];
-                            echo ("<option value=".$key.">".$item);
+                            $acquire_selected = $_SESSION['var_wine_search_criteria']['acquire_id'] == $key ? "selected" : null; //persist search selection
+                            echo ("<option value=".$key." $acquire_selected>".$item);
                         }
+                echo "</select>";
+            echo "</div>";
+            
+            echo "<div class=\"input-main\">";
+                echo "<h3>Drinking Guide:</h3>";
+                $guide_selected = $_SESSION['var_wine_search_criteria']['guide_selected'] ? "selected" : null; //persist search selection
+                $this_year = date("Y");
+                $next_year = $this_year + 1;
+                $two_years = $next_year + 1;
+                $three_years = $two_years + 1;
+                $four_years = $three_years + 1;
+                $five_years = $four_years + 1;
+                $ten_years = $this_year + 10;
+                $fifteen_years = $this_year + 15;
+                $twenty_years = $this_year + 20;
+                echo "<select class=\"search_input\" name=\"drinking_guide\" id=\"drinking_guide\">";
+                    echo "<option value=\"0\">Any";
+                    echo "<option value=\"$this_year\">Now ($this_year)";
+                    echo "<option value=\"$next_year\">Next Year ($next_year)";
+                    echo "<option value=\"$two_years\">Next 2 Years ($two_years)";
+                    echo "<option value=\"$three_years\">Next 3 Years ($three_years)";
+                    echo "<option value=\"$four_years\">Next 4 Years ($four_years)";
+                    echo "<option value=\"$five_years\">Next 5 Years ($five_years)";
+                    echo "<option value=\"$ten_years\">Next 10 Years ($ten_years)";
+                    echo "<option value=\"$fifteen_years\">Next 15 Years ($fifteen_years)";
+                    echo "<option value=\"$twenty_years\">Next 20 Years ($twenty_years)";
                 echo "</select>";
             echo "</div>";
 
@@ -269,7 +322,8 @@ echo "<div class=\"page_container\">";
                         //return list of award orgs
                         $item = $var_result['country'];
                         $key = $var_result['country_id'];
-                        echo ("<option value=".$key.">".$item);
+                        $country_selected = $_SESSION['var_wine_search_criteria']['country_id'] == $key ? "selected" : null; //persist search selection
+                        echo ("<option value=".$key." $country_selected>".$item);
                     }
                 echo "</select>";
             echo "</div>";
@@ -286,7 +340,8 @@ echo "<div class=\"page_container\">";
                         //return list of award orgs
                         $item = $var_result['region'];
                         $key = $var_result['region_id'];
-                        echo ("<option value=".$key.">".$item);
+                        $region_selected = $_SESSION['var_wine_search_criteria']['region_id'] == $key ? "selected" : null; //persist search selection
+                        echo ("<option value=".$key." $region_selected>".$item);
                     }
                 echo "</select>";
             echo "</div>";
@@ -299,14 +354,41 @@ echo "<div class=\"page_container\">";
                     $sort = "subregion ASC";
                     $var_results = $obj -> get($where=false, $columns=false, $group=false, $sort='subregion ASC', $limit=false);
                     foreach($var_results as $var_result){
-                        //return list of award orgs
                         $item = $var_result['subregion'];
                         $key = $var_result['subregion_id'];
-                        echo ("<option value=".$key.">".$item);
+                        $subregion_selected = $_SESSION['var_wine_search_criteria']['subregion_id'] == $key ? "selected" : null; //persist search selection
+                        echo ("<option value=".$key." $subregion_selected>".$item);
                     }
                 echo "</select>";
             echo "</div>";
-
+            
+            echo "<div class=\"input-main\">";
+                echo "<h3>Vintage Quality:</h3>";
+                $quality_selected = $_SESSION['var_wine_search_criteria']['vintage_quality'] ? "selected" : null; //persist search selection
+                echo "<select class=\"search_input\" name=\"vintage_quality\" id=\"vintage_quality\">";
+                    echo "<option value=\"0\">Any";
+                    echo "<option value=\"2\"> 1";
+                    echo "<option value=\"3\"> 1.5";
+                    echo "<option value=\"4\"> 2";
+                    echo "<option value=\"5\"> 2.5";
+                    echo "<option value=\"6\"> 3";
+                    echo "<option value=\"7\"> 3.5";
+                    echo "<option value=\"8\"> 4";
+                    echo "<option value=\"9\"> 4.5";
+                    echo "<option value=\"10\"> 5";
+                echo "</select>";
+            echo "</div>";
+            
+            
+            echo "<div class=\"input-main\">";
+                echo "<h3>Available Bottles:</h3>";
+                $available_selected = $_SESSION['var_wine_search_criteria']['available'] ? "selected" : null; //persist search selection
+                echo "<select class=\"search_input\" name=\"available\" id=\"available\">";
+                    echo "<option value=\"0\">Any";
+                    echo "<option value=\"1\" $available_selected>Available";
+                echo "</select>";
+            echo "</div>";
+            
         echo "</div>"; //con_search_column_2_2
 
         echo "<div class=\"float_left clear\" style=\"margin-left:5px;\" >";
@@ -390,9 +472,8 @@ require_once("$root/includes/standard_dialogs.inc.php");
 
 //Note: Popup blocker will prevent anything other than a direct user action from opening new window
 
-//TODO: Persist accordian positions - so they are shown when returning
-//TODO: Add pagination, sortby and number of items on page as option
-//TODO: search by rating
+
+//TODO: Add pagination, sortby and number of items on page as option in settings (Create settings page)
 //TODO: free text search on notes
 
 //TODO: Double-click on image to open image_manager page as overlay
@@ -400,6 +481,8 @@ require_once("$root/includes/standard_dialogs.inc.php");
 //TODO: If login is magnus add admin option to top level menu - to access admin functions
 //TODO: Centre label images
 //TODO: Click Whatbottle text to go to /index.php
+
+
 
 
 $(document).ready(function(){
@@ -428,12 +511,7 @@ $(document).ready(function(){
         }
     });
 
-    //set onload behaviour
-    $('#search').hide();
-    $('.vintages_panel').hide();
-    $('.vintage_details').hide();
-    load_wines_html();
-    
+
     //recent acquistions listbox
     $("#con_acquisitions").listBox({
         title: "Acquisitions",
@@ -460,18 +538,20 @@ $(document).ready(function(){
             search_wines();
         },
         clickFilterClear: function(event, data){
-            console.log('clickFilterClear');
             $('#acquire_id').val(0); //set acquire dropdown value
             $("#con_acquisitions").listBox("clearSelected");//clear selected item from listBox
-            $("#con_acquisitions").listBox("refresh"); //refresh acquisition listBox
+            $("#con_acquisitions").listBox("refresh",true); //refresh acquisition listBox
+            //reset_search();
             search_wines();
         }
 
     });
     
-    $(document).on("click","#btn_test",function(){
-        console.log('scroll...');
-    });
+    //set onload behaviour
+    $('#search').hide();
+    $('.vintages_panel').hide();
+    $('.vintage_details').hide();
+    load_wines_html();
     
 
     //set focus on search box
@@ -513,8 +593,10 @@ $(document).ready(function(){
 
 
     function refresh(){ //refresh html elements
-        load_wines_html(); //load wine list
-        //$("#con_acquisitions").listBox("refresh"); //refresh acquisition listBox
+        //refresh page
+        store_open_panels();
+        load_wines_html();//load wine list
+        $("#con_acquisitions").listBox("refresh"); //refresh acquisition listBox
     }
     
 
@@ -559,18 +641,23 @@ $(document).ready(function(){
                         break;
                     case 'Country':
                         $('#country_id').val(ui.item.value);
+                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Region':
                         $('#region_id').val(ui.item.value);
+                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Subregion':
                         $('#subregion_id').val(ui.item.value);
+                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Producer':
                         $('#producer_id').val(ui.item.value);
+                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Merchant':
                         $('#merchant_id').val(ui.item.value);
+                        $('#search_text').val(''); //remove search text
                         break;
                 }
                 search_wines(true);
@@ -588,23 +675,27 @@ $(document).ready(function(){
     function load_wines_html(){ //load wines
         $('#con_rpc_wine_search_results_html').activity(); //show spinner    
         $('#con_rpc_wine_search_results_html').load('/wine/rpc_wine_search_results_html.php', function(){ //load results
-           toggle_vintages(); //run following code once refreshed
+           //toggle_vintages(); //run following code once refreshed
+           set_open_panels();
            //TODO:if only one result is returned expand it fully
        });
     }
 
 
-    function toggle_vintage_panel(wine_id){
+    function toggle_vintage_panel(wine_id, duration){
         //toggle vintage accordian panel - open or close
-        
+        console.log('toggle_vintage_panel wine_id='+wine_id);
+        //hide all children
+        $('#wine_accordian_'+wine_id).next('.vintages_panel').children('.vintage_accordian').children('.vintage_details').hide();
+        //change all vintage expand / collapse indicators to closed (right arrow)
+        $('#wine_accordian_'+wine_id).next('.vintages_panel').children('.vintage_accordian').find('.vintage_expanded_indicator').removeClass('arrow_down').removeClass('arrow_right').addClass('arrow_right');
         $panel = "#vintages_panel_"+wine_id;
-
-        $($panel).slideToggle("medium",function(){
+        $($panel).slideToggle(duration,function(){
             //callback function
             if($($panel).is(":visible")){
-                console.log($panel + ' :visible'); 
+                console.log('toggle_vintage_panel '+$panel + ' :visible'); 
              }else{
-                 console.log($panel + ' :hidden');
+                 console.log('toggle_vintage_panel '+$panel + ' :hidden');
              }
         });
         
@@ -614,13 +705,25 @@ $(document).ready(function(){
     }
 
 
-    function toggle_vintage_details_panel(vintage_id){
+    function toggle_vintage_details_panel(vintage_id,duration){
         //toggle vintage details panel - open or close
+        console.log('toggle_vintage_details_panel');
         $panel = "#vintage_details_"+vintage_id;
-        $($panel).slideToggle("medium");
+        $($panel).slideToggle(duration);
         arrow_id = '#arrow_indicator_vintage_'+vintage_id;
         $(arrow_id).toggleClass('arrow_down');
     }
+    
+    
+    function override_available_bottles(vintage_id, object){
+        //display dialog to change available override
+        
+        console.log('override_available_bottle vintage_id = '+vintage_id);
+
+        get_override_data(vintage_id,object);
+
+    }
+    
 
 
     function quick_note(vintage_id, object){
@@ -691,7 +794,7 @@ $(document).ready(function(){
 
     function search_wines(ignore_text){
         //seach wines and update results
-        //console.log('function: search_wines');
+        console.log('function: search_wines');
         
         spinner();//start spinner
         
@@ -774,13 +877,14 @@ $(document).ready(function(){
 
     $('.btn_reset_search').click(function(){
         //submit search for wines
+        console.log('btn_reset_search');
         reset_search();
     });
 
 
     function reset_search(ignore_search_text){
         //reset all search fields
-        //console.log('function reset_search');
+        console.log('function reset_search');
 
         var count = $('.search_input').length;
 
@@ -788,7 +892,7 @@ $(document).ready(function(){
         $(".search_input").removeClass('highlight_input');
         
         //clear acquisition listBox selected items
-        $("#con_acquisitions").listBox("refresh",true); //refresh acquisition listBox - true clears selected item
+        $("#con_acquisitions").listBox("refresh", true); //refresh acquisition listBox - true clears selected item
 
         $(".search_input").each(function(index){
             if($(this).attr('id')=="search_text" || $(this).attr('id')=="wine_id"){
@@ -803,7 +907,7 @@ $(document).ready(function(){
 
             if(index==count-1){
                 //run code - iterations complete
-                search_wines();
+                search_wines(); //update search html
             }
         });
 
@@ -854,6 +958,7 @@ $(document).ready(function(){
         //if only one result - expand it
         if($('.wine_accordian').size()==1){
             //only one wine result returned - expand it
+            console.log('only 1 result returned so expand it');
             $('.vintages_panel').each(function(index) {
                 var wine_id = ($(this).attr('id').replace("vintages_panel_", ""))*1;
                 toggle_vintage_panel(wine_id);
@@ -954,6 +1059,7 @@ $(document).ready(function(){
         return false;
     });
     
+    
     function menu_select(selected_object){
         var selected_item = selected_object['selected_item'];
         var menu_id = selected_object['menu_id'];
@@ -1003,6 +1109,7 @@ $(document).ready(function(){
         
     }
     
+    
     $('#btn_show_acquire').click(function(){
         //show acquisition panel
         $('#panel_right').toggle("slide", { direction: "right" }, 500);
@@ -1018,8 +1125,180 @@ $(document).ready(function(){
         });
     }
     
+    
+    function get_override_data(vintage_id,object){
+        //get override data for vintage and save to dialog
+        //var override_max, override_min, available_bottles;
+        
+        console.log('get_override_data vintage_id = '+vintage_id);
+        
+        $('#con_dialog_override :input').val(''); //clear dialog inputs
+
+        $.post("/vintage/rpc_vintage.php", {
+            action: 'get_vintage_available_override_details',
+            vintage_id: vintage_id
+        }, function(data){
+            if(data.success){
+                console.log('get_override_data success');
+                console.log(data);
+                //$('#available_override').val(data.details.override);
+                //$('#override_max').val(data.details.override_max);
+                //$('#override_min').val(data.details.override_min);
+                $('#available_bottles').val(data.details.available_bottles);
+                //$('#available_max').val(data.details.available_max);
+                $('#available_max').val(data.details.gross_available_bottle_count);
+                $('#net_available').val(data.details.net_available_bottle_count);
+                $('#vintage_id').val(vintage_id);
+                $('#available_bottles_text').text(data.details.available_bottles+' Available Bottles');
+                show_override_available_dialog(object); //open dialog
+            } else {
+                console.log('error with get_override_data error ='+data.error);
+            }
+
+        }, "json");
+        
+    }
+    
+    
+    function put_available_override_data(optional_override){
+        //put override data for vintage to rpc to save to db
+
+        //get data
+        if(optional_override >= 0){
+            override = optional_override;
+        }else{
+            override = parseInt($('#available_override').val());
+        }
+        
+        vintage_id = $('#vintage_id').val();
+        console.log('put_override_data vintage_id = '+vintage_id+' override = '+override);
+
+        $.post("/vintage/rpc_vintage.php", {
+            action: 'put_vintage_available_override_details',
+            vintage_id: vintage_id,
+            override: override
+        }, function(data){
+            if(data.success){
+                console.log('put_vintage_available_override_details success');
+                console.log(data);
+                refresh();
+            } else {
+                console.log('error with put_available_override_data. error ='+data.error);
+            }
+
+        }, "json");
+        
+    }
+    
+    
+    function adjust_available_override(increment){
+        //increment or decrement available override value on override-dialog
+        console.log('adjust_available_override value = '+increment);
+        //var override_value = 1 * $('#available_override').val();
+        var available_max = 1 * $('#available_max').val();
+        var net_available = 1 * $('#net_available').val();
+        var available_bottles = 1 * $('#available_bottles').val();
+
+        if( (increment > 0 && available_bottles < available_max) || (increment < 0 && available_bottles > 0) ) {
+            available_bottles = available_bottles + increment;
+            //available_bottles = available_bottles - increment;
+            console.log('available_bottles = '+available_bottles);
+        }
+        
+        //calculate override
+        var available_override = net_available - available_bottles;
+        
+        console.log('calculated override = '+available_override);
+        $('#available_override').val(available_override);
+        $('#available_bottles').val(available_bottles);
+        $('#available_bottles_text').text(available_bottles+' Available Bottles');
+    }
+    
+    
+    function show_override_available_dialog(object){
+        
+        $("#dialog-override").dialog({
+            modal: true,
+            width: 'auto',
+            buttons: {
+                OK: function() {
+                    put_available_override_data();
+                    store_open_panels(); //test
+                    $(this).dialog('close'); //close dialog
+
+                },
+                Auto: function(){
+                    put_available_override_data(0); //set override value to zero
+                    $(this).dialog('close');
+                },
+                Cancel: function(){
+                    $(this).dialog('close');
+                }
+     
+            },
+            dialogClass: "clean-dialog",
+            position: { my: "right top", at: "left bottom", of: object }
+        });
+  
+    }
+    
+    
+    function store_open_panels(){
+        //function to get the id of all panels which are open
+        //class = arrow_down
+        //arrow_indicator_nnnn = wine
+        //arrow_indicator_vintage_nnnn = vintage
+        
+        console.log('get_open_panels');
+        var arrOpenObjects = $('.arrow_down').map(function(){return this.id;}).get();
+        console.log(arrOpenObjects);
+        
+        jsonOpenObjects = JSON.stringify(arrOpenObjects);
+        
+        //save to local storage
+        localStorage.setItem('openPanels',jsonOpenObjects);
+        console.log(JSON.parse(localStorage.getItem('openPanels')));
+    }
+   
+    
+    function set_open_panels(){
+        //function recalls persisted open panel data from localStorage
+        //and opens panels that were previously open
+        arrOpenPanels = JSON.parse(localStorage.getItem('openPanels'));
+        console.log('open panels recovered from local storage');
+        console.log(arrOpenPanels);
+ 
+        for (var i=0; i < arrOpenPanels.length; i++) {
+            var id = arrOpenPanels[i].replace("arrow_indicator_", "");
+            if(id.search("vintage") >= 0){
+                //vintage panel - remove extra text
+                id = id.replace("vintage_", "");
+                toggle_vintage_details_panel(id,'fast');
+            }else{
+                //wine panel
+                toggle_vintage_panel(id,"fast");
+            }
+            
+        }
+        
+    }
+ 
+ 
+  
+
 
     //*****Events******
+
+    $(document).on('click','#increment_override',function(){
+        console.log('increment override...');
+        adjust_available_override(1);
+    });
+    
+    
+    $(document).on('click','#decrement_override',function(){
+        console.log('increment override...');
+        adjust_available_override(-1);
+    });
 
     
     $('#search_text').keyup(function(){ //reset search if all search text deleted
@@ -1191,6 +1470,15 @@ $(document).ready(function(){
         var vintage_id = ($(this).attr('id').replace("add_note_", ""))*1;
         quick_note(vintage_id, this); //open quick note form, pass this context for dialog position
         console.log("add new tasting note vintage_id="+vintage_id);
+    });
+    
+    
+    $(document).on('click','.btn_edit_override',function(){
+        //add new note event
+        var vintage_id = ($(this).attr('id').replace("override_", ""))*1;
+        console.log("override_available_bottles vintage_id = "+vintage_id);
+        override_available_bottles(vintage_id, this); //open quick note form, pass this context for dialog position
+        
     });
 
 
@@ -1397,6 +1685,7 @@ $(document).ready(function(){
     //vintage accordian panel slide
     $('.btn_slide_vintages').click(function(){
         //toggle vintages panel
+        console.log('.btn_slide_vintages');
         toggle_vintage_panel($(this).attr('id'));
     });
 
@@ -1409,12 +1698,8 @@ $(document).ready(function(){
 
     $(document).on('click','.wine_panel_toggle',function(){
         //toggle vintage panel
-
+        console.log('click .wine_panel_toggle');
         var wine_id = ($(this).closest(".wine_accordian").attr('id').replace("wine_accordian_", ""));
-        //close all child vintage detail panels
-        $(this).closest(".wine_accordian").next('.vintages_panel').children('.vintage_accordian').children('.vintage_details').hide();
-        //change all vintage expand / collapse indicators to closed (right arrow)
-        $(this).closest(".wine_accordian").next('.vintages_panel').children('.vintage_accordian').find('.vintage_expanded_indicator').removeClass('arrow_down').addClass('arrow_right');
         toggle_vintage_panel(wine_id);
         
     });
