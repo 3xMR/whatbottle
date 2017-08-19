@@ -1033,13 +1033,16 @@ $(document).ready(function(){
         focusCleanup: true
     });
     
+    
     jQuery.validator.addMethod(
         "qty_rule",function(value, element) {
         return this.optional(element) || value >= 1;
         }, "Qty must be 1 or more"
     );
     
+    
     jQuery.validator.addClassRules("qty",{
+        required: true,
         qty_rule: true
     });
     
@@ -1050,7 +1053,7 @@ $(document).ready(function(){
     );
     
     jQuery.validator.addClassRules("full_price",{ 
-        number: true
+        number: true,
     });
     
     jQuery.validator.addMethod(

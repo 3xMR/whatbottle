@@ -478,6 +478,62 @@ function get_vintage_session(){
 }
 
 
+function get_vintage_available_override_details(){
+    //get vintage details from session and return to page
+
+    if( !($vintage_id = filter_input(INPUT_POST, "vintage_id", FILTER_SANITIZE_NUMBER_INT) ) ){
+        //no vintage_id provided can't continue
+        $var_result['success'] = false;
+        $var_result['error'] = 'no vintage_id provided';
+        return $var_result;
+    }
+    
+    $objVintage = new vintage($vintage_id);
+    if( !($varAvailable = $objVintage->get_available_bottle_count() ) ){
+        $var_result['success'] = false;
+        $var_result['error'] = 'get_available_bottle_count returned false error = '.$objVintage->get_last_error();
+        return $var_result;
+    }
+    
+    $var_result['success'] = true;
+    $var_result['details'] = $varAvailable;
+    return $var_result;
+    
+}
+
+
+function put_vintage_available_override_details(){
+    //put available override details to db
+    
+    if(!is_authed()){
+        $var_result['success'] = false;
+        $var_result['error'] = 'Not logged in';
+        return $var_result;
+    }
+    
+    if( !($vintage_id = filter_input(INPUT_POST, "vintage_id", FILTER_SANITIZE_NUMBER_INT) ) ){
+        //no vintage_id provided can't continue
+        $var_result['success'] = false;
+        $var_result['error'] = 'no vintage_id provided';
+        return $var_result;
+    }
+    
+    $override_value = 1 * filter_input(INPUT_POST, "override", FILTER_SANITIZE_NUMBER_INT);
+    
+    $objVintage = new vintage($vintage_id);
+    
+    if( !($objVintage->set_available_override($override_value)) ){
+        $var_result['success'] = false;
+        $var_result['error'] = 'set_available_override returned false. error = '.$objVintage->get_last_error();
+        return $var_result;
+    }
+    
+    $var_result['success'] = true;
+    return $var_result;
+    
+}
+
+
 function put_vintage_to_db(){
     //save vintage to db
     

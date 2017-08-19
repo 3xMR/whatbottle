@@ -171,6 +171,7 @@ echo "<head>";
 
         <div class="con_button_bar" >
             <input type="button" id="btn_cancel" value="OK" >
+            <input type="button" id="btn_test" value="Test" >
         </div>
            
         <div class="clear" ></div>

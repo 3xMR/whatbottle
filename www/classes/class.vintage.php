@@ -13,6 +13,7 @@ class vintage extends db {
     public $grape_count = null;
     public $award_count = null;
     public $acquisition_count = null;
+    public $last_error = null;
 
     protected $fieldlist = array(
         'vintage_id' => array(
@@ -56,6 +57,12 @@ class vintage extends db {
         'closure_id' => array(
             'map' => 'closure_id'
             ),
+        'drink_year_from' => array(
+            'map' => 'drink_year_from'
+            ),
+        'drink_year_to' => array(
+            'map' => 'drink_year_to'
+            ),
         'created' => array(
             'map' => 'created',
             'override' => true,
@@ -97,6 +104,8 @@ class vintage extends db {
                      tblVintage.vintage_value,
                      tblVintage.alcohol,
                      tblVintage.closure_id,
+                     tblVintage.drink_year_from,
+                     tblVintage.drink_year_to,
                      tblVintage.created,
                      tblVintage.modified,
                      tblVintage.user_id,
@@ -126,7 +135,18 @@ class vintage extends db {
 
         }
 
-
+        
+        public function get_last_error(){
+            //returns last recorded error
+            
+            if($this->last_error){
+                return $this->last_error;
+            }else{
+                return false;
+            }
+            
+        }
+        
         public function vintage_label($where=false){
            //return standard formated vintage label name
 
@@ -220,6 +240,149 @@ class vintage extends db {
         }
         
         
+        public function get_note_count(){
+            //return number of tasting notes for this vintage
+            
+            if($this->vintage_id>0){
+                $obj_notes = new tasting_note();
+                $vintage_id = $this -> vintage_id;
+                $where = "vintage_id = $vintage_id";
+                $note_count = $obj_notes -> row_count($where);
+                if($note_count > 0){
+                    $this -> note_count = $note_count;
+                    return $note_count;
+                }
+            }
+            
+            return false;
+           
+        }
+        
+        public function get_available_bottle_count(){
+            /* Calculate and return the number of bottle available to consume
+             * Each tasting note against vintage will deduct from the total acquired number
+             * acquisition_bottle_count, note_count, available_adjust_count, bottle_in_storage_count
+             */
+            
+            $this->last_error = null;
+            $var_available = null;
+
+            if(($acquisition_bottle_count = $this->get_acquisition_bottle_count())==false){
+                return false; //no acquisitions return false - nothing more to calculate
+            }
+            
+
+            /* Storage: not used today but need to support capability that certain number
+             * of bottles are not available because they are in storage
+             * set to zero until function added
+             */
+            
+            $storage_bottle_count = 0;
+
+            $note_count = $this->get_note_count() ?: 0; //if no notes set to zero 
+            
+            $gross_available_bottle_count = $acquisition_bottle_count - $storage_bottle_count;
+            $net_available_bottle_count = $gross_available_bottle_count - $note_count;
+
+            $override_min = -abs($note_count); //minimum override value is the negative of notes added so they can be net off
+            $override_max = $net_available_bottle_count; //max ovveride value is the number available
+            
+            $override = $this->get_available_override() ?: 0; //if returns an error set to zero
+            
+            $available_bottles = (($net_available_bottle_count - $override)<0) ? 0 : ($net_available_bottle_count - $override); //if a negative number set to zero
+            
+            $var_available['acquisition_bottle_count'] = $acquisition_bottle_count;
+            $var_available['storage_bottle_count'] = $storage_bottle_count;
+            $var_available['gross_available_bottle_count'] = $gross_available_bottle_count;
+            $var_available['note_count'] = $note_count;
+            $var_available['net_available_bottle_count'] = $net_available_bottle_count;
+            $var_available['override'] = $override;
+            //$var_available['override_min'] = $override_min;
+            //$var_available['override_max'] = $override_max;
+            //$var_available['available_max'] = $gross_available_bottle_count;
+            $var_available['available_bottles'] = $available_bottles;
+
+            return $var_available;
+            
+        }
+        
+        
+        public function set_available_override($override_value){
+            //set manual override in tblAvailableOverride to compensate for not putting in Notes
+            $this->last_error = null;
+            
+            if(!$this->vintage_id > 0){
+                $this->last_error = 'No vintage_id set';
+                return false; //can't continue
+            }
+            
+            if(!is_int($override_value)){
+                $this->last_error = "[class.vintage:set_available_override] override_value is not an integer and is not zero value=$override_value";
+                return false;
+            }
+            
+            //check if update or insert using 'vintage_exists'
+            $where = " vintage_id = ".$this->vintage_id;
+            $obj_available_override = new available_override();
+            $available_override_count = $obj_available_override->row_count($where);
+            if($available_override_count > 0){
+                //record exists for vintage
+                //UPDATE
+                $input_array['override']=$override_value;
+                $input_array['user_id']= $_SESSION['user_id'];
+                $update_result = $obj_available_override->update($input_array,$where);
+                if(!$update_result){
+                    $this->last_error = $obj_available_override->get_sql_error();
+                    return false;
+                }
+                return true;
+            }else{
+                //record does not exist for vintage
+                $input_array['vintage_id']=$this->vintage_id;
+                $input_array['override']=$override_value;
+                $input_array['user_id']= $_SESSION['user_id'];
+                $insert_result = $obj_available_override->insert($input_array);
+                if(!$insert_result){
+                    $this->last_error = $obj_available_override->get_sql_error();
+                    return false;
+                }
+                return true;
+            }
+
+        }
+        
+        
+        public function get_available_override(){
+            //get manual override from tblAvailableOverride
+            $this->last_error = null;
+            
+            if(!$this->vintage_id > 0){
+                $this->last_error = 'No vintage_id set';
+                return false; //can't continue
+            }
+            
+            $where = " vintage_id = ".$this->vintage_id;
+            $obj_available_override = new available_override();
+            $available_override_count = $obj_available_override->row_count($where);
+            
+            if($available_override_count <> 1){
+                $this->last_error = "query returned more than one row for vintage row_count = $available_override_count";
+                return false; 
+            }
+            
+            $rst_override = $obj_available_override->get($where);
+            if(!$rst_override){
+                $this->last_error = $obj_available_override->get_sql_error();
+                return false;
+            }
+            
+            $override = $rst_override[0]['override'];
+            
+            return $override;
+
+        }
+        
+        
         public function get_acquisitions(){
            if($this->vintage_id>0){
                 $obj_acquire = new vintage_has_acquire();
@@ -228,6 +391,26 @@ class vintage extends db {
                 $this -> acquisition_count = $obj_acquire -> row_count($where);
                 return $obj_acquire -> get_extended($where);
            }
+        }
+        
+        
+        public function get_acquisition_bottle_count(){
+            //returns total number of bottles from all acquisitions
+            if($this->vintage_id>0){
+                $obj_acquire = new vintage_has_acquire();
+                $vintage_id = $this -> vintage_id;
+                $where = "vintage_id = $vintage_id";
+                $columns = " SUM(qty)";
+                $rst_result = $obj_acquire -> get($where, $columns);
+                $acquisition_bottle_count = $rst_result[0]['SUM(qty)'];
+                if($acquisition_bottle_count > 0){
+                    $this -> acquisition_count = $acquisition_bottle_count;
+                    return $acquisition_bottle_count;
+                }
+                
+                return false;
+            }
+            
         }
         
                 

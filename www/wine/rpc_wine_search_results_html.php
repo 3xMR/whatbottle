@@ -11,7 +11,7 @@ require_once("$root/classes/class.wine_search.php");
 
 //search variables
 $wine_id = $_SESSION['var_wine_search_criteria']['wine_id'];
-$name = $_SESSION['var_wine_search_criteria']['search_text'];
+$search_text = $_SESSION['var_wine_search_criteria']['search_text'];
 $producer_id = $_SESSION['var_wine_search_criteria']['producer_id'];
 $winetype_id = $_SESSION['var_wine_search_criteria']['winetype_id'];
 $country_id = $_SESSION['var_wine_search_criteria']['country_id'];
@@ -21,14 +21,18 @@ $subregion_id = $_SESSION['var_wine_search_criteria']['subregion_id'];
 //$Note = $_SESSION['var_wine_search_criteria']['check_has_note'];
 $merchant_id = $_SESSION['var_wine_search_criteria']['merchant_id'];
 $acquire_id = $_SESSION['var_wine_search_criteria']['acquire_id'];
+$available = $_SESSION['var_wine_search_criteria']['available'];
+
 
 //get list of wines
 $search_obj = new wine_search();
-$type = "wines";
-$group = "tblWine.wine_id";
-$order = "last_modified DESC";
-$search_obj -> search($type, $name, $wine_id, $winetype_id, $country_id, $region_id, $subregion_id,
-                    $producer_id, $merchant_id, $acquire_id, $group, $order, $limit=false);
+
+
+$varSearchParam = $_SESSION['var_wine_search_criteria']; //get search parameters from session
+$varSearchParam['type'] = "wines"; //update parameters
+$varSearchParam['group'] = "tblWine.wine_id";
+$varSearchParam['order'] = "last_modified DESC";
+$resSearch = $search_obj -> search($varSearchParam); //search
 
 if($_SESSION['index_page_pagination']['current_page']){
     $page_num = $_SESSION['index_page_pagination']['current_page'];
@@ -36,6 +40,7 @@ if($_SESSION['index_page_pagination']['current_page']){
     $page_num = $_SESSION['index_page_pagination']['current_page'] = 1;
 }
 
+//get only one page of wine records
 $results = $search_obj ->get_wines($page_num);
 $arr_page = $search_obj ->get_page_numbers();
 $str_pagination =  " $page_num of ".$arr_page['num_pages']." ";
@@ -44,7 +49,7 @@ if($results){
     //step through wine results and render
 
     foreach($results as $key => $row){
-       
+       //wine details
         $wine_id = $row['wine_id'];
         $wine_name = $row['wine'];
         $producer = $row['producer'];
@@ -56,9 +61,8 @@ if($results){
         $subregion = $row['subregion'];
         $location = "$country, $region".($subregion ? ", $subregion" : ""); 
 
-        $vintage_obj = new vintage();
-        $where = "tblVintage.wine_id = $wine_id";
-        $vintage_count = $vintage_obj -> row_count($where);
+        $rst_vintages = $search_obj ->get_vintages($wine_id);
+        $vintage_count = count($rst_vintages);
 
         //display wine
         echo "<div class=\"wine_accordian\" id=\"wine_accordian_$wine_id\" >";
@@ -108,17 +112,13 @@ if($results){
         echo "</div>"; //wine_accordian
 
         //*** Vintage Details ***
-        $rst_vintages = $search_obj ->return_vintages($wine_id);
-        $obj_vintages = new vintage();
-        $where = " tblWine.wine_id = $wine_id";
-        $group = null;
-        $sort = "Year";
-        $rst_vintages = $obj_vintages -> get_extended($where, $group, $sort);
-
+        $rst_vintages = $search_obj ->get_vintages($wine_id);
 
         echo "<div class=\"vintages_panel hidden\" id=\"vintages_panel_$wine_id\" >";
 
             foreach ($rst_vintages as $key => $rowVintage ){
+                
+                //print_r($rowVintage);
                 $vintage_id = $rowVintage['vintage_id'];
                 $year = $rowVintage['year'] == 0 ? "n/a" : $rowVintage['year'];
 
@@ -204,7 +204,18 @@ if($results){
 
                          //Wine Type
                         echo "<h3>Type</h3>";
-                        echo "<p class=\"text_2\" >".$rowVintage['winetype']."</h4>";
+                        echo "<p class=\"text_2\" >".$rowVintage['winetype']."</p>";
+                        
+                        //Drinking Guide
+                        if(!empty($rowVintage['drink_year_to'])){
+                           echo "<h3>Drinking Guide</h3>";
+                           $drink_text = null;
+                           if(!empty($rowVintage['drink_year_from'])){
+                               $drink_text = $rowVintage['drink_year_from']." - ";
+                           }
+                           $drink_text .= $rowVintage['drink_year_to'];
+                           echo "<p class=\"text_2\" >$drink_text</p>";
+                        }
 
                         //Grapes
                         echo "<h3 style=\"margin-top:10px;\">Grapes</h3>";
@@ -292,63 +303,96 @@ if($results){
                         }
 
                         //Acquisitions
-                        echo "<h3 style=\"margin-top:5px;\" >Acquisitions</h3>";
-                        $acquire_obj = new vintage_has_acquire();
-                        $where = "vintage_id = $vintage_id";
-                        $columns = "";
-                        $group = "";
-                        $sort = "acquire_date DESC";
-                        $limit = "";
-                        $var_acquires = $acquire_obj -> get_extended($where,$columns,$group,$sort,$limit);
+                        echo "<div id=\"con_acquisitions_vintage\" >";
+                            echo "<h3 style=\"margin-top:5px; \" >Acquisitions</h3>";
+                            $acquire_obj = new vintage_has_acquire();
+                            $where = "vintage_id = $vintage_id";
+                            $columns = "";
+                            $group = "";
+                            $sort = "acquire_date DESC";
+                            $limit = "";
+                            $var_acquires = $acquire_obj -> get_extended($where,$columns,$group,$sort,$limit);
 
-                        if($var_acquires){
-                            foreach($var_acquires as $acquire){
-                                $acquire_id = $acquire['acquire_id'];
-                                $acquire_merchant = $acquire['merchant'];
-                                $acquire_date = date_us_to_uk($acquire['acquire_date'],'d-M-Y');
-                                $acquire_qty = $acquire['qty'];
-                                $discounted_price = number_format($acquire['discounted_price'],2);
-                                $unit_price = number_format($acquire['unit_price'],2);
+                            if($var_acquires){
+                                foreach($var_acquires as $acquire){
+                                    $acquire_id = $acquire['acquire_id'];
+                                    $acquire_merchant = $acquire['merchant'];
+                                    $acquire_date = date_us_to_uk($acquire['acquire_date'],'d-M-Y');
+                                    $acquire_qty = $acquire['qty'];
+                                    $discounted_price = number_format($acquire['discounted_price'],2);
+                                    $unit_price = number_format($acquire['unit_price'],2);
+
+                                    echo "<div class=\"acquire_link link ignore_dirty\" id=\"$acquire_id\" style=\"float:left; width:325px; padding-bottom:5px; margin-bottom:5px; border-bottom:1px dashed lightgray;\" >";
+
+                                        echo "<div style=\"float:left; width:75%; color:#606060;\" >";
+                                            echo "<p>$acquire_merchant</p>";
+                                        echo "</div>";
+                                        echo "<div style=\"float:right; text-align:right; width:25%;\" >";
+                                            echo "<p>$acquire_date</p>";
+                                        echo "</div>";
+
+                                        echo "<div class=\"clear\" ></div>";
+
+                                        echo "<div style=\"margin-top:7px; \">"; //second row
+
+                                            echo "<div style=\"float:left; width:33.3%; \" >";
+                                                echo "<p style=\"font-size:80%; display:inline; color:#B5ADAD;\" >Quantity:</p>";
+                                                echo "<p style=\"font-size:80%; display:inline; \" > $acquire_qty</p>";
+                                            echo "</div>";
+
+                                            echo "<div style=\"float:left; width:33.3%; \" >";
+                                                echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Price Paid:</p>";
+                                                echo "<p style=\"font-size:80%; display:inline;\" > £ $discounted_price</p>";
+                                            echo "</div>";
+
+                                            echo "<div style=\"float:left; text-align:right;  width:33.3%; \" >";
+                                                echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Full Price:</p>";
+                                                echo "<p style=\"font-size:80%; display:inline;\" > £ $unit_price</p>";
+                                            echo "</div>";                                        
+
+                                        echo "</div>"; //second_row
+
+                                        echo "<div class=\"clear\" ></div>";
+
+                                    echo "</div>"; //acquire_link
+                                } //foreach acquisition
                                 
-                                echo "<div class=\"acquire_link link ignore_dirty\" id=\"$acquire_id\" style=\"float-left; padding-bottom:5px; margin-bottom:5px; border-bottom:1px dashed lightgray;\">";
-                                    
-                                    echo "<div style=\"float:left; width:225px; color:#606060; \" >";
-                                        echo "<p>$acquire_merchant</p>";
+                                //Available details
+                                echo "<div id=\"con_available_$vintage_id\" style=\"float:left; width:100%;\" >";
+                                    echo "<div class=\"vertical-centre input-main-label\" style=\"margin-top:5px;\" >";
+                                        echo "<p style=\"color:#B5ADAD;\" >Available Bottles</p>";
+                                        echo "<input type=\"image\" class=\"btn_edit_override\" style=\"float:left; margin-left:10px;\" value=\"$vintage_id\" id=\"override_$vintage_id\" name=\"btn_edit_override\" src=\"/images/edit_flat_grey_24.png\" width=\"16px\" height=\"16px\" >";
                                     echo "</div>";
-                                    echo "<div style=\"float:right; text-align:right; width:100px;\" >";
-                                        echo "<p>$acquire_date</p>";
-                                    echo "</div>";
+                                    echo "<div class=\"clear\"></div>";
+                                    $obj_vintage = new vintage($vintage_id);
                                     
-                                    echo "<div class=\"clear\" ></div>";
-
-                                    echo "<div style=\"margin-top:7px; \">"; //second row
-
-                                        echo "<div style=\"float:left; width:24%; \" >";
-                                            echo "<p style=\"font-size:80%; display:inline; color:#B5ADAD;\" >Qty:</p>";
-                                            echo "<p style=\"font-size:80%; display:inline; \" > $acquire_qty</p>";
+                                    $acquisition_bottle_count = $obj_vintage ->get_acquisition_bottle_count();
+                                    if($acquisition_bottle_count){
+                                        echo "<div style=\"float:left; width:33.3%; \" >";
+                                            echo "<p style=\"color:#B5ADAD; display:inline;\" >Acquired: </p>";
+                                            echo "<p style=\"display:inline;\" >$acquisition_bottle_count</p>";
+                                        echo "</div>";   
+                                    }
+                                    
+                                    $available_bottle_count = $obj_vintage ->get_available_bottle_count();
+                                    if($available_bottle_count !== false){
+                                        echo "<div style=\"float:left; width:33.3%; \" >";
+                                            echo "<p style=\"font-size:100%; color:#B5ADAD; display:inline;\" >Available: </p>";
+                                            echo "<p style=\"font-size:100%; display:inline;\" >".$available_bottle_count['available_bottles']." </p>";
                                         echo "</div>";
-            
-                                        echo "<div style=\"float:left; width:38%; \" >";
-                                            echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Price Paid:</p>";
-                                            echo "<p style=\"font-size:80%; display:inline;\" > £ $discounted_price</p>";
-                                        echo "</div>";
+                                    }
 
-                                        echo "<div style=\"float:left; text-align:left;  width:38%; \" >";
-                                            echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Full Price:</p>";
-                                            echo "<p style=\"font-size:80%; display:inline;\" > £ $unit_price</p>";
-                                        echo "</div>";                                        
-
-                                    echo "</div>";
-                                    
-                                    echo "<div class=\"clear\" ></div>";
-
+                                    echo "<div class=\"clear\"></div>";
                                 echo "</div>";
+  
+                                
+                            } else {
+                                echo "<p class=\"text_2\"> - </p>"; //no acquisitions
                             }
-                        } else {
-                            echo "<p class=\"text_2\"> - </p>";
-                        }
-
-                        echo "<div class=\"clear\"></div>";
+                        
+                            echo "<div class=\"clear\" ></div>";
+                            
+                        echo "</div>"; //con_acquisitions_vintage
 
                     echo "</div>"; //right_column
 
@@ -368,7 +412,7 @@ if($results){
 
 }else{
     //no results
-    echo "No Results Found";
+    echo "<p style=\"margin-top:10px;\" >No Results Found</p>";
 }
 
 if($arr_page['num_pages']>1){

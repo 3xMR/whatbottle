@@ -71,6 +71,15 @@
             this.body_id = this.listBox_id+"_body";
             this.footer_id = this.listBox_id+"_footer";
             
+            //check that listBox container object id is not used more than once in document
+            var objectIdCount =$('#'+this.listBox_id).length;
+            if(objectIdCount===1){
+                console.log('Object container ID is unique');
+            }else{
+                console.log('!!ALERT!!! Object container ID is used '+objectIdCount+' times');
+            }
+            
+            
             //create empty arrays to hold persistant data
             this.arr_rows = new Array();
             this.newRow = undefined;

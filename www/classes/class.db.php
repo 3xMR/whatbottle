@@ -8,6 +8,7 @@ require_once("$root/classes/class.debug.php");
 
 require_once("$root/classes/class.acquire.php");
 require_once("$root/classes/class.acquire_type.php");
+require_once("$root/classes/class.available_override.php");
 require_once("$root/classes/class.award.php");
 require_once("$root/classes/class.award_org.php");
 require_once("$root/classes/class.country.php");

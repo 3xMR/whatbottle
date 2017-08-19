@@ -79,6 +79,12 @@ input[type='email'], input[type='button'], select, textarea {
     font-family:inherit;
 }
 
+input.readonly:disabled {
+    /* prevent diabled inputs from being greyed out */
+    color: #545454;
+    -webkit-text-fill-color:#545454;
+    -webkit-opacity:1;
+}
 
 
 .vintage_details .text_2 {
@@ -156,7 +162,10 @@ old.list li:hover {
 
 input[step="0"]::-webkit-inner-spin-button { -webkit-appearance: none;}
 
-
+.error-validation{
+    font-size: 100%;
+    color:red;
+}
 
 
 /* 02: Divs & Controls */
@@ -423,8 +432,6 @@ div.wine_results{
 .other_vintage_image{
     cursor:pointer;
 }
-
-
 
 
 
@@ -761,6 +768,7 @@ div.selected{
     float:left;
     margin:0px;
 }
+
 
 .input-main-label img {
    float:left;

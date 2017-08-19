@@ -180,6 +180,8 @@ require_once("$root/includes/standard_dialogs.inc.php");
 <script type="text/javascript">
 
 $(document).ready(function(){
+    
+    //FIX: Merchant autocomplete results is using escape character for '&' in Marks & Spencer
 
     //____Global variables____
 

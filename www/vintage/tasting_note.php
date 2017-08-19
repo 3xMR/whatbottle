@@ -120,6 +120,7 @@ echo "</head>";
 $(document).ready(function(){
 
     //TODO: Add Main Menu navigation to Tasting Note
+    //FIX: Deleting note leaves the deleted page open - should go to last note or new note
     
     var this_page = "/vintage/tasting_note.php";
     

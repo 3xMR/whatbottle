@@ -31,6 +31,9 @@ echo "<div class=\"con_form_fields\" >";
         $subregion = $_SESSION['var_vintage_temp']['subregion'];
         $image_name = $_SESSION['var_vintage_temp']['var_images']['temp']['name'];
         $image_status = $_SESSION['var_vintage_temp']['var_images']['temp']['status'];
+        $drink_year_from = $_SESSION['var_vintage_temp']['drink_year_from'];
+        $drink_year_to = $_SESSION['var_vintage_temp']['drink_year_to'];
+        //TODO: add Available
         $is_dirty = $_SESSION['var_vintage_temp']['is_dirty'];
 
         if( $_SESSION['var_vintage_temp']['status'] > 1){
@@ -73,42 +76,103 @@ if($hide_form==false){
             echo "<input type=\"hidden\" value=\"$vintage_id\" name=\"vintage_id\" id=\"vintage_id\" />";
             echo "<input type=\"hidden\" value=\"$is_dirty\" name=\"is_dirty\" id=\"is_dirty\" />";
             
+       
             echo "<div class=\"vertical-centre input-main-label\" >";
-                echo "<p>Vintage/Year</p>";
+                echo "<p>Vintage</p>";
             echo "</div>";
             echo "<div class=\"input-main bottom-spacer\" style=\"margin-left:5px;\" >";
                 echo "<input type=\"number\" step=\"0\" max=\"9999\" style=\"width:40px; \" value=\"$year\" name=\"year\" id=\"year\" $disabled />";
             echo "</div>";
-
-
+ 
 
         //Grapes
-        echo "<div class=\"input-main-label vertical-centre clear-left float-left click\"  id=\"edit_grapes\" >";
-            echo "<p style=\"float:left;\" >Grapes</p>";
-            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_grapes\" class=\"click ignore_dirty\" />";
+        echo "<div class=\"con_column_2_2 clear-left\" >";
+            echo "<div class=\"input-main-label vertical-centre clear-left float-left click\"  id=\"edit_grapes\" >";
+                echo "<p style=\"float:left;\" >Grapes</p>";
+                echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_grapes\" class=\"click ignore_dirty\" />";
+            echo "</div>";
+
+            echo "<div class=\"input-main float-left clear-left bottom-spacer\" >";
+                $var_grapes = $_SESSION['var_vintage_temp']['var_grapes'];
+                if(!empty($var_grapes)){
+                    foreach ($var_grapes as $var_grape){
+                        //if($var_grape['percent']>0){
+                            echo "<p style=\"margin-left:5px;\" >".$var_grape['grape']." (".$var_grape['percent']."%)</p></br>";
+                        //} 
+                    }
+                } else {
+                    //no grapes added
+                    echo "<p style=\"margin-left:5px;\" > - </p>";
+                }  
+            echo "</div>"; //form_input_input
+        echo "</div>";
+        
+        //Alcohol content
+        echo "<div class=\"con_column_2_2\" >";
+            echo "<div class=\"vertical-centre input-main-label float-left clear-left bottom-spacer\" >";
+                echo "<p>Alcohol</p>";
+            echo "</div>";
+            echo "<div class=\"input-main vertical-centre float-left clear-left bottom-spacer\" >";
+                echo "<input type=\"number\" step=\"0\" style=\"width:35px; float:left; margin-left:5px; text-align:right;\" value=\"$alcohol\" name=\"alcohol\" id=\"alcohol\" $disabled /><p>&nbsp; %</p>";
+            echo "</div>";
         echo "</div>";
 
-        echo "<div class=\"input-main float-left clear-left bottom-spacer\" >";
-            $var_grapes = $_SESSION['var_vintage_temp']['var_grapes'];
-            if(!empty($var_grapes)){
-                foreach ($var_grapes as $var_grape){
-                    //if($var_grape['percent']>0){
-                        echo "<p style=\"margin-left:5px;\" >".$var_grape['grape']." (".$var_grape['percent']."%)</p></br>";
-                    //} 
-                }
-            } else {
-                //no grapes added
-                echo "<p style=\"margin-left:5px;\" > - </p>";
-            }  
-        echo "</div>"; //form_input_input
-           
+  
 
+        //Picture/Label
+        echo "<div class=\"con_column_2_2 clear-left\" >";
+            echo "<div class=\"vertical-centre float-left input-main-label click clear-left\" id=\"btn_edit_image\"  >";
+                echo "<p>Image</p>";
+                echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_image\" class=\"ignore_dirty\" />";
+            echo "</div>";
+
+            echo "<div class=\"image-placeholder click clear-left\" id=\"image_con\" style=\"margin-left:5px;\" >";
+                if($image_name){
+
+                    $new_root = rtrim($root, '/\\');
+                    $image_path = ($image_status=='new') ? $label_upload_path.$image_name : $label_path.$image_name;
+
+                    //set size of image to fit in placeholder
+                    list($source_width, $source_height, $type, $attr) = getimagesize("$new_root/$image_path");
+                    $target_width = 150;
+                    $target_height = 225;
+                    $height_ratio = $source_height/$target_height;
+                    $width_ratio = $source_width/$target_width;
+                    $target_ratio = ($height_ratio > $width_ratio) ? $height_ratio : $width_ratio;
+                    $set_height = $source_height/$target_ratio;
+                    $set_width = $source_width/$target_ratio;
+
+                    if(file_exists($new_root.$image_path)){
+                        echo "<img src=\"$image_path\" width=\"$set_width\" height=\"$set_height\" style=\"display:block; margin-left:auto; margin-right:auto;\" />";
+                    } else {
+                        echo "<p style=\"text-align:center; vertial-align:middle; line-height:225px; color:gray;\" >Image file NOT found</p>";
+                    }
+
+                }else{
+                    //no image added
+                    echo "<p style=\"text-align:center; vertial-align:middle; line-height:225px; color:gray;\" >Click to Add Image</p>";
+                }
+            echo "</div>"; //image
+        echo "</div>"; //con_column_2_1
+        
+        //Ready To Drink
+        echo "<div class=\"con_column_2_2\" >";
+            echo "<div class=\"vertical-centre input-main-label float-left clear-left bottom-spacer\" >";
+                echo "<p>Drinking Guide</p>";
+            echo "</div>";
+            echo "<div class=\"input-main vertical-centre float-left clear-left bottom-spacer\" >";
+                echo "<p>From </p><input type=\"number\" step=\"0\" style=\"width:40px; float:left; margin-left:5px; text-align:right;\" value=\"$drink_year_from\" name=\"drink_year_from\" id=\"drink_year_from\" $disabled />";
+                echo "<p>&nbsp To </p><input type=\"number\" step=\"0\" style=\"width:40px; float:left; margin-left:5px; text-align:right;\" value=\"$drink_year_to\" name=\"drink_year_to\" id=\"drink_year_to\" $disabled />";
+            echo "</div>";
+
+        echo "</div>"; //con_column_2_1
+        
         //Awards
-        echo "<div class=\"vertical-centre input-main-label click float-left clear-left\" id=\"btn_edit_awards\"  >";
+        echo "<div class=\"vertical-centre input-main-label click float-left clear-left\" style=\"margin-top:10px;\" id=\"btn_edit_awards\"  >";
             echo "<p>Awards</p>";
             echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_awards\" class=\"ignore_dirty\" />";
         echo "</div>";
-        
+
         echo "<div class=\"input-main float-left clear-left bottom-spacer\" >"; 
                 $var_awards = $_SESSION['var_vintage_temp']['var_awards'];
                 if(!empty($var_awards)){
@@ -119,53 +183,11 @@ if($hide_form==false){
                     //no awards added
                     echo "<p style=\"margin-left:5px;\" > - </p>";
                 }
-        echo "</div>";
+        echo "</div>";        
         
-        //Alcohol content              
-        echo "<div class=\"vertical-centre input-main-label float-left clear-left bottom-spacer\" >";
-            echo "<p>Alcohol</p>";
-        echo "</div>";
-        echo "<div class=\"input-main vertical-centre float-left clear-left bottom-spacer\" >";
-            echo "<input type=\"number\" step=\"0\" style=\"width:35px; float:left; margin-left:5px; text-align:right;\" value=\"$alcohol\" name=\"alcohol\" id=\"alcohol\" $disabled /><p>&nbsp; %</p>";
-        echo "</div>";
-       
-        //Picture/Label   
-        echo "<div class=\"vertical-centre float-left input-main-label click clear-left\" id=\"btn_edit_image\"  >";
-            echo "<p>Image</p>";
-            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_image\" class=\"ignore_dirty\" />";
-        echo "</div>";
-
-        echo "<div class=\"image-placeholder click clear-left\" id=\"image_con\" style=\"margin-left:5px;\" >";
-            if($image_name){
-
-                $new_root = rtrim($root, '/\\');
-                $image_path = ($image_status=='new') ? $label_upload_path.$image_name : $label_path.$image_name;
-
-                //set size of image to fit in placeholder
-                list($source_width, $source_height, $type, $attr) = getimagesize("$new_root/$image_path");
-                $target_width = 150;
-                $target_height = 225;
-                $height_ratio = $source_height/$target_height;
-                $width_ratio = $source_width/$target_width;
-                $target_ratio = ($height_ratio > $width_ratio) ? $height_ratio : $width_ratio;
-                $set_height = $source_height/$target_ratio;
-                $set_width = $source_width/$target_ratio;
-
-                if(file_exists($new_root.$image_path)){
-                    echo "<img src=\"$image_path\" width=\"$set_width\" height=\"$set_height\" style=\"display:block; margin-left:auto; margin-right:auto;\" />";
-                } else {
-                    echo "<p style=\"text-align:center; vertial-align:middle; line-height:225px; color:gray;\" >Image file NOT found</p>";
-                }
-
-            }else{
-                //no image added
-                echo "<p style=\"text-align:center; vertial-align:middle; line-height:225px; color:gray;\" >Click to Add Image</p>";
-            }
-        echo "</div>"; //image
-
-     
     echo "</div>"; //column_2_1
     
+
     
     //***second column***
     echo "<div class=\"con_column_2_2\" >";

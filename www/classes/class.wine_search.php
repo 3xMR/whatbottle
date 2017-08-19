@@ -18,17 +18,35 @@ require_once("$root/includes/init.inc.php");
  */
 
 
+
 class wine_search {
 
-    private $select, $from, $where, $order, $group;
+    private $select, $from, $where, $order, $group, $having, $search_initialised, $num_vintages;
+    private $varSearchParam;
     private $page_rows = 20;
     private $num_pages;
     private $current_page = 1;
+    
+    public $last_error = null;
 
-    function search($type=false, $name=false, $wine_id=false, $winetype_id=false, $country_id=0, $region_id=0, $subregion_id=0,
-                    $producer_id=0, $merchant_id=0, $acquire_id=0, $group=false, $order=false, $limit=false){
+    //public function search($type=false, $name=false, $wine_id=false, $winetype_id=false, $country_id=0, $region_id=0, $subregion_id=0,
+     //               $producer_id=0, $merchant_id=0, $acquire_id=0,  $group=false, $order=false, $limit=false, $available=0, $having=false, $varSearchParam){
         
-        //TODO: The last vintage of a wine will set the last_modified date so it will NOT always be set to the newest date
+    public function search($varSearchParam){
+        /* Search parameters passed as associative array
+         * $type=false, $search_text=false, $wine_id=false, $winetype_id=false, $country_id=0, $region_id=0, 
+         * $subregion_id=0, $producer_id=0, $merchant_id=0, $acquire_id=0, $group=false, 
+         * $order=false, $limit=false, $available=0, $having=false;
+         * 
+         * //TODO: The last vintage of a wine will set the last_modified date so it will NOT always be set to the newest date
+         */
+        
+        $this -> _timerStart();
+        
+        //print_r($varSearchParam);
+       
+        $this -> varSearchParam = $varSearchParam; //save parameters to class variable
+        extract($varSearchParam, EXTR_SKIP); //extract array to variables
         
         //initialise variables
         $data_array = array();
@@ -50,11 +68,13 @@ class wine_search {
                 tblVintage.vintage_value,
                 tblVintage.alcohol,
                 tblVintage.closure_id,
+                tblVintage.drink_year_from,
+                tblVintage.drink_year_to,
                 (CASE WHEN MAX(tblVintage.modified) > tblWine.modified THEN MAX(tblVintage.modified) ELSE tblWine.modified END ) as last_modified,
                 tblProducer.producer,
                 tblCountry.country,tblCountry.flag_image,
                 tblRegion.region,
-                tblSubRegion.subregion";
+                tblSubRegion.subregion ";
 
         $from = " FROM tblWine LEFT JOIN tblVintage ON tblWine.wine_id = tblVintage.wine_id
                   LEFT JOIN tblProducer ON tblWine.producer_id = tblProducer.producer_id
@@ -62,7 +82,8 @@ class wine_search {
                   LEFT JOIN tblRegion ON tblWine.region_id = tblRegion.region_id
                   LEFT JOIN tblSubRegion ON tblWine.subregion_id = tblSubRegion.subregion_id ";
         
-
+        //**** Wine Related Search Terms ****//
+        
         //winetype
         if($winetype_id>0){
                 $select .= ",tlkpWineType.winetype";
@@ -86,26 +107,21 @@ class wine_search {
         if($subregion_id>0){
             $select .= ",tblSubRegion.subregion";
             $where .= "AND tblWine.subregion_id = $subregion_id ";
-            //$from .= "LEFT JOIN tblSubRegion ON tblWine.subregion_id = tblSubRegion.subregion_id ";
         }
-
 
         //wine_id & name search
         if($wine_id>0){
             //if wine_id is provided don't search by text
             $where .= "AND tblWine.wine_id = $wine_id ";
-        } else if($name){
+        } else if($search_text){
             //look for wine name only or wine name or producer
             if($producer_id>0){
                 //producer_id provided do don't include producer in text search
-                $where .= "AND (tblWine.wine LIKE '%$name%') ";
+                $where .= "AND (tblWine.wine LIKE '%$search_text%') ";
             }else{
                 //search for text in wine and producer
-                $where .= "AND (tblWine.wine LIKE '%$name%' OR tblProducer.producer LIKE '%$name%') ";
+                $where .= "AND (tblWine.wine LIKE '%$search_text%' OR tblProducer.producer LIKE '%$search_text%') ";
             }
-        }else{
-            //no id and no name provided - add no sql
-
         }
 
         //Producer
@@ -113,6 +129,8 @@ class wine_search {
             $where .= "AND tblWine.producer_id = $producer_id ";
         }
 
+        //**** Vintage Related Search Terms ****//
+        
         //Merchant or Acquire
         if($acquire_id>0){
             $where .= "AND tblVintage.vintage_id IN
@@ -127,6 +145,34 @@ class wine_search {
             LEFT JOIN tblVintage ON trelVintageHasAcquire.vintage_id = tblVintage.vintage_id
             WHERE tblAcquire.merchant_id = $merchant_id) ";
         }
+        
+        //Vintage Quality
+        if($vintage_quality>0){
+            $where .= "AND tblVintage.vintage_quality >= $vintage_quality ";
+        }
+        
+        //Available
+        if($available>0){
+            $select .= ", (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0)) available ";
+            $from .= "  LEFT JOIN (SELECT vintage_id, SUM(trelVintageHasAcquire.qty) purchased
+                        FROM trelVintageHasAcquire GROUP BY vintage_id) AS acquisitions
+                        ON acquisitions.vintage_id = tblVintage.vintage_id
+                        LEFT JOIN (SELECT vintage_id, IFNULL(COUNT(tblNotes.note_id),0) opened
+                        FROM tblNotes GROUP BY vintage_id) as notes
+                        ON notes.vintage_id = tblVintage.vintage_id
+                        LEFT JOIN (SELECT vintage_id, override
+                        FROM tblAvailableOverride) as override
+                        ON override.vintage_id = tblVintage.vintage_id ";
+            //$group = " tblVintage.vintage_id ";
+            $having = " available > 0 "; //use HAVING to filter by alias 'Available' WHERE won't work with alias
+        }else{
+            $having = null;
+        }
+        
+        //Drinking Guide
+        if($drinking_guide > 0){
+            $where .= "AND tblVintage.drink_year_to <= $drinking_guide ";
+        }
 
 
         if($order>""){
@@ -135,7 +181,7 @@ class wine_search {
             $sql_order = null;
         }
 
-
+        
         if($limit > 0){
             $sql_limit = $limit;
         } else {
@@ -143,11 +189,18 @@ class wine_search {
             //$sql_limit = "LIMIT 0,25 ";
         }
 
-
+        
         if($group > ""){
             $sql_group = "GROUP BY $group ";
         } else {
             $sql_group = null;
+        }
+        
+        
+        if($having > ""){
+            $sql_having = "HAVING $having ";
+        } else {
+            $sql_having = null;
         }
 
 
@@ -165,14 +218,17 @@ class wine_search {
         $this -> select = $select;
         $this -> order = $sql_order;
         $this -> group = $sql_group;
+        $this -> having = $sql_having;
 
-
-        $query = $select.$from.$where.$sql_group.$sql_order.$sql_limit;
+        $query = $select.$from.$where.$sql_group.$sql_having.$sql_order.$sql_limit;
 
         //run query
         $result = mysql_query($query) or die(mysql_error());
 
-        if($result){
+        if($result==false){
+            $this-> last_error = "search mysql query returned an error";
+            return false;
+        }
             //search results successful
             $this -> search_initialised = true;
             //$debug -> debug("mysql query results returned OK");
@@ -197,13 +253,35 @@ class wine_search {
 
             //return search results
             //$debug ->debug_write();
+            //$this->_timerStop('search');
+            
+            
             return $data_array;
+            
 
-        }else{
+        //}else{
             //search failed
-            return false;
-        }
+            //return false;
+        //}
 
+    }
+    
+    private function _timerStart(){
+       //page timer start 
+        $time = microtime();
+        $time = explode(' ', $time);
+        $time = $time[1] + $time[0];
+        $this -> timer_start = $time;
+    }
+    
+    private function _timerStop($script){
+        $time = microtime();
+        $time = explode(' ', $time);
+        $time = $time[1] + $time[0];
+        $finish = $time;
+        $total_time = round(($finish - $this -> timer_start), 4);
+        //echo "Script ($script) completed in '.$total_time.' seconds.";
+        return true;
     }
 
 
@@ -218,6 +296,7 @@ class wine_search {
             $where = $this -> where;
             $group = $this -> group;
             $order = $this -> order;
+            $having = $this -> having;
             $num_pages = $this -> num_pages;
             $page_rows = $this -> page_rows;
 
@@ -235,7 +314,7 @@ class wine_search {
             $start_row = ($page_num - 1) * $page_rows;
             $limit = "LIMIT $start_row, $page_rows";
 
-            $query = $select.$from.$where.$group.$order.$limit;
+            $query = $select.$from.$where.$group.$having.$order.$limit;
 
             //run query
             $result = mysql_query($query) or die(mysql_error());
@@ -276,35 +355,142 @@ class wine_search {
 
     }
 
-    public function return_vintages(){
-        //return vintages after initial wine search
-        if($this -> search_initialised){
-            //return vintage results using initialised search settings
-            $query = "SELECT * FROM tblVintage
-            LEFT JOIN tblWine ON tblWine.wine_id = tblVintage.wine_id ".$where;
-
-            $result = mysql_query($query) or die(mysql_error());
-
-            if($result){
-                //search results successful
-                $this -> search_initialised = true;
-
-                //put results into standard array
-                while ($row = mysql_fetch_assoc($result)) {
-                    $data_array[] = $row;
-                }
-
-                //return search results
-                return $data_array;
-
-            }else{
-                //search failed
-                return false;
-            }
-
-        }else{
-            return false;
+    public function get_vintages($wine_id){
+        //return only vintages after initial wine search, will return all vintages if not filtered by passing wine_id
+        
+        if(!$this -> search_initialised){
+            $this-> last_error = "search has not been initialised - use 'Search(varSearchParam)' method";
+            return false; //search not initialised
         }
+        
+        if(!$this -> varSearchParam){
+            $this-> last_error = "search parameters varSearchParam not found";
+            return false; 
+        }
+        
+        if(!$wine_id > 0){
+            $this-> last_error = "No wine_id provided";
+            return false; //no wine_id parameter provided
+        }
+        
+        //print_r($this -> varSearchParam);
+        //echo "</br>";
+        extract($this -> varSearchParam, EXTR_SKIP); //extract array to variables
+
+        //construct query
+        $select = $this -> select;
+        $from = $this -> from;
+        $where = $this -> where;
+        $group = $this -> group;
+        $order = $this -> order;
+        $having = $this -> having;
+        
+        $select = "SELECT tblVintage.vintage_id ";
+        $from = "FROM tblVintage ";
+        $where = "WHERE tblVintage.wine_id = $wine_id ";
+        $group = null;
+        $order = "tblVintage.year ASC ";
+
+        //Merchant or Acquire
+        if($acquire_id>0){
+            $where .= "AND tblVintage.vintage_id IN
+            (SELECT DISTINCT tblVintage.vintage_id FROM tblAcquire
+            LEFT JOIN trelVintageHasAcquire ON tblAcquire.acquire_id = trelVintageHasAcquire.acquire_id
+            LEFT JOIN tblVintage ON trelVintageHasAcquire.vintage_id = tblVintage.vintage_id
+            WHERE tblAcquire.acquire_id = $acquire_id) ";
+        } else if($merchant_id>0){
+            $where .= "AND tblVintage.vintage_id IN
+            (SELECT DISTINCT tblVintage.vintage_id FROM tblAcquire
+            LEFT JOIN trelVintageHasAcquire ON tblAcquire.acquire_id = trelVintageHasAcquire.acquire_id
+            LEFT JOIN tblVintage ON trelVintageHasAcquire.vintage_id = tblVintage.vintage_id
+            WHERE tblAcquire.merchant_id = $merchant_id) ";
+        }
+        
+        //Vintage Quality
+        if($vintage_quality>0){
+            $where .= "AND tblVintage.vintage_quality >= $vintage_quality ";
+        }
+        
+        
+        //Available - use sub-select statements with a LEFT JOIN to calculate sums from different tables
+        if($available>0){
+            $select .= ", (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0)) available ";
+            $from .= "  LEFT JOIN (SELECT vintage_id, SUM(trelVintageHasAcquire.qty) purchased
+                        FROM trelVintageHasAcquire GROUP BY vintage_id) AS acquisitions
+                        ON acquisitions.vintage_id = tblVintage.vintage_id
+                        LEFT JOIN (SELECT vintage_id, IFNULL(COUNT(tblNotes.note_id),0) opened
+                        FROM tblNotes GROUP BY vintage_id) as notes
+                        ON notes.vintage_id = tblVintage.vintage_id
+                        LEFT JOIN (SELECT vintage_id, override
+                        FROM tblAvailableOverride) as override
+                        ON override.vintage_id = tblVintage.vintage_id ";
+            //$group = " tblVintage.vintage_id ";
+            $having = " available > 0 "; //use HAVING to filter by alias 'Available' WHERE won't work with alias
+        }
+        
+        //Drinking Guide
+        if($drinking_guide > 0){
+            $where .= "AND tblVintage.drink_year_to <= $drinking_guide ";
+        }
+
+        if($order>""){
+            $sql_order = "ORDER BY $order ";
+        } else {
+            $sql_order = null;
+        }
+
+        
+        if($limit > 0){
+            $sql_limit = $limit;
+        } //$sql_limit = "LIMIT 0,25 ";
+        
+
+        
+        if($group > ""){
+            $sql_group = "GROUP BY $group ";
+        } else {
+            $sql_group = null;
+        }
+        
+        
+        if($having > ""){
+            $sql_having = "HAVING $having ";
+        } else {
+            $sql_having = null;
+        }
+        
+        $query = $select.$from.$where.$sql_group.$sql_having.$sql_order.$sql_limit;
+        //echo $query;
+        //echo "</br>";
+
+        //run query
+        $result = mysql_query($query) or die(mysql_error());
+
+        if(!$result){
+            $this-> last_error = "my_sql query failed";
+            return false; //failed
+        }
+        
+        //count rows
+        $this -> num_vintages =  mysql_num_rows($result);
+        
+        //vintage class object
+        $obj_vintage = new vintage();
+        
+        //put results into standard array
+        while ($row = mysql_fetch_assoc($result)) {
+            //$data_array[] = $row;
+            $rst_vintage = $obj_vintage->get_extended("vintage_id = ".$row['vintage_id']);
+            $rst_vintages[] = $rst_vintage[0];
+            
+        }
+        
+        //print_r($rst_vintages);
+        
+        //return search results
+        return $rst_vintages;
+        
+  
     }
 
 

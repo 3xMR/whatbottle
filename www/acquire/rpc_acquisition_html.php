@@ -64,7 +64,7 @@ if(!empty($_SESSION['var_acquire']['var_acquire_vintages'])){
                     echo "&nbsp;";
                 echo "</td>";
                 echo "<td id=\"total_price_paid_cell\" >";
-                    echo "<input type=\"number\" step=\"0\" class=\"table_input readonly\" name=\"total_price_paid_total\" id=\"total_price_paid_total\" READONLY $disabled/>";
+                    echo "<input type=\"number\" step=\"0\" class=\"table_input readonly\" name=\"total_price_paid_total\" id=\"total_price_paid_total\" disabled/>";
                 echo "</td>";
                 if(is_authed()){
                     echo "<td id=\"remove_cell\" >";
@@ -121,10 +121,10 @@ if(!empty($_SESSION['var_acquire']['var_acquire_vintages'])){
                     echo "<input type=\"number\" step=\"0\" class=\"discount table_input\" name=\"$id:_discount\" id=\"discount_$id\" value=\"0\" $disabled/>";
                 echo "</td>";
                 echo "<td id=\"price_paid_cell\" >";
-                    echo "<input type=\"number\" step=\"0\" class=\"price_paid table_input\" name=\"$id:_price_paid\" id=\"price_paid_$id\" value=\"0.00\" tabindex=\"-1\" READONLY $disabled/>";
+                    echo "<input type=\"number\" step=\"0\" class=\"price_paid table_input readonly\" name=\"$id:_price_paid\" id=\"price_paid_$id\" value=\"0.00\" tabindex=\"-1\" disabled/>";
                 echo "</td>";
                 echo "<td id=\"total_price_paid_cell\" >";
-                    echo "<input  type=\"number\" step=\"0\" class=\"total_price_paid table_input readonly\" name=\"$id:_total_price_paid\" id=\"total_price_paid_$id\" value=\"0.00\" tabindex=\"-1\" READONLY $disabled/>";
+                    echo "<input  type=\"number\" step=\"0\" class=\"total_price_paid table_input readonly\" name=\"$id:_total_price_paid\" id=\"total_price_paid_$id\" value=\"0.00\" tabindex=\"-1\" disabled/>";
                 echo "</td>";
                 if(is_authed()){
                     //only show delete button if authed

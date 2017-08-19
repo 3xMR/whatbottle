@@ -17,19 +17,22 @@ if (!$q) {
     return false;
 }
 
+
 $var_result = array();
 
 $term = mysql_escape_string(trim($q));
 
 //get list of wines
 $search_obj = new wine_search();
-$type = "wines";
-$group = "tblWine.wine_id";
-$order = "tblWine.wine ASC";
 
-$results = $search_obj -> search($type, $term, $wine_id=false, $winetype_id=false, $country_id=false, $region_id=false, $subregion_id=false,
-                    $producer_id=false, $merchant_id=false, $acquire_id=false, $group, $order, $limit=false);
+$_SESSION['var_wine_search_criteria']['search_text'] = $term;
+$varSearchParam = $_SESSION['var_wine_search_criteria']; //get search parameters from session
+$varSearchParam['search_text'] = $term; //update parameters
+$varSearchParam['type'] = "wines"; //update parameters
+$varSearchParam['group'] = "tblWine.wine_id";
+$varSearchParam['order'] = "tblWine.wine ASC";
 
+$results = $search_obj -> search($varSearchParam); //search
 
 
 if(sizeof($results)>0){

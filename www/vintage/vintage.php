@@ -165,7 +165,7 @@ $(document).ready(function(){
      * - json2.js - serialize input fields and pass back to server to save to session and commit to db - requires library
      * - common dialogs are in seperate include file
      * - jquery.notice.js provides growl type notifications
-     * - use hidden field "is_dirty" and [var_vintage_temp][is_dirty] to persist is_dirty between child forms
+     * - use hidden field "is_dirty" and session [var_vintage_temp][is_dirty] to persist is_dirty between child forms
      * - vintage_form_status = '1'create '2'read '3'write '4'delete
      */
 
@@ -889,15 +889,36 @@ $(document).ready(function(){
 
 
     //_______Validation_______
+    
+    
+    
+    $.validator.addMethod("greaterThan", function (value, element, param) {
+        //add method to do max greater or equal to min comparison
+        var $min = $(param);
+
+        if (this.settings.onfocusout) {
+            $min.off(".validate-greaterThan").on("blur.validate-greaterThan", function () {
+                $(element).valid();
+            });
+        }
+        
+        if (!$min.val()){
+            min = 0;
+        }else{
+            min = $min.val();
+        }
+        
+        return parseInt(value) >= parseInt(min);
+    }, "To year must be equal or greater than From year");
+
 
     function set_validation(){
         //special function to set up form validation
 
          $("#frm_vintage").validate({
-            rules: {
+            rules:{
                 year: {
-                        required: true,
-                        number: true, range: [1000,9999],
+                        required: true, digits: true, range: [1000,9999],
                         remote: {
                             url: "/vintage/rpc_duplicate_year.php",
                             type: "post",
@@ -909,18 +930,50 @@ $(document).ready(function(){
                         }
                  },
                 alcohol: {
-                        number: true, range: [0,100]
-                        }
-                    },
+                    number: true, range: [0,100]
+                        },
+                drink_year_from: {
+                    digits: true, number:true, range: [1000,9999]
+                },
+                drink_year_to: {
+                    digits:true, number:true, range: [1000,9999],
+                    greaterThan: '#drink_year_from'
+                }  
+            },      
             messages: {
                     year: {
                     required: "A year is required",
-                    range: "Must be a 4 digit year i.e. 2005",
-                    remote: "this vintage has already been added"
+                    range: "Must be a 4 digit year e.g. 2005",
+                    number: "Must be a 4 digit year e.g. 2005",
+                    remote: "This vintage has already been added"
+                    },
+                    drink_year_from: {
+                    number: "Must be a 4 digit year e.g. 2005",
+                    range: "Must be a 4 digit year e.g. 2005",
+                    },
+                    drink_year_to: {
+                    number: "Must be a 4 digit year e.g. 2005",
+                    range: "Must be a 4 digit year e.g. 2005",
                     }
+                },
+            errorPlacement: function(error, element){
+                //place error in new div after error div parent
+                d = document.createElement('div');
+                $(d).addClass('clear-left float-left error-validation').append(error);
+                element.parent().after($(d));
+                },
+            invalidHandler: function(event, validator){
+                $(".con_button_bar").notify("Validation Failed",{
+                    position: "top left",
+                    style: "msg",
+                    className: "warning",
+                    arrowShow: false,
+                    autoHideDelay: 1000
+                });
                 }
         });
     }
+
 
 //*****Dialogs*****
 

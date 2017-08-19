@@ -36,6 +36,7 @@ if($root=="/Volumes/sites/whatbottle/03 whatbottle.local/www/" ||
     mysql_set_charset('utf8',$link);
     mysql_select_db("whatbott_whatbottle") or die(mysql_error());
     $environment = 'live';
+
 }
 
 // Seed the random number generator
