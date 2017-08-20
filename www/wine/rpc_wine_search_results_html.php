@@ -375,13 +375,12 @@ if($results){
                                     }
                                     
                                     $available_bottle_count = $obj_vintage ->get_available_bottle_count();
-                                    if($available_bottle_count !== false){
+                                    if(is_array($available_bottle_count)){
                                         echo "<div style=\"float:left; width:33.3%; \" >";
                                             echo "<p style=\"font-size:100%; color:#B5ADAD; display:inline;\" >Available: </p>";
                                             echo "<p style=\"font-size:100%; display:inline;\" >".$available_bottle_count['available_bottles']." </p>";
                                         echo "</div>";
                                     }
-
                                     echo "<div class=\"clear\"></div>";
                                 echo "</div>";
   
@@ -412,10 +411,10 @@ if($results){
 
 }else{
     //no results
-    echo "<p style=\"margin-top:10px;\" >No Results Found</p>";
+    echo "<p style=\"margin-top:10px; margin-left:10px;\" >No Results Found</p>";
 }
 
-if($arr_page['num_pages']>1){
+//if($arr_page['num_pages']>1){
     echo "<div style=\" width:100%; height:30px; padding-bottom:5px; padding-top:5px; border-bottom:solid 1px gray; \" >";
         //pagination
         echo "<div class=\"vertical-centre con_pagination\" id=\"index_pagination\" style=\"height:30px; width:250px; padding-right:10px; float:right; \" >";
@@ -426,7 +425,7 @@ if($arr_page['num_pages']>1){
             echo "<img class=\"click\" id=\"btn_first\" src=\"/images/first_grey_flat_24.png\" height=\"18px\" width=\"18px\" />";
         echo "</div>";
     echo "</div>";
-}
+//}
 
 
 

@@ -17,8 +17,7 @@ public $fieldlist = array(
         'required' => true
         ),
     'override' => array(
-        'map' => 'override',
-        'required' => true
+        'map' => 'override'
         ),
     'created' => array(
         'map' => 'created',
@@ -54,3 +53,5 @@ public $fieldlist = array(
 
 
 }
+
+?>

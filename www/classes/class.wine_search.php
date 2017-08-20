@@ -41,9 +41,7 @@ class wine_search {
          * //TODO: The last vintage of a wine will set the last_modified date so it will NOT always be set to the newest date
          */
         
-        $this -> _timerStart();
-        
-        //print_r($varSearchParam);
+        //$this -> _timerStart();
        
         $this -> varSearchParam = $varSearchParam; //save parameters to class variable
         extract($varSearchParam, EXTR_SKIP); //extract array to variables
@@ -221,6 +219,8 @@ class wine_search {
         $this -> having = $sql_having;
 
         $query = $select.$from.$where.$sql_group.$sql_having.$sql_order.$sql_limit;
+        
+        //echo $query;
 
         //run query
         $result = mysql_query($query) or die(mysql_error());
@@ -228,41 +228,40 @@ class wine_search {
         if($result==false){
             $this-> last_error = "search mysql query returned an error";
             return false;
+            
         }
-            //search results successful
-            $this -> search_initialised = true;
-            //$debug -> debug("mysql query results returned OK");
-            
-            $num_rows = mysql_num_rows($result);
-            $page_rows = $this -> page_rows;
-            $num_pages = $num_rows/$page_rows;
-            //$debug -> debug("num_pages = $num_pages");
-            if($num_pages>0){
-                $this -> num_pages = ceil($num_pages);
-            }else{
-                $this -> num_pages = 1;
-            }
-            //update session
-            //$_SESSION['index_page_pagination']['current_page'] = 1;
-            $_SESSION['index_page_pagination']['num_pages'] = ceil($num_pages);
+        
+        //search results successful
+        $this -> search_initialised = true;
 
-            //put results into standard array
-            while ($row = mysql_fetch_assoc($result)) {
-                $data_array[] = $row;
-            }
+        $num_rows = mysql_num_rows($result);
+        $page_rows = $this -> page_rows;
+        $num_pages = $num_rows/$page_rows;
+        
+        //echo " [num_rows=$num_rows page_rows=$page_rows num_pages=$num_pages] ";
 
-            //return search results
-            //$debug ->debug_write();
-            //$this->_timerStop('search');
-            
-            
-            return $data_array;
-            
+        if($num_pages>0){
+            $this -> num_pages = ceil($num_pages);
+        }else{
+            $this -> num_pages = 1;
+        }
+        //update session
+        //$_SESSION['index_page_pagination']['current_page'] = 1;
+        $_SESSION['index_page_pagination']['num_pages'] = ceil($num_pages);
 
-        //}else{
-            //search failed
-            //return false;
-        //}
+        //put results into standard array
+        while ($row = mysql_fetch_assoc($result)) {
+            $data_array[] = $row;
+        }
+
+        //return search results
+        //$debug ->debug_write();
+        //$this->_timerStop('search');
+            
+        //print_r($data_array);
+        
+        return $data_array;
+
 
     }
     
@@ -315,7 +314,7 @@ class wine_search {
             $limit = "LIMIT $start_row, $page_rows";
 
             $query = $select.$from.$where.$group.$having.$order.$limit;
-
+            
             //run query
             $result = mysql_query($query) or die(mysql_error());
 

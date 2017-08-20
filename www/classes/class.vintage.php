@@ -266,8 +266,11 @@ class vintage extends db {
             
             $this->last_error = null;
             $var_available = null;
-
-            if(($acquisition_bottle_count = $this->get_acquisition_bottle_count())==false){
+            
+            
+            
+            $acquisition_bottle_count = $this->get_acquisition_bottle_count();
+            if($acquisition_bottle_count <= 0){
                 return false; //no acquisitions return false - nothing more to calculate
             }
             
@@ -278,17 +281,18 @@ class vintage extends db {
              */
             
             $storage_bottle_count = 0;
-
+ 
             $note_count = $this->get_note_count() ?: 0; //if no notes set to zero 
             
             $gross_available_bottle_count = $acquisition_bottle_count - $storage_bottle_count;
             $net_available_bottle_count = $gross_available_bottle_count - $note_count;
-
-            $override_min = -abs($note_count); //minimum override value is the negative of notes added so they can be net off
-            $override_max = $net_available_bottle_count; //max ovveride value is the number available
             
+            //$override_min = -abs($note_count); //minimum override value is the negative of notes added so they can be net off
+            //$override_max = $net_available_bottle_count; //max ovveride value is the number available
+            
+            //FIX: This function is causing an error
             $override = $this->get_available_override() ?: 0; //if returns an error set to zero
-            
+    
             $available_bottles = (($net_available_bottle_count - $override)<0) ? 0 : ($net_available_bottle_count - $override); //if a negative number set to zero
             
             $var_available['acquisition_bottle_count'] = $acquisition_bottle_count;
@@ -363,7 +367,7 @@ class vintage extends db {
             
             $where = " vintage_id = ".$this->vintage_id;
             $obj_available_override = new available_override();
-            $available_override_count = $obj_available_override->row_count($where);
+            $available_override_count = $obj_available_override -> row_count($where);
             
             if($available_override_count <> 1){
                 $this->last_error = "query returned more than one row for vintage row_count = $available_override_count";

@@ -389,10 +389,11 @@ function row_count($where){
         $where = NULL;
     }
 
-    if($this->debug){echo "<br/>[class db] => row_count: $where";}
     $query = "SELECT COUNT(*) FROM $this->table $where";
-    if($this->debug){echo "<br/>[class db] => row_count query: $query";}
     $result = mysql_query($query) or die (mysql_error());
+    if(!$result){
+        return false;
+    }
     $row = mysql_fetch_array($result);
     return $row['COUNT(*)'];
 }
