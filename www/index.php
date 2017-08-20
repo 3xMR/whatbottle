@@ -1,5 +1,7 @@
 <?php
-/*
+/* 
+
+ * Notes:
  * Release: 4.0
  * Released: 19.08.2017
  * Notes: 
