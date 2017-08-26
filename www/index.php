@@ -1,6 +1,18 @@
 <?php
 /* 
-
+ * Release 4.1
+ * Released: TBC
+ * Notes:
+ * Fixed validation on To/From fields on Vintage
+ * To/From fields set to select text on iPad to ease modification
+ * Re-arranged field layout on Vintage to look better
+ * Change colour of login button on login form and advanced search buttons so they are all blue
+ * Reset available value to zero for all vintages in db
+ * Search box reset buttons show only when results are filtered
+ * Fixed vintage details not expanding when only one wine is filtered
+ * Fixed panels remaining open after search reset
+ * Fixed multiple autocomplete based searches are aggregated rather than reset each time
+ * 
  * Notes:
  * Release: 4.0
  * Released: 19.08.2017
@@ -477,7 +489,6 @@ require_once("$root/includes/standard_dialogs.inc.php");
 
 //TODO: Add pagination, sortby and number of items on page as option in settings (Create settings page)
 //TODO: free text search on notes
-
 //TODO: Double-click on image to open image_manager page as overlay
 //TODO: Show value in note summary
 //TODO: If login is magnus add admin option to top level menu - to access admin functions
@@ -550,7 +561,7 @@ $(document).ready(function(){
     });
     
     //set onload behaviour
-    $('#search').hide();
+    $('#search').hide(); //hide advanced search features
     $('.vintages_panel').hide();
     $('.vintage_details').hide();
     load_wines_html();
@@ -558,7 +569,6 @@ $(document).ready(function(){
 
     //set focus on search box
     var isiPad = navigator.userAgent.match(/iPad/i) != null;
-    
     if(!isiPad){
         //setting focus on ipad causes keyboard to show, even if selecting item in listbox
         $('#search_text').focus();
@@ -635,7 +645,14 @@ $(document).ready(function(){
                 //$('#wineSearchAutocompleteValue').val(ui.item.value);
                 $('#search_selected_id').val(ui.item.value);
                 $('#search_category').val(ui.item.category);
-                //TODO: put search criteria to session so that rpcWineSearchResults.html picks them up when loading
+                //reset autocomplete set fields
+                $('#search_text').val(''); //remove search text  
+                $('#wine_id').val(0);
+                $('#country_id').val(0);
+                $('#region_id').val(0);
+                $('#subregion_id').val(0);
+                $('#producer_id').val(0);
+                $('#merchant_id').val(0);
                 //put_search_to_session(); 
                 switch(ui.item.category){
                     case 'Wine':
@@ -643,23 +660,18 @@ $(document).ready(function(){
                         break;
                     case 'Country':
                         $('#country_id').val(ui.item.value);
-                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Region':
                         $('#region_id').val(ui.item.value);
-                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Subregion':
                         $('#subregion_id').val(ui.item.value);
-                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Producer':
                         $('#producer_id').val(ui.item.value);
-                        $('#search_text').val(''); //remove search text
                         break;
                     case 'Merchant':
                         $('#merchant_id').val(ui.item.value);
-                        $('#search_text').val(''); //remove search text
                         break;
                 }
                 search_wines(true);
@@ -679,15 +691,48 @@ $(document).ready(function(){
         $('#con_rpc_wine_search_results_html').load('/wine/rpc_wine_search_results_html.php', function(){ //load results
            //toggle_vintages(); //run following code once refreshed
            set_open_panels();
+           set_reset_button(); //show or hide reset button based on search results
            //TODO:if only one result is returned expand it fully
-       });
+    
+            if($('.wine_accordian').size()==1){
+                //only one wine result returned - expand it
+                console.log('only one wine - so expand it');
+                $('.vintages_panel').each(function(index) {
+                    var wine_id = ($(this).attr('id').replace("vintages_panel_", ""))*1;
+                    toggle_vintage_panel(wine_id, 'medium', function(){
+                        show_all_vintage_details(wine_id); //call back to open all vintage details as well
+                    });
+                    
+                });
+            }
+            
+        });
+        
+    };
+    
+    
+    function set_reset_button(){
+        /* php on rpc_wine_search_results_html.php checks if search paramter array is empty and sets hidden input field
+         * to True if the results are filtered
+         * This function checks that field after the page has loaded and hides or shows the reset button
+         */
+        
+        var filtered = $('#search_filter_status').val();
+        
+        if (filtered === 'true') {
+            $('.btn_reset_search').show();
+            $('#con_acquisitions_btn_clear_filter').show(); //acquisition listBox
+        }else{
+            $('.btn_reset_search').hide();
+            $('#con_acquisitions_btn_clear_filter').hide(); //acquisition listBox
+        }
+        
     }
 
-
-    function toggle_vintage_panel(wine_id, duration){
-        //toggle vintage accordian panel - open or close
+    function toggle_vintage_panel(wine_id, duration, callback){
+        //toggle vintage accordian panel to show vintages under a wine - open/close
         console.log('toggle_vintage_panel wine_id='+wine_id);
-        //hide all children
+        //hide all children (vintage_details panels)
         $('#wine_accordian_'+wine_id).next('.vintages_panel').children('.vintage_accordian').children('.vintage_details').hide();
         //change all vintage expand / collapse indicators to closed (right arrow)
         $('#wine_accordian_'+wine_id).next('.vintages_panel').children('.vintage_accordian').find('.vintage_expanded_indicator').removeClass('arrow_down').removeClass('arrow_right').addClass('arrow_right');
@@ -695,15 +740,19 @@ $(document).ready(function(){
         $($panel).slideToggle(duration,function(){
             //callback function
             if($($panel).is(":visible")){
-                console.log('toggle_vintage_panel '+$panel + ' :visible'); 
+                console.log($panel + ' :visible'); 
              }else{
-                 console.log('toggle_vintage_panel '+$panel + ' :hidden');
+                 console.log($panel + ' :hidden');
              }
         });
         
         //swivel open close arrow
         arrow_id = '#arrow_indicator_'+wine_id;
         $(arrow_id).toggleClass('arrow_down');
+        
+        if(typeof callback === 'function'){
+            callback();
+        }
     }
 
 
@@ -717,13 +766,24 @@ $(document).ready(function(){
     }
     
     
+    function show_all_vintage_details(wine_id,duration){
+        //show all vintage details for a given wine_id
+        console.log('show all vintage details...');
+        $wine = "#vintages_panel_"+wine_id;
+        $($wine).find(".vintage_accordian").each(function(index, element){
+            var id = $(element).attr('id');
+            var vintage_id = id.replace("vintage_accordian_", "");
+            console.log('call toggle_vintage_details_panel : '+vintage_id);
+            toggle_vintage_details_panel(vintage_id);
+        });
+
+    }
+    
+    
     function override_available_bottles(vintage_id, object){
         //display dialog to change available override
-        
         console.log('override_available_bottle vintage_id = '+vintage_id);
-
         get_override_data(vintage_id,object);
-
     }
     
 
@@ -807,7 +867,6 @@ $(document).ready(function(){
             var name = $(this).attr('id');
             var_search[name] = $(this).val();
             if(index==count-1){//loop completed
-                
                 if(ignore_text){ //remove text from search fields
                     var_search['search_text'] = "";
                 }
@@ -818,7 +877,6 @@ $(document).ready(function(){
                     var_search: var_search
                 }, function(data){
                     if(data.success){
-                        //console.log('search wine SUCCESS');
                         //new search so set pagination to page 1 - pagination function will refresh html
                         pagination("index_page_pagination", 1);
 
@@ -881,6 +939,7 @@ $(document).ready(function(){
         //submit search for wines
         console.log('btn_reset_search');
         reset_search();
+        close_all_panels();
     });
 
 
@@ -938,6 +997,16 @@ $(document).ready(function(){
     });
 
 
+    function close_all_panels(){
+        //close all panels - effective reset
+        console.log('close_all_panels...');
+        $(".vintages_panel").slideUp('fast'); //close vintages_panel - hide list of vintages
+        $(".vintage_details").slideUp('fast'); //close vintage_details panels - hide vintage details
+        $("#btn_expand_vintages").attr("src", "/images/next_grey_flat_24.png"); 
+        $(".wine_panel_toggle").removeClass('arrow_down'); //reset
+        $(".vintage_expanded_indicator").removeClass('arrow_down'); //reset vintage details indicator
+    }
+    
     function toggle_vintages(){
         //show or hide all vintages for wines
 
@@ -950,11 +1019,7 @@ $(document).ready(function(){
             $(".wine_panel_toggle").removeClass('arrow_down').addClass('arrow_down');
             $(".vintage_expanded_indicator").removeClass('arrow_down');
         }else{
-            console.log('collapse all vintages');
-            $(".vintages_panel").slideUp('medium');
-            $("#btn_expand_vintages").attr("src", "/images/next_grey_flat_24.png");
-            $(".wine_panel_toggle").removeClass('arrow_down');
-            $(".vintage_expanded_indicator").removeClass('arrow_down');
+            close_all_panels();
         };
 
         //if only one result - expand it
@@ -1280,7 +1345,6 @@ $(document).ready(function(){
                 //wine panel
                 toggle_vintage_panel(id,"fast");
             }
-            
         }
         
     }
