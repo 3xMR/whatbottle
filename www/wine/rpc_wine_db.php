@@ -735,7 +735,6 @@ function put_search_to_session(){
     if($_REQUEST['var_search']){
         $_SESSION['var_wine_search_criteria'] = $_REQUEST['var_search'];
         $var_result['success'] = true;
-        $var_result['test'] = $_SESSION['var_wine_search_criteria']['search_text'];
     } else {
         $var_result['success']=false;
         $var_result['error']='no search criteria provided';

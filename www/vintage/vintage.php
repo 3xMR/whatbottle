@@ -700,6 +700,19 @@ $(document).ready(function(){
         add_note();
 
     });
+    
+    
+    $(document).on('click', "input", function(e){    
+        //highlight input when it has focus
+        console.log('input has focus = '+ $(this).attr('id'));
+        
+        $(this).select();
+        
+        //select text on ios
+        var myInput = document.getElementById($(this).attr('id'));
+        myInput.setSelectionRange(0, 9999); //for ios
+        
+    });
 
     
     function delete_edit_image(){
@@ -902,11 +915,16 @@ $(document).ready(function(){
             });
         }
         
-        if (!$min.val()){
-            min = 0;
-        }else{
-            min = $min.val();
-        }
+       
+        var min = $min.val() || 0;
+        var value = value || 0;
+        //if (!){
+        //    min = 0;
+        //}else{
+        //    min = $min.val();
+        //}
+        
+         console.log('min value ='+min+' value = '+value);
         
         return parseInt(value) >= parseInt(min);
     }, "To year must be equal or greater than From year");

@@ -177,6 +177,10 @@ div.page_container{
     margin-right:auto;
 }
 
+div.bottom-spacer{
+    margin-bottom:10px;
+}
+
 
 #top_nav{
     float:left;
@@ -884,7 +888,7 @@ div.selected{
 
 .big_button{
     -webkit-appearance: none;
-    background-color:#00cc00;
+    background-color:#5292BE;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius:3px;
@@ -1236,11 +1240,11 @@ table.ref_data td {
 }
 
 .login-button {
-    background-color:forestgreen;
+    background-color: #5292BE;
 }
 
 .login-dialog .ui-dialog-buttonset .login-button .ui-button-text{
-    background-color:forestgreen;
+    background-color: #5292BE;
 }
 
 

@@ -10,25 +10,29 @@ require_once("$root/classes/class.wine_search.php");
 
 
 //search variables
-$wine_id = $_SESSION['var_wine_search_criteria']['wine_id'];
-$search_text = $_SESSION['var_wine_search_criteria']['search_text'];
-$producer_id = $_SESSION['var_wine_search_criteria']['producer_id'];
-$winetype_id = $_SESSION['var_wine_search_criteria']['winetype_id'];
-$country_id = $_SESSION['var_wine_search_criteria']['country_id'];
-$region_id = $_SESSION['var_wine_search_criteria']['region_id'];
-$subregion_id = $_SESSION['var_wine_search_criteria']['subregion_id'];
+//$wine_id = $_SESSION['var_wine_search_criteria']['wine_id'];
+//$search_text = $_SESSION['var_wine_search_criteria']['search_text'];
+//$producer_id = $_SESSION['var_wine_search_criteria']['producer_id'];
+//$winetype_id = $_SESSION['var_wine_search_criteria']['winetype_id'];
+//$country_id = $_SESSION['var_wine_search_criteria']['country_id'];
+//$region_id = $_SESSION['var_wine_search_criteria']['region_id'];
+//$subregion_id = $_SESSION['var_wine_search_criteria']['subregion_id'];
 //$Award = $_SESSION['var_wine_search_criteria']['check_has_award'];
 //$Note = $_SESSION['var_wine_search_criteria']['check_has_note'];
-$merchant_id = $_SESSION['var_wine_search_criteria']['merchant_id'];
-$acquire_id = $_SESSION['var_wine_search_criteria']['acquire_id'];
-$available = $_SESSION['var_wine_search_criteria']['available'];
+//$merchant_id = $_SESSION['var_wine_search_criteria']['merchant_id'];
+//$acquire_id = $_SESSION['var_wine_search_criteria']['acquire_id'];
+//$available = $_SESSION['var_wine_search_criteria']['available'];
+
 
 
 //get list of wines
 $search_obj = new wine_search();
 
-
 $varSearchParam = $_SESSION['var_wine_search_criteria']; //get search parameters from session
+
+$results_filtered = array_sum($varSearchParam) > 0 ? 'true' : 'false'; //used to flag to JS function 'set_reset_button' on index.php that results are filtered and show reset button
+echo "<input type=\"hidden\" id=\"search_filter_status\" value=\"$results_filtered\" >";
+
 $varSearchParam['type'] = "wines"; //update parameters
 $varSearchParam['group'] = "tblWine.wine_id";
 $varSearchParam['order'] = "last_modified DESC";

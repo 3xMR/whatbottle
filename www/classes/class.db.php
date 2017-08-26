@@ -420,13 +420,14 @@ function delete($where){
         //allow update of a set of columns only
 
         $query = "UPDATE $this->table SET $set WHERE $where";
+
         //run query
         $qry_result = mysql_query($query);
 
         if($qry_result){
             return true;
         } else {
-            $error = mysql_error();
+            $this -> sql_error = mysql_error();
             return false;
         }
 
