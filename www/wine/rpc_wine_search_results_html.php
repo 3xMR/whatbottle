@@ -138,18 +138,20 @@ if($results){
                     echo "<table class=\"vintage\" id=\"vintage_accordian_table\">";
                         echo "<tr>";
                             echo "<td style=\"vertical-align:middle;\" class=\"year vintage_panel_toggle\" >";
-                                echo "<div style=\"width=24px; float:left; padding-left:10px; \" >";
-                                    echo "<div class=\"click vintage_expanded_indicator arrow_right\" id=\"arrow_indicator_vintage_$vintage_id\" style=\"width:30px; height:30px; margin-left:10px; \" ></div>";
+                                echo "<div style=\"float:left; padding-left:15px; \" >";
+                                    echo "<div class=\"click vintage_expanded_indicator arrow_right\" id=\"arrow_indicator_vintage_$vintage_id\" style=\"width:30px; height:30px;\" ></div>";
                                 echo "</div>";
                             echo "</td>";
-                            echo "<td style=\"vertical-align:middle;\" class=\"year vintage_panel_toggle\" \" >";
-                                echo "<h2 style=\"padding-right:20px;\" >$year</h2>";
+                            echo "<td style=\"vertical-align:middle;\" class=\"year vintage_panel_toggle\" >";
+                                echo "<div style=\"float:left; \" >";
+                                    echo "<h2 style=\"padding-right:20px;\" >$year</h2>";
+                                echo "</div>";
                             echo "</td>";
                             echo "<td style=\"vertical-align:middle;\"  class=\"rating vintage_panel_toggle\" id=\"vintage_bar_$vintage_id\">";
                                 //ratings
-                                echo "<div class=\"vertical-centre\" style=\"height:22px; width:200px; margin:0px; padding:0px;\" >";
-                                echo "<div class=\"quality-static-rating-medium\" style=\"width:$quality_width; float:left;\" ></div>";
-                                echo "<div class=\"value-static-rating-medium\" style=\"width:$value_width; float:left; margin-left:10px;\"></div>";
+                                echo "<div class=\"vertical-centre\" style=\"float:left; height:22px; width:200px;\" >";
+                                    echo "<div class=\"quality-static-rating-medium\" style=\"width:$quality_width; float:left; margin-right:10px;\" ></div>";
+                                    echo "<div class=\"value-static-rating-medium\" style=\"width:$value_width; float:left; \"></div>";
                                 echo "<div>";
                             echo "</td>";
                             echo "<td class=\"spacer vintage_panel_toggle\" id=\"vintage_bar_$vintage_id\">";
@@ -159,10 +161,12 @@ if($results){
 
                             //vintage buttons
                             echo "<td class=\"actions\" >";
-                                echo "<input type=\"image\" class=\"btn_edit_vintage\" value=\"$vintage_id\" id=\"edit_$vintage_id\" name=\"btn_edit_vintage\" src=\"/images/edit_flat_grey_24.png\" width=\"18\" height=\"18\">";
+                            //echo "<div class=\"con-button\" >";
+                                echo "<img class=\"btn_edit_vintage click\" value=\"$vintage_id\" id=\"edit_$vintage_id\" name=\"btn_edit_vintage\" src=\"/images/edit_flat_grey_24.png\" width=\"18\" height=\"18\">";
                             echo "</td>";
+                            //echo "</div>";
                             echo "<td class=\"actions\">";
-                               echo "<input type=\"image\" class=\"btn_add_to_basket\" id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"18\" height=\"18\">";
+                               echo "<img class=\"btn_add_to_basket click\" id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"18\" height=\"18\">";
                             echo "</td>";
                             echo "<td class=\"actions\" >";
                                 if (is_authed()){

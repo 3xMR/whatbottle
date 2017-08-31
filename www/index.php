@@ -1,7 +1,13 @@
 <?php
 /* 
+ * Release 4.2
+ * Released: 31.08.2017
+ * Notes:
+ * Added first stage of responsive design formatting
+
+ * 
  * Release 4.1
- * Released: TBC
+ * Released: 26.08.2017
  * Notes:
  * Fixed validation on To/From fields on Vintage
  * To/From fields set to select text on iPad to ease modification
@@ -22,6 +28,18 @@
  *      Changes to class_wine_search.php to support searching for Available and Drinking concepts
  *      Modified wine search to remove text from search field
  *      Validations changed for Wine and Vintage forms
+ * 
+ * Backlog:
+ * TODO: Put wine and vintage count at the bottom of pagination
+ * TODO: Add ability to change password
+ * TODO: Add pagination, sortby and number of items on page as option in settings (Create settings page)
+ * TODO: free text search on notes
+ * TODO: Double-click on image to open image_manager page as overlay
+ * TODO: Show value in note summary
+ * TODO: If login is magnus add admin option to top level menu - to access admin functions
+ * TODO: Centre label images
+ * TODO: Click Whatbottle text to go to /index.php
+ * TODO: transfer drinking guide from comments field guide
  * 
  *
  */
@@ -115,7 +133,7 @@ echo "<html>";
             <?php
                //quality rating
                 echo "<h1 style=\"margin-bottom:15px;\" >Rate Vintage</h1>";
-                echo "<div style=\" width:200px; padding-left:5px; float:left; margin-bottom:10px; \" >";
+                echo "<div style=\" width:200px; padding-left:5px; float:left; margin-right:20px; margin-bottom:10px; \" >";
                     echo "<h3 style=\"margin-bottom:10px;\" class=\"block\" >Quality</h3>";
                     echo "<div class=\"rating\" style=\"width:192px; height:32px; display:block;\" >";
 
@@ -133,7 +151,7 @@ echo "<html>";
                 echo "</div>";
 
                 //value rating
-                echo "<div style=\" width:200px; padding-left:5px; float:left; margin-left:20px; margin-bottom:10px;\" >";
+                echo "<div style=\" width:200px; padding-left:5px; float:left; margin-bottom:10px;\" >";
                 echo "<h3 style=\"margin-bottom:10px;\" class=\"block\" >Value</h3>";
                 echo "<div class=\"rating\" style=\"width:192px; height:32x; display:block;\" >";
                     echo "<input name=\"note_value\" type=\"radio\" value=\"1\" class=\"auto-submit-pound \" title=\"Poor\" />";
@@ -207,7 +225,7 @@ echo "<div class=\"page_container\">";
                     echo "<img id=\"btn_toggle_search_adv\" class=\"search_button click\" src=\"/images/show_grey_flat_24.png\" height=\"21px\" width=\"21px\"/>";
                 echo "</div>"; //con_search_buttons
                 
-                echo "<div style=\"float:right; margin-right:15px;\">";
+                echo "<div class=\"hide_small_screen\" style=\"float:right; margin-right:15px;\">";
                     if(is_authed()){
                         echo "<img class=\"click\" style=\"margin-right:20px;\" id=\"btn_add_wine\" name=\"btn_add_wine\" src=\"/images/add_wine_flat_grey_64.png\" height=\"30px\" >";
                     }
@@ -485,18 +503,6 @@ require_once("$root/includes/standard_dialogs.inc.php");
 <script type="text/javascript">
 
 //Note: Popup blocker will prevent anything other than a direct user action from opening new window
-
-
-//TODO: Add pagination, sortby and number of items on page as option in settings (Create settings page)
-//TODO: free text search on notes
-//TODO: Double-click on image to open image_manager page as overlay
-//TODO: Show value in note summary
-//TODO: If login is magnus add admin option to top level menu - to access admin functions
-//TODO: Centre label images
-//TODO: Click Whatbottle text to go to /index.php
-
-
-
 
 $(document).ready(function(){
     

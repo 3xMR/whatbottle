@@ -1,4 +1,14 @@
 
+/*
+    Sections:
+        - Standard Colours Used
+        - Media Queries
+        - Text & Headings
+        - Divs & Controls
+
+*/
+
+
 /* Colours 
 Blue Buttons #5292BE
 Grey Icons #9E9E9E
@@ -8,10 +18,17 @@ Default Text #545454
 Borders
 Hover/Highlight: #D3D3D3
 Borders: #D0D0D0
-
 */
 
 
+
+/*** Media Queries ***/
+
+@media screen and (max-width: 665px) {
+    .hide_small_screen {
+        display: none;
+    }
+}
 
 
 /* Text & Headings */
@@ -93,54 +110,9 @@ input.readonly:disabled {
 }
 
 
-
-old.error {
-    color: red;
-    font-weight: bold;
-}
-
-old.validation_error {
-    color: red;
-    font-weight: bold;
-}
-
-
-old.list {
-    font-size: 125%;
-    list-style: none;
-    margin: 0;
-    margin-left:2px;
-    padding: 0;
-    border: none;
-
-}
-
-old.list a{
-    text-decoration: none;
-    /*color: graytext;*/
-    display: block;
-    padding:1px;
-}
-
-old.list a:visited{
-    text-decoration: none;
-}
-
-
-old.list li {
-    margin-bottom: 2px;
-}
-
-old.list li:hover {
-    background-color: #D3D3D3;
-    color: black;
-}
-
-
 .click{
     cursor: pointer;
 }
-
 
 .link{
     cursor: pointer;
@@ -168,11 +140,11 @@ input[step="0"]::-webkit-inner-spin-button { -webkit-appearance: none;}
 }
 
 
-/* 02: Divs & Controls */
+/* Divs & Controls */
 
 div.page_container{
     position: relative;
-    width:850px;
+    max-width:850px;
     margin-left:auto;
     margin-right:auto;
 }
@@ -185,7 +157,9 @@ div.bottom-spacer{
 #top_nav{
     float:left;
     height:40px; 
-    width:850px;
+    /*width:850px;*/
+    width:100%;
+    max-width:850px;
     background-color:#3B3839;
     position:fixed;
     top:0;
@@ -323,7 +297,8 @@ div.search_advanced{
 
 
 .search_box { /* main search container on index.php */
-    width:500px;
+    width:75%;
+    max-width:500px;
     height:28px;
     float:left;
     border: solid 1px gray;
@@ -340,7 +315,9 @@ div.search_advanced{
     padding:0px;
     border:none;
     border-radius:0px;
-    width:450px; 
+    /*width:450px*/;
+    width:85%;
+    /*background-color:red;*/
     height:24px;
     
     font-family:inherit;
@@ -1045,10 +1022,15 @@ table.vintage td.spacer {
 
 table.vintage td.actions {
     width:50px;
-    /* padding-top: 3px; */
-    /* background-color: yellow; */
+    /* padding-top: 3px; 
+    background-color: yellow;*/
     vertical-align: middle;
     text-align: center;
+}
+
+td.actions img{
+   margin-right:5px;
+   margin-left:5px;
 }
 
 
