@@ -1,5 +1,17 @@
 <?php
 /* 
+ * Release 4.3
+ * Released: 25.03.2018
+ * Notes:
+ * Major responsive design overhaul
+ * Index, wine, vintage, acquisition and all dialogs now responsive design enabled
+ * Quick notes now include general notes text box and vintage price show within dialog
+ * Add vintage button removed from new wine page
+ * Wine and Vintage pages simplified to just focus on add functions
+ * All text and many sizes changed to 'em' to make more responsive
+ * Pagination rows is now set by screen size
+ * 
+ * 
  * Release 4.2
  * Released: 31.08.2017
  * Notes:
@@ -19,7 +31,7 @@
  * Fixed panels remaining open after search reset
  * Fixed multiple autocomplete based searches are aggregated rather than reset each time
  * 
- * Notes:
+ * 
  * Release: 4.0
  * Released: 19.08.2017
  * Notes: 
@@ -30,16 +42,12 @@
  *      Validations changed for Wine and Vintage forms
  * 
  * Backlog:
- * TODO: Put wine and vintage count at the bottom of pagination
+ * TODO: Make tasting note responsive design
+ * TODO: Put wine and vintage count on reporting page
  * TODO: Add ability to change password
- * TODO: Add pagination, sortby and number of items on page as option in settings (Create settings page)
  * TODO: free text search on notes
  * TODO: Double-click on image to open image_manager page as overlay
- * TODO: Show value in note summary
- * TODO: If login is magnus add admin option to top level menu - to access admin functions
- * TODO: Centre label images
  * TODO: Click Whatbottle text to go to /index.php
- * TODO: transfer drinking guide from comments field guide
  * 
  *
  */
@@ -108,18 +116,7 @@ echo "<html>";
                 width: 100%;
             }
 
-            .vintage_details h3{
-                color:#B5ADAD;
-                font-weight: normal;
-                margin-bottom:7px;
-                margin-top:5px;
-            }
-            
-            .vintage_details h4{
-                margin-left:5px;
-                margin-bottom:7px;
 
-            }
             
 
         </style>
@@ -132,7 +129,7 @@ echo "<html>";
         <p>
             <?php
                //quality rating
-                echo "<h1 style=\"margin-bottom:15px;\" >Rate Vintage</h1>";
+                echo "<h1 style=\"margin-bottom:15px;\" >Tasting Note</h1>";
                 echo "<div style=\" width:200px; padding-left:5px; float:left; margin-right:20px; margin-bottom:10px; \" >";
                     echo "<h3 style=\"margin-bottom:10px;\" class=\"block\" >Quality</h3>";
                     echo "<div class=\"rating\" style=\"width:192px; height:32px; display:block;\" >";
@@ -152,19 +149,35 @@ echo "<html>";
 
                 //value rating
                 echo "<div style=\" width:200px; padding-left:5px; float:left; margin-bottom:10px;\" >";
-                echo "<h3 style=\"margin-bottom:10px;\" class=\"block\" >Value</h3>";
-                echo "<div class=\"rating\" style=\"width:192px; height:32x; display:block;\" >";
-                    echo "<input name=\"note_value\" type=\"radio\" value=\"1\" class=\"auto-submit-pound \" title=\"Poor\" />";
-                    echo "<input name=\"note_value\" type=\"radio\" value=\"2\" class=\"auto-submit-pound \" title=\"OK\" />";
-                    echo "<input name=\"note_value\" type=\"radio\" value=\"3\" class=\"auto-submit-pound \" title=\"Good\" />";
-                    echo "<input name=\"note_value\" type=\"radio\" value=\"4\" class=\"auto-submit-pound \" title=\"Very Good\" />";
-                    echo "<input name=\"note_value\" type=\"radio\" value=\"5\" class=\"auto-submit-pound \" title=\"Excellent\" />";
+                    echo "<div style=\"background-color:yellow; width:100%;\" >";
+                        echo "<h3 style=\"display:inline-block; float:left; margin-bottom:10px;\" style=\"background-color:pink;\" >Value</h3>";
+                        echo "<div class=\"block\" style=\"margin-left:10px; padding-top:0.125em; float:left; font-size:0.8em; color:lightgray;\" ><p id=\"quick_price\">hello</p></div>";
+                    echo "</div>";
+                    echo "<div class=\"rating \" style=\"width:192px; height:32x; display:block; clear:left;\" >";
+                        echo "<input name=\"note_value\" type=\"radio\" value=\"1\" class=\"auto-submit-pound \" title=\"Poor\" />";
+                        echo "<input name=\"note_value\" type=\"radio\" value=\"2\" class=\"auto-submit-pound \" title=\"OK\" />";
+                        echo "<input name=\"note_value\" type=\"radio\" value=\"3\" class=\"auto-submit-pound \" title=\"Good\" />";
+                        echo "<input name=\"note_value\" type=\"radio\" value=\"4\" class=\"auto-submit-pound \" title=\"Very Good\" />";
+                        echo "<input name=\"note_value\" type=\"radio\" value=\"5\" class=\"auto-submit-pound \" title=\"Excellent\" />";
+                    echo "</div>";
+                echo "</div>"; //value rating
+                
+                //General Note
+                echo "<div style=\"float:left; clear-left; width:100%; padding-left:5px; margin-top:10px; margin-bottom:10px;\" >";
+                    echo "<h3 style=\"margin-bottom:10px;\" class=\"block\" >General Notes</h3>";
+                    echo "<div class=\"input-main\" style=\"width:100%;\" >";
+                        echo "<textarea id=\"note_general\" style=\"width:98%; height:5em;\" value=\" \" class=\"\" ></textarea>";
+                    echo "</div>";
                 echo "</div>";
-            echo "</div>";
+                
+
+                
+            
             ?>
 
             <input type="text" class="hidden" id="note_quality" />
             <input type="text" class="hidden" id="note_value" />
+            <input type="text" class="hidden" id="note_general" />
         </p>
     </div>
     
@@ -222,12 +235,12 @@ echo "<div class=\"page_container\">";
                 echo "</div>";
                 //buttons
                 echo "<div class=\"con_search_buttons vertical-centre\" >";
-                    echo "<img id=\"btn_toggle_search_adv\" class=\"search_button click\" src=\"/images/show_grey_flat_24.png\" height=\"21px\" width=\"21px\"/>";
+                    echo "<img id=\"btn_toggle_search_adv\" class=\"search_button toggle_search_adv click\" src=\"/images/show_grey_flat_24.png\" height=\"21px\" width=\"21px\"/>";
                 echo "</div>"; //con_search_buttons
                 
                 echo "<div class=\"hide_small_screen\" style=\"float:right; margin-right:15px;\">";
                     if(is_authed()){
-                        echo "<img class=\"click\" style=\"margin-right:20px;\" id=\"btn_add_wine\" name=\"btn_add_wine\" src=\"/images/add_wine_flat_grey_64.png\" height=\"30px\" >";
+                        echo "<img class=\"click\" style=\"margin-right:30px;\" id=\"btn_add_wine\" name=\"btn_add_wine\" src=\"/images/add_wine_flat_grey_64.png\" height=\"30px\" >";
                     }
                     echo "<img class=\"click\" id=\"btn_show_acquire\" name=\"btn_show_acquire\" src=\"/images/shopping_cart_flat_grey_32.png\" height=\"30px\" >";
                 echo "</div>";
@@ -236,9 +249,9 @@ echo "<div class=\"page_container\">";
 
         echo "<div class=\"clear\" ></div>";
 
-        echo "<div class=\"search_advanced\" id=\"search\">";
+        echo "<div class=\"search_advanced\" id=\"search\" style=\"padding-top:10px;\" >";
         
-        echo "<div id=\"con_search_column_1_2\" style=\"float:left; width:auto; margin:10px;\" >";
+        echo "<div id=\"con_search_column_1_2\" style=\"float:left; width:auto; margin: 0px 10px 0px 10px; \" >";
             
             echo "<div class=\"input-main\">";
                 echo "<h3>Wine Type:</h3>";
@@ -341,7 +354,7 @@ echo "<div class=\"page_container\">";
 
         echo "</div>"; //con_search_column_1_2
             
-        echo "<div id=\"con_search_column_2_2\" style=\"float:left; width:auto; margin:10px; \" >";
+        echo "<div id=\"con_search_column_2_2\" style=\"float:left; width:auto; margin: 0px 10px 0px 10px;\" >";
                 
             echo "<div class=\"input-main\" >";
                 echo "<h3>Country:</h3>";
@@ -426,6 +439,7 @@ echo "<div class=\"page_container\">";
         echo "<div class=\"float_left clear\" style=\"margin-left:5px;\" >";
             echo "<input type=\"button\" name=\"btnReset\" class=\"btn_reset_search big_button\" value=\"Clear\">";
             echo "<input type=\"button\" name=\"btn_adv_submit\" value=\"Search\" id=\"btn_adv_submit\" class=\"btn_search_wine big_button\" >";
+            echo "<input type=\"button\" name=\"btn_adv_show_less\" value=\"Show Less\" id=\"btn_adv_submit\" class=\"btn_search_wine big_button toggle_search_adv\" >";
         echo "</div>";
 
         echo "<div class=\"clear\" ></div>";
@@ -436,7 +450,7 @@ echo "<div class=\"page_container\">";
 
         echo "<div class=\"clear\" ></div>";
 
-        //wines
+        //wines - search results
         echo "<div id=\"con_rpc_wine_search_results_html\" style=\"text-align:left;\" >";
             //show wines search results - rpc_wine_search_results_html.php
         echo "</div>";
@@ -445,31 +459,24 @@ echo "<div class=\"page_container\">";
 
     echo "</div>"; //wine_results
 
-
-
-
     //Right Slide Out Panel - Acquisitions
     echo "<div id=\"panel_right\" class=\"panel_right\" >";
 
         echo "<div style=\"float:left;\" id=\"con_acquisitions\" >";
             //populated by /acquire/rpc_acquire_listBox_html.php
         echo "</div>";
-        
-    
+
     echo "</div>"; //acquisition_container
 
-    
-    
     echo "<div class=\"clear\" ></div>";
-
-
 
 echo "</div>"; //page_container
 
 
 if(is_authed()){
     if($_SESSION['username'] == "magnus@mcdonaldruden.co.uk"){
-        $admin_option = "<div>Admin<img style=\"float:right; margin-top:2px;\" src=\"/images/arrow_next_black.svg\" height=\"21px\" /></div>";
+        //disabled
+        //$admin_option = "<div>Admin<img style=\"float:right; margin-top:2px;\" src=\"/images/arrow_next_black.svg\" height=\"21px\" /></div>";
     }else{
         $admin_option = "";
     }
@@ -490,11 +497,20 @@ require_once("$root/includes/standard_dialogs.inc.php");
 </div>
 
 <div id='wine_menu' class="pop_up" style="width:200px; display:none;">
-    <div class="ui-menu-item-first ui-menu-header">Choose an action</div>
+    <div class="ui-menu-item-first ui-menu-header">Wine actions</div>
     <div>Add Vintage<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <!--<div id="btn_google_search" >Google Search<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>-->
     <div class="ui-menu-item-last">Edit Wine<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
+
+
+<div id='vintage_menu' class="pop_up" style="width:200px; display:none;">
+    <div class="ui-menu-item-first ui-menu-header">Vintage actions</div>
+    <div>Edit Vintage<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Add to Basket<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Tasting Note<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+</div>
+
 
 
 <?php require_once("$root/includes/script_libraries.inc.php");//include all script libraries ?>
@@ -507,6 +523,7 @@ require_once("$root/includes/standard_dialogs.inc.php");
 $(document).ready(function(){
     
     var this_page = "/index.php";
+    var bln_expand_all_vintages = false;
 
     //page control object
     var obj_page = new page_control({
@@ -516,8 +533,6 @@ $(document).ready(function(){
         page_url: this_page, //set page url
         no_dirty: true
     });
-
-    var bln_expand_all_vintages = false;
 
     $(document).mouseup(function (e)
     { //closes right panel when clicking outside of panel
@@ -529,13 +544,32 @@ $(document).ready(function(){
             container.hide("slide", { direction: "right" }, 400);
         }
     });
-
+    
+    var resizeTimer;
+    var windowHeight = $(window).height();
+    $(window).resize(function(){
+        //reload wines so that height is adjusted to window size
+        if($(window).height() != windowHeight){ //prevents IOS random scroll resize
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() { //wait until window stops resizing
+                // Run code here, resizing has "stopped"
+                var height = $(window).height();
+                console.log("height = "+height);
+                load_wines_html();
+                //Change height of acquisitions listbox
+                var acquireHeight = height - 65;
+                $("#con_acquisitions").listBox("setHeight",acquireHeight); //refresh acquisition listBox
+            }, 250);
+            windowHeight = $(window).height(); //reset windows height checker
+        }
+    });
+    
 
     //recent acquistions listbox
     $("#con_acquisitions").listBox({
         title: "Acquisitions",
         width: 300,
-        height: 300,
+        height: $(window).height() - 65,
         showFilter: true,
         showBorder: true,
         showShadow: false,
@@ -562,6 +596,9 @@ $(document).ready(function(){
             $("#con_acquisitions").listBox("refresh",true); //refresh acquisition listBox
             //reset_search();
             search_wines();
+        },
+        clickTitle: function(event, data){
+            $("#panel_right").hide("slide", { direction: "right" }, 300);
         }
 
     });
@@ -693,10 +730,11 @@ $(document).ready(function(){
 
 
     function load_wines_html(){ //load wines
+        var viewportHeight = $(window).height(); //pass height to php view Load POST to set number of rows
         $('#con_rpc_wine_search_results_html').activity(); //show spinner    
-        $('#con_rpc_wine_search_results_html').load('/wine/rpc_wine_search_results_html.php', function(){ //load results
+        $('#con_rpc_wine_search_results_html').load('/wine/rpc_wine_search_results_html.php', {viewportHeight: viewportHeight},function(){ //load results
            //toggle_vintages(); //run following code once refreshed
-           set_open_panels();
+           //set_open_panels();
            set_reset_button(); //show or hide reset button based on search results
            //TODO:if only one result is returned expand it fully
     
@@ -792,9 +830,40 @@ $(document).ready(function(){
         get_override_data(vintage_id,object);
     }
     
+    
+    function get_vintage_price(vintage_id){
+        //get full price, and price paid from last acquisiton for vintage
+        
+        //post to rpc_vintage to get prices from last acquisition for vintage
+        //on success return values as array arrPrice
+                
+        $.post("/acquire/rpc_acquire_db.php", {
+            action: 'get_acquisition_details',
+            vintage_id: vintage_id
+        }, function(data){
+            if(data.success){
+                //success
+                console.log('get_acquisition_details success');
+                console.log(data.data);
+                var string = "";
+                var pricePaid = data.data[0]['unit_price'];
+                var priceDisc = data.data[0]['discounted_price'];
+                if(pricePaid == priceDisc){
+                    string = "£"+pricePaid;
+                }else{
+                    string = "£"+priceDisc+ " / £"+pricePaid;
+                }
+                $('#quick_price').text(string);
+            } else {
+                console.log('get_acquisition_details failed = '+data.error);
+                $('#quick_price').val('');
+            }
+        }, "json");
+
+    }
 
 
-    function quick_note(vintage_id, object){
+    function quick_note(vintage_id, object, arrPrice){
         //display dialog-box to add quick note or launch full note
         
         //reset quick note values
@@ -802,22 +871,44 @@ $(document).ready(function(){
         $('.auto-submit-star').rating('drain');
         $('#note_value').val(0);
         $('.auto-submit-pound').rating_pound('drain');
+        $('#note_general').val("");
+        $('#quick_price').text("");
+        
+        //TODO add arrPrice values to dialog, show nothing if values are not present
+        
+        get_vintage_price(vintage_id);
+        
+        //determine screen size
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 470;
+            positionMy = "right top";
+            positionAt = "left bottom";
+            positionOf = object;
+        } else {
+            dialogWidth = windowWidth;
+            positionMy = "right top+20px";
+            positionAt = "right bottom";
+            positionOf = "#top_nav";
+        }   
         
         $("#dialog-rate").dialog({
             modal: true,
-            width: 'auto',
+            width: dialogWidth,
             buttons: {
                 OK: function() { //save tasting note
                     $(this).dialog('close'); //close dialog
                     quality_rating = $('#note_quality').val();
                     value_rating = $('#note_value').val();
-                    console.log("save quick_note vintage_id="+vintage_id+" quality ="+quality_rating+" value_rating="+value_rating);
+                    note_general = $('#note_general').val();
+                    console.log("save quick_note vintage_id="+vintage_id+" quality = "+quality_rating+" value_rating = "+value_rating+" note_general = "+note_general);
 
                     $.post("/vintage/rpc_notes.php", {
                         action: 'put_db',
                         vintage_id: vintage_id,
                         note_quality: quality_rating,
                         note_value: value_rating,
+                        note_general: note_general,
                         note_type: 'quick'
                     }, function(data){
                         if(data.success){
@@ -845,8 +936,9 @@ $(document).ready(function(){
                     note_id = 0; //new note
                     quality_rating = $('#note_quality').val();
                     value_rating = $('#note_value').val();
+                    note_general = $('#note_general').val();
                     console.log("open full note vintage_id="+vintage_id+" quality="+quality_rating+ " value= "+value_rating);
-                    open_note(note_id, vintage_id, quality_rating, value_rating);
+                    open_note(note_id, vintage_id, quality_rating, value_rating, note_general);
                     $(this).dialog('close');
                 },
                 Cancel: function(){
@@ -855,9 +947,16 @@ $(document).ready(function(){
                 }
             },
             dialogClass: "clean-dialog",
-            position: { my: "right top", at: "left bottom", of: object }
+            position: { 
+                my: positionMy,
+                at: positionAt, 
+                of: positionOf
+            }
         });
+    
+    
     }
+    
 
 
     function search_wines(ignore_text){
@@ -916,7 +1015,13 @@ $(document).ready(function(){
         //use as trigger to update search results when a search input is
         //updated
         
-        console.log('seacrh_trigger');
+        //FIX: class.wine_search is filtered on details stored in session, because text box is cleared after search but session 
+        //isnt then the subsequent serach is an AND serach based on saved session.
+        // If the session is cleared after the page refreshes and loads results then navigating away from the page would result in the
+        // filtered list being lost, and the serach being repeated
+        // 
+        
+        console.log('search_trigger');
         
         if($(element).val()>0){
             //set background color
@@ -982,7 +1087,7 @@ $(document).ready(function(){
 
 
 
-    $('#btn_toggle_search_adv').click(function(){
+    $('.toggle_search_adv').click(function(){
        //search panel slide
         $('#search').slideToggle("medium");
     });
@@ -1039,6 +1144,58 @@ $(document).ready(function(){
         }
 
     }
+    
+    
+    var vintage_menu = $("#vintage_menu").menu({
+       items: "> :not(.ui-menu-header)",
+       select: function( event, ui ) {
+            menu_select({ //pass selcted object to menu function
+                selected_item: ui.item[0].textContent,
+                menu_id: $(this).attr('id'),
+                origin_id: $(this).data('origin_id')
+            });
+        }
+    }).hide();
+    
+
+    $(document).on('click','.vintage_menu',function() {
+        // Make use of the general purpose show and position operations
+        // open and place the menu where we want.
+
+        //***set menu name here***
+        var this_menu = vintage_menu;
+        
+        //put unique id into menu data field so the menu can be linked back to the initiating item
+        var id = $(this).attr('id').replace("vintage_menu_","");
+        this_menu.data('origin_id',id);
+        
+        //close all other menus before opening this one
+        var this_menu_id = this_menu.attr('id');
+        $(".ui-menu:not(#"+this_menu_id+")" ).hide();
+
+        //show menu
+        this_menu.show().position({
+              my: "right top",
+              at: "middle middle",
+              of: this
+        });
+
+        //set event to close when clicking anywhere on wondow       
+        $(document).on( "click", function() {
+              this_menu.hide();
+        });
+
+        //handle touching outside div on iPad
+        $(document).on('touchstart', function (event) {
+            if (!$(event.target).closest(this_menu).length) {
+                this_menu.hide();
+            }
+        });
+
+        // Make sure to return false here or the click registration
+        // above gets invoked.
+        return false;
+    });
 
 
     var wine_menu = $("#wine_menu").menu({
@@ -1156,6 +1313,9 @@ $(document).ready(function(){
                     case 'Reference Data':
                         open_reference_data();
                         break;
+                    case 'Wines':
+                        open_wines();
+                        break;
                     default:
                         console.log('selected_item not recognised: '+selected_item);
                 }
@@ -1176,8 +1336,26 @@ $(document).ready(function(){
                         console.log('selected_item not recognised: '+selected_item);
                 }
                 break;
+    
+            case 'vintage_menu':
+                switch(selected_item){
+                    case 'Edit Vintage':
+                        edit_vintage(origin_id);
+                        break;
+                    case 'Add to Basket':
+                        add_vintage_basket(origin_id);
+                        break;
+                    case 'Tasting Note':
+                        quick_note(origin_id);
+                        break;
+                    default:
+                        console.log('selected_item not recognised: '+selected_item);
+                }
+                break;
+                
             default:
                 console.log("menu_id not recognised: "+menu_id);
+                
         }
         
     }
@@ -1193,6 +1371,16 @@ $(document).ready(function(){
         obj_page.leave_page({
             dst_url: "/admin/index_admin.php",
             rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    
+    function open_wines(){
+        //open Wines page
+        obj_page.leave_page({
+            dst_url: "/index.php",
             dst_action: 'open',
             page_action: 'leave'
         });
@@ -1310,7 +1498,7 @@ $(document).ready(function(){
      
             },
             dialogClass: "clean-dialog",
-            position: { my: "right top", at: "left bottom", of: object }
+            position: { my: "left top", at: "right bottom", of: object }
         });
   
     }
@@ -1383,18 +1571,23 @@ $(document).ready(function(){
     $(document).on('click','.vintage_panel_toggle',function(){
         var vintage_id = ($(this).closest(".vintage_accordian").attr('id').replace("vintage_accordian_", ""));
         console.log('vintage_id: '+vintage_id);
+        if($(this).hasClass('.ignore_vintage_panel_toggle')){
+            console.log('event cancelled by .ignore_vintage_panel_toggle');
+            return false;
+        }
         toggle_vintage_details_panel(vintage_id);
     });
 
 
 
-    $(document).on('click','.btn_edit_vintage',function(){
+    $(document).on('click','.btn_edit_vintage',function(e){
         //open vintage to edit
         var id = $(this).attr('id');//get vintage_id
         var vintage_id = (id.replace("edit_", ""))*1;
         console.log('edit vintage = '+vintage_id);
         //open vintage page to edit
         edit_vintage(vintage_id);
+        e.stopPropagation()
     });
     
     
@@ -1415,13 +1608,14 @@ $(document).ready(function(){
     };
     
     
-    function open_note(note_id, vintage_id, quality, value){
+    function open_note(note_id, vintage_id, quality, value, note_general){
         //open note
         
         //create note object for data object
         var data = ({
             quality_rating: quality,
-            value_rating: value
+            value_rating: value,
+            note_general: note_general
         });
         
         obj_page.leave_page({
@@ -1445,7 +1639,7 @@ $(document).ready(function(){
        //and save image back to db and session - db commit is currently through vintage.php
         obj_page.leave_page({
             dst_url:        "/vintage/select_image.php",
-            rtn_url:        "/vintage/vintage.php",
+            rtn_url:        "/index.php",
             page_action:    'leave',
             dst_type:       "image",
             dst_action:     "open",
@@ -1459,6 +1653,7 @@ $(document).ready(function(){
     $(document).on('click','.image_con',function(){
         //open selected image
         var vintage_id = ($(this).closest(".vintage_accordian").attr('id').replace("vintage_accordian_", ""))*1;
+        var vintage_id = $(this).data('vintage_id');
         console.log('open image vintage_id='+vintage_id);
         
         open_image(vintage_id);
@@ -1469,7 +1664,7 @@ $(document).ready(function(){
     $(document).on('click','.note_link',function(){
         //open selected tasting note
         var note_id = $(this).attr('id');
-        var vintage_id = ($(this).closest(".vintage_accordian").attr('id').replace("vintage_accordian_", ""))*1;
+        var vintage_id = $(this).data('vintage_id');
         console.log('open note_id='+note_id+' vintage_id='+vintage_id);
         
         open_note(note_id, vintage_id);
@@ -1480,7 +1675,7 @@ $(document).ready(function(){
     $(document).on('click','.acquire_link',function(){
         //open selected acquisition
         var acquire_id = $(this).attr('id');
-        var vintage_id = ($(this).closest(".vintage_accordian").attr('id').replace("vintage_accordian_", ""))*1;
+        var vintage_id = $(this).data('vintage_id');
         console.log('open acquire_id='+acquire_id+' vintage_id='+vintage_id);
         
         open_acquisition(acquire_id, vintage_id);
@@ -1537,11 +1732,12 @@ $(document).ready(function(){
     });
     
 
-    $(document).on('click','.btn_add_tasting_note',function(){
+    $(document).on('click','.btn_add_tasting_note',function(e){
         //add new note event
         var vintage_id = ($(this).attr('id').replace("add_note_", ""))*1;
         quick_note(vintage_id, this); //open quick note form, pass this context for dialog position
         console.log("add new tasting note vintage_id="+vintage_id);
+        e.stopPropagation();
     });
     
     
@@ -1611,6 +1807,7 @@ $(document).ready(function(){
        window.open(href,'_blank');
        
     }
+
 
     function add_wine(){
         //Add new wine
@@ -1691,53 +1888,6 @@ $(document).ready(function(){
        
     };
     
-
-    function add_wine_old(){
-        //add new wine
-        console.log('fnc: add_wine');
-
-        $.post("/wine/rpc_wine_db.php", {
-            wine_id: null, //new wine
-            status: 1, //new
-            action: 'add_wine'
-        }, function(data){
-            if(data.success){
-                console.log('wine form session set SUCCESS');
-                //open wine_form
-                child_url = "/wine/wine.php";
-                parent_url = this_page;
-                //page_flow_set(child_url,parent_url,true);
-            }else{
-                console.log('wine form session set FAILED');
-                alert('critical error trying to open wine form');
-            }
-        }, "json");
-
-    }
-    
-
-    function open_full_note_old(vintage_id, quality_rating, value_rating){
-        //open tasting note page
-        console.log('open full note');
-        $.post("/vintage/rpc_notes.php", {
-            action: 'new_note',
-            vintage_id: vintage_id,
-            quality_rating: quality_rating,
-            value_rating: value_rating
-        }, function(data){
-            if(data.success){
-                //redirect to tasting note page
-                //open wine_form
-                child_url = "/vintage/tasting_note.php?vintage_id="+vintage_id;
-                parent_url = this_page;
-                //page_flow_set(child_url,parent_url,true);
-
-            } else {
-                console.log('Open full note RPC failed error = '+data.error);
-            }
-        }, "json");
-
-    }
 
     $(document).on('click','.add_vintage_btn',function(){
         //add vintage button
