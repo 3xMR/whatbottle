@@ -14,7 +14,7 @@
     <div style="float:left; display:inline-block; margin-top:5px; margin-bottom:10px;">
         <img src="/images/warning_flat_orange_32.png" width="32px" height="32px">
     </div>
-    <div style="float:left; margin-left:15px; margin-bottom:10px; margin-top:5px; line-height:150%;">
+    <div style="float:left; margin-left:15px; margin-bottom:10px; width:320px; line-height:150%;">
         <h2>You have unsaved changes!</h2>
     </div>
     <div style="clear:both; float:left;">
@@ -58,28 +58,28 @@
 
 
 
-<div id="dialog-login" class="hidden dialog-login" title="Login">
+<div id="dialog-login" class="hidden" title="Login">
 
-    <div style="margin-top:px; margin-left:px; margin-right:px;">
-        <h2>Login</h2>
+    <div style="margin-top:15px; margin-left:25px; margin-right:25px;">
+        <h1>Login</h1>
         <div style="margin-top:25px;">
-            <!--<h4 style="margin-left:0px;"> Username</h4>-->
+            <h4 style="margin-left:5px;"> Email address or username</h4>
             <div class="input-main" style="margin-top:10px;"  >
-                <input name="username" type="email" class="input_text"  style="width:100%;" value="" placeholder="email" id="username" autocapitalize="off">
+                <input name="username" type="email" class="input_text" style="font-size:13pt;  padding:5px 5px 5px 5px; width:100%; box-sizing:border-box;" value="" placeholder="email" id="username" autocapitalize="off">
             </div>
         </div>
-        <div style="margin-top:25px; margin-bottom:10px;"> 
-            <!--<h4 style="margin-left:5px;">Password</h4>-->
-            <div class="input-main" style="margin-top:10px;">
-                <input type="password" name="password" autocapitalize="off" class="input_text"  style="width:100%;" value="" placeholder="password" id="password" >
+        <div style="margin-top:25px; margin-bottom:25px;">
+            <h4 style="margin-left:5px;">Password</h4>
+            <div class="input-main" style="margin-top:10px; ">
+                <input type="password" name="password" autocapitalize="off" class="input_text" style="font-size:13pt;  padding:5px 5px 5px 5px; width:100%; box-sizing:border-box;" value="" placeholder="password" id="password" >
             </div>
         </div>
 
-        <div style="margin-top:10px; margin-bottom:10px;">
+        <div style="margin-top:25px; margin-bottom:10px;">
             <div style="float:left; margin-top:0px; width:100%; height:25px; background-color:white; ">
                 <div style="float:left; line-height:20px;  background-color:white;">
                     <input style="color:gray;" type="checkbox" name="remember_me"  value="remember_me" id="remember_me" >
-                    <label style="color:gray; " for="remember_me">Stay logged in</label>
+                    <label style="color:gray; " for="remember_me">Keep me logged in</label>
 
                 </div>
                 <div style="float:right; line-height:20px; background-color:white;">
@@ -97,7 +97,7 @@
 
 <div id="dialog-basket" class="hidden" title="Basket">
 
-    <div style="margin-top:15px; margin-left:10px; margin-right:10px;">
+    <div style="margin-top:15px; margin-left:25px; margin-right:25px;">
         <h1>Basket</h1>
         <div id="basket_panel_content" style="margin-top:25px;">
             <!--Basket Contents from xxx-->
@@ -110,16 +110,14 @@
 
 <div id="dialog-delete" class="hidden" title="Confirm Delete">
 
-    <div style="float:left; width:50px; display:inline-block; margin-top:5px; margin-bottom:10px;">
+    <div style="float:left; display:inline-block; margin-top:5px; margin-bottom:10px;">
         <img src="/images/warning_flat_orange_32.png" width="32px" height="32px">
     </div>
-    
-    <div style="overflow:hidden; width:auto; margin-left:15px; margin-bottom:10px; margin-top:5px; line-height:150%;">
+    <div style="float:left; margin-left:15px; margin-bottom:10px; width:320px; line-height:150%;">
         <h2 id="dialog_confirm_delete_text">dialog text here id=dialog_text</h2>
     </div>
 
     <div style="float:left; clear:both;">
         <p style="color:grey;">You will not be able to undo this change.</p>
     </div>
-    
 </div>

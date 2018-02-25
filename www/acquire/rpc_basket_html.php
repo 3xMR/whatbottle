@@ -47,7 +47,7 @@ if(count($_SESSION['var_basket']) > 0){
                         <?php echo "<input type=\"checkbox\" id=\"basket_check_all\" />"; ?>
                     </td>
                     <td>
-                        <input type="button" class="click btn_basket_vintage_remove" value="Remove">
+                        <input type="button" class="click btn_basket_vintage_remove big_button" value="Remove">
                     </td>
                 </tr>
             </tfoot>
@@ -58,7 +58,7 @@ if(count($_SESSION['var_basket']) > 0){
 
 } else {
     
-    echo "<p>Basket is empty</p>";
+    echo "<p style=\"color:gray;\" >empty</p>";
     
 }
 

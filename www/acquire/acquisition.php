@@ -61,15 +61,15 @@ echo "<div class=\"con_single_form\" >";
         $acquire_id = $_SESSION['var_acquire']['acquire_id'];
         echo "<input type=\"hidden\" name=\"acquire_id\" id=\"acquire_id\" value=\"$acquire_id\" />";
         
-        echo "<div style=\"border-bottom: solid 1px darkgray; padding-bottom:5px; margin-top:5px; margin-bottom:5px;\" >";
-            echo "<div style=\"float:left; width:58px;\" >";
-                echo "<img src=\"/images/shopping_cart_flat_grey_32.png\" height=\"32px\" width=\"32px\" >";
+        echo "<div class=\"vertical-centre\" style=\"height:2.5em; border-bottom: solid 1px darkgray; padding-bottom:5px; margin-top:5px; margin-bottom:5px;\" >";
+            echo "<div style=\"float:left; width:3em;\" >";
+                echo "<img src=\"/images/shopping_cart_flat_grey_32.png\" style=\"height:1.8em; width:1.8em;\" >";
             echo "</div>";
-            echo "<div style=\"width:auto; float:left; padding-top:5px;\" >";
-                echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >Acquisition</h1>";
+            echo "<div style=\"float:left; \" >";
+                echo "<h1 class=\"inline\" >Acquisition</h1>";
             echo "</div>";
-            echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:40px;\"  >";
-                echo "<img id=\"process_indicator\" src=\"/images/ajax-loader.gif\" height=\"24px\" width=\"24px\" />";
+            echo "<div style=\"padding-left:15px; float:left;\"  >";
+                echo "<img id=\"process_indicator\" src=\"/images/ajax-loader.gif\" style=\"height:2em; width:2em;\" />";
             echo "</div>";
             echo "<div class=\"clear\"></div>";
         echo "</div>";
@@ -78,12 +78,12 @@ echo "<div class=\"con_single_form\" >";
     echo "<form action=\"$url\" method=\"post\" name=\"form\" id=\"form\" >";
     
     //column_1
-    echo "<div class=\"con_column_2_1\" style=\"background-color:; margin-top:10px;\" >";
+    echo "<div class=\"rwd-con-50\" style=\"background-color:; margin-top:10px;\" >";
 
             echo "<div class=\"con_form_input\" >";
                 //Date
                 echo "<div class=\"input-main-inline vertical-centre\" >";
-                    echo "<label style=\"width:80px;\">Date</label>";
+                    echo "<label style=\"width:5em;\">Date</label>";
 
                     $mysql_date = $_SESSION['var_acquire']['acquire_date'];
                     if($mysql_date>0){
@@ -92,15 +92,15 @@ echo "<div class=\"con_single_form\" >";
                         $acquire_date = null;
                     }
 
-                    echo "<input type=\"text\" class=\"date\" name=\"acquire_date\" id=\"acquire_date\" value=\"$acquire_date\" $disabled/>";
+                    echo "<input type=\"text\" class=\"date\" style=\"width:120px;\" name=\"acquire_date\" id=\"acquire_date\" value=\"$acquire_date\" $disabled/>";
                 echo "</div>";
             echo "</div>"; //con_form_input
 
             //Type
             echo "<div class=\"con_form_input\" >";
                 echo "<div class=\"input-main-inline vertical-centre\" >";
-                    echo "<label style=\"width:80px;\" >Type</label>";
-                    echo "<select class=\"acquire_type\" style=\"width:250px;\" name=\"acquire_type_id\" id=\"acquire_type_id\" $disabled>";
+                    echo "<label style=\"width:5em;\" >Type</label>";
+                    echo "<select class=\"acquire_type\" style=\"width:230px;\" name=\"acquire_type_id\" id=\"acquire_type_id\" $disabled>";
                         echo "<option value=\"0\">Select an acquisition type...";
                         $obj_acquire = new acquire_type();
                         $var_results = $obj_acquire -> get($where, $columns, $group, $sort, $limit);
@@ -126,10 +126,10 @@ echo "<div class=\"con_single_form\" >";
 
 
             //Merchant
-            echo "<div class=\"con_form_input\" >";
+            //echo "<div class=\"con_form_input\" >";
                 echo "<div class=\"input-main-inline vertical-centre\" >";
-                    echo "<label style=\"width:80px;\" >Merchant</label>";
-                    echo "<select class=\"merchant\" style=\"width:250px;\" name=\"merchant_id\" id=\"merchant_id\" $disabled>";
+                    echo "<label style=\"width:5em;\" >Merchant</label>";
+                    echo "<select class=\"merchant\" style=\"width:230px;\" name=\"merchant_id\" id=\"merchant_id\" $disabled>";
                         echo "<option value=\"\">Select a Merchant...";
                         $obj = new merchant();
                         $sort = "merchant ASC";
@@ -149,55 +149,60 @@ echo "<div class=\"con_single_form\" >";
                     echo "</select>";
                     echo "<img style=\"margin-left:15px;\" src=\"\images\plus_grey_flat_32.png\" height=\"18px\" width=\"18px\" id=\"btn_add_merchant\" class=\"click input_image\" />";
                 echo "</div>";
-            echo "</div>";
+            //echo "</div>";
         
         echo "</div>"; //column_1_2
         
-    echo "<div class=\"con_column_2_2\" style=\"background-color:; margin-top:10px;\" >";
+    echo "<div class=\"rwd-con-50\" style=\"background-color:; margin-top:10px;\" >";
 
         //Notes
-        echo "<div class=\"con_form_input\" >";
+        //echo "<div class=\"con_form_input\" >";
             echo "<div class=\"input-main-label\" >";
                 echo "<label>Notes</label>";
             echo "</div>"; 
             
             echo "<div class=\"input-main\" >";
                 $acquire_notes = $_SESSION['var_acquire']['acquire_notes'];
-                echo "<textarea style=\"height:65px; width:405px;\"  value=\"$acquire_notes\" name=\"acquire_notes\" id=\"acquire_notes\" $disabled >$acquire_notes</textarea>";
+                echo "<textarea style=\"height:65px; width:100%;\"  value=\"$acquire_notes\" name=\"acquire_notes\" id=\"acquire_notes\" $disabled >$acquire_notes</textarea>";
             echo "</div>";
             
-        echo "</div>"; 
+        //echo "</div>"; 
         
     echo "</div>";
+    
+    echo "<div class=\"rwd-con-100\" style=\"background-color:; margin-top:10px;\" >";
 
         //Vintages
     
-        echo "<div class=\"input-main-label\" >";
+        echo "<div class=\"input-main-label\" style=\"width:100%; margin-bottom:10px;\" >";
             echo "<label>Vintages</label>";
         echo "</div>"; //form_input_title
 
-        echo "<div class=\"float-left;\" >";
-            echo "<div id=\"acquistion_content\" >";
+        //echo "<div style=\"clear:both;\" >";
+            echo "<div style=\"clear:both;\" id=\"acquistion_content\" >";
                 //filled with jquery load method - /acquire/rpc_acquisition_html.php
             echo "</div>";
-        echo "</div>"; 
+        //echo "</div>"; 
              
+   echo "</div>"; //rwd-con-100           
             
-    echo "<div class=\"clear\" ></div>";
+        echo "<div class=\"clear\" ></div>";
     
-    echo "<div style=\"margin-top:10px; margin-left:20px;\" >";
-        echo "<ul id=\"error_labels\" style=\"list-style-type:circle; color:red; \" ></ul>";
-    echo "</div>";
-    
-    //form buttons
-    echo "<div class=\"con_button_bar\" >";
-        if(is_authed()){
-            echo "<input type=\"button\" name=\"btn_save\" id=\"btn_save\" value=\"Save\" $disabled \>";
-            echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" value=\"Delete\" $disabled \>";
-        }
-        echo "<input type=\"button\" name=\"btn_import_basket\" id=\"btn_import_basket\" value=\"Import Basket\" $disabled \>";
-        echo "<input type=\"button\" name=\"btn_close\" id=\"btn_close\" class=\"btn_close\" value=\"Close\" \>";
-    echo "</div>";
+        echo "<div style=\"margin-top:10px; margin-left:20px;\" >";
+            echo "<ul id=\"error_labels\" style=\"list-style-type:circle; color:red; \" ></ul>";
+        echo "</div>";
+
+        //form buttons
+        echo "<div class=\"con_button_bar\" >";
+            if(is_authed()){
+                echo "<input type=\"button\" name=\"btn_save\" id=\"btn_save\"  value=\"Save\" \>";
+                echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" class=\"hide_small_screen\" value=\"Delete\" >";
+                echo "<input type=\"button\" name=\"btn_import_basket\" id=\"btn_import_basket\" value=\"Import Basket\" \>";
+            }
+            echo "<input type=\"button\" name=\"btn_close\" id=\"btn_close\" class=\"btn_close\" value=\"Close\" \>";
+        echo "</div>";
+        
+  
     
 echo "</form>";
 
@@ -223,6 +228,7 @@ require_once("$root/includes/script_libraries.inc.php"); //include all script li
 
 <div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:30;">
     <div class="ui-menu-item-first" >New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Delete Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
@@ -452,11 +458,25 @@ $(document).ready(function(){
     function delete_acquisition_dialog(){
         //show delete dialog - prompt user for response
         
+        //determine screen size
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 470;
+            positionMy = "left bottom";
+            positionAt = "right top";
+            positionOf = '#btn_delete';
+        } else {
+            dialogWidth = windowWidth;
+            positionMy = "right top+20px";
+            positionAt = "right bottom";
+            positionOf = "#top_nav";
+        }   
+        
         $("#dialog_confirm_delete_text").text("Are you sure you want to Delete this Acquisition?");
         
         $("#dialog-delete").dialog({
             modal: true,
-            width: "410px",
+            width: dialogWidth,
             buttons: {
                 Delete: function() {
                     $(this).dialog('close');
@@ -469,24 +489,38 @@ $(document).ready(function(){
                 }
             },
             dialogClass: "clean-dialog",
-            position: { my: "left bottom", at: "right top", of: '#btn_delete' }
+            position: { my: positionMy, at: positionAt, of: positionOf }
         });
     
     }
     
     
-    function delete_vintage_dialog(vintage_id, target){
+    function delete_vintage_dialog(vintage_id, object){
         //show delete vintage dialog - prompt user
         console.log('delete_vintage_dialog vintage_id: '+vintage_id);
         
-        $("#dialog_confirm_delete_text").text("Are you sure you want to remove this Vintage?");
-        target_id = $(target).attr('id');
+        //determine screen size
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 470;
+            positionMy = "right bottom";
+            positionAt = "left middle";
+            positionOf = object;
+        } else {
+            dialogWidth = windowWidth;
+            positionMy = "right top";
+            positionAt = "right bottom";
+            positionOf = "#top_nav";
+        }   
+        
+        $("#dialog_confirm_delete_text").text("Remove this Vintage?");
+        target_id = $(object).attr('id');
         
         $("#dialog-delete").dialog({
             modal: true,
-            width: "410px",
+            width: dialogWidth,
             buttons: {
-                Delete: function() {
+                Remove: function() {
                     $(this).dialog('close');
                     console.log('user confirmed to delete');
                     add_remove_vintage_acquistion(vintage_id,'remove_vintage');
@@ -497,7 +531,7 @@ $(document).ready(function(){
                 }
             },
             dialogClass: "clean-dialog",
-            position: { my: "right bottom", at: "left middle", of: target}
+            position: { my: positionMy, at: positionAt, of: positionOf}
         });
         
         
@@ -764,7 +798,11 @@ $(document).ready(function(){
          */
         
         if($('#acquire_id').val()){ //acquire_id so existing acquisition
+            //don't show delete button on small screens
+            var windowWidth = $(window).width();
+            if(windowWidth > 500){
                 $('#btn_delete').removeAttr('disabled').show();
+            }
         }else{
             $('#btn_delete').attr('disabled', true).hide();
         }
@@ -1129,6 +1167,9 @@ function menu_select(selected_object){
                     break;
                 case 'New Acquisition':
                     add_acquisition();
+                    break;
+                case 'Delete Acquisition':
+                    delete_acquisition_dialog();
                     break;
                 case 'Show Acquisitions': // index.php only
                     $('#panel_right').toggle("slide", { direction: "right" }, 500);

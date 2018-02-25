@@ -190,14 +190,15 @@ if($note_value>0){
 }
 
 
-echo "<div class=\"con_top_row\" >";
-    echo "<div class=\"vertical-centre input-main-inline\" style=\"float:left; height:30px; display:block; background-color:lightorange;\" >";
-        echo "<label>Date</label>";
+echo "<div class=\"rwd-con-100\" >";
+
+    echo "<div class=\"vertical-centre input-main-inline\" style=\"float:left; height:2em; display:block; margin-top:15px; margin-right:30px;\" >";
+        echo "<p>Date</p>";
         echo "<input type=\"text\" style=\"width:150px; margin-left:5px;\" class=\"date input-main-input\" name=\"note_date\" id=\"note_date\" value=\"$note_date\" $disabled/>";
     echo "</div>";
 
-    echo "<div class=\"vertical-centre input-main-label\" style=\"margin-left:55px; float:left; height:32px; display:block; \" >";//quality rating
-        echo "<p>Quality</p>";
+    echo "<div class=\"vertical-centre input-main-label\" style=\"margin-right:30px; margin-top:15px; float:left; height:2em; display:block; \" >";//quality rating
+        echo "<p style=\"width:45px;\" >Quality</p>";
         echo "<div class=\"rating\" style=\"width:192px; height:32px; display:block; float:left\" $disabled >";
             echo "<input name=\"note_quality\"  type=\"radio\" value=\"1\" class=\"auto-submit-star {split:2}\" title=\"Undrinkable\" $quality_1 $disabled/>";
             echo "<input name=\"note_quality\"  type=\"radio\" value=\"2\" class=\"auto-submit-star {split:2}\" title=\"Terrible\" $quality_2 $disabled/>";
@@ -212,8 +213,8 @@ echo "<div class=\"con_top_row\" >";
         echo "</div>";
     echo "</div>";
 
-    echo "<div class=\"vertical-centre input-main-label\" style=\"margin-left:30px; float:left; height:30px; display:block; \" >";
-        echo "<p>Value</p>";
+    echo "<div class=\"vertical-centre input-main-label\" style=\"margin-top:15px; float:left; height:2em; display:block; \" >";
+        echo "<p style=\"width:45px;\" >Value</p>";
         echo "<div class=\"rating\" style=\"width:192px; height:32px; display:block; float:left;\" >";
             echo "<input name=\"note_value\" type=\"radio\" value=\"1\" class=\"auto-submit-pound \" title=\"Poor\" $value_1 $disabled/>";
             echo "<input name=\"note_value\" type=\"radio\" value=\"2\" class=\"auto-submit-pound \" title=\"OK\" $value_2 $disabled/>";
@@ -236,42 +237,42 @@ echo "<input type=\"hidden\" name=\"vintage_id\" id=\"vintage_id\" value=\"$vint
 echo "<input type=\"hidden\" name=\"note_quality\" id=\"note_quality\" value=\"$note_quality\" />";
 echo "<input type=\"hidden\" name=\"note_value\" id=\"note_value\" value=\"$note_value\" />";
 
-echo "<div id=\"first_column\" style=\" width:50%; padding-left:5px; padding-bottom:5px; float:left; box-sizing:border-box;\">";
+echo "<div id=\"first_column\" class=\"rwd-con-50\" >";
 
-    echo "<div class=\"input-main-label\" style=\"margin-top:10px;\" >"; //margin to align within inline element in column 2
+    echo "<div class=\"input-main-label\" style=\"margin-top:20px;\" >"; //margin to align within inline element in column 2
         echo "<label>Appearance</label>";
     echo "</div>";
     echo "<div class=\"input-main\" style=\"overflow:hidden;\" >";
-        echo "<textarea class=\"text_area\" style=\"width:385px; height:75px;\" value=\"$note_appearance\" name=\"note_appearance\" id=\"note_appearance\" $disabled >$note_appearance</textarea>";
+        echo "<textarea class=\"text_area\" style=\"width:95%; height:75px;\" value=\"$note_appearance\" name=\"note_appearance\" id=\"note_appearance\" $disabled >$note_appearance</textarea>";
     echo "</div>";
     
     echo "<div class=\"input-main-label\" style=\"margin-top:10px;\" >";
         echo "<label>Aroma</label>";
     echo "</div>";
     echo "<div class=\"input-main\" style=\"overflow:hidden;\" >";
-    echo "<textarea class=\"text_area\" style=\"width:385px; height:75px;\" value=\"$note_aroma\" name=\"note_aroma\" id=\"note_aroma\" $disabled >$note_aroma</textarea>";
+    echo "<textarea class=\"text_area\" style=\"width:95%; height:75px;\" value=\"$note_aroma\" name=\"note_aroma\" id=\"note_aroma\" $disabled >$note_aroma</textarea>";
     echo "</div>";
     
     echo "<div class=\"input-main-label\" style=\"margin-top:10px;\" >";
         echo "<label>Taste</label>";
     echo "</div>";
     echo "<div class=\"input-main\" style=\"overflow:hidden;\" >";
-        echo "<textarea class=\"text_area\" style=\"width:385px; height:75px;\" value=\"$note_taste\" name=\"note_taste\" id=\"note_taste\" $disabled >$note_taste</textarea>";
+        echo "<textarea class=\"text_area\" style=\"width:95%; height:75px;\" value=\"$note_taste\" name=\"note_taste\" id=\"note_taste\" $disabled >$note_taste</textarea>";
     echo "</div>";
     
     echo "<div class=\"input-main-label\" style=\"margin-top:10px;\" >";
         echo "<p>General Notes</p>";
     echo "</div>";
     echo "<div class=\"input-main\" style=\"overflow:hidden;\" >";
-        echo "<textarea class=\"text_area\" style=\"width:385px; height:75px;\" value=\"$note_general\" name=\"note_general\" id=\"note_general\" $disabled >$note_general</textarea>";
+        echo "<textarea class=\"text_area\" style=\"width:95%; height:75px;\" value=\"$note_general\" name=\"note_general\" id=\"note_general\" $disabled >$note_general</textarea>";
     echo "</div>";
 echo "</div>"; //first_column
 
 
 
-echo "<div id=\"second_column\" style=\" width:50%; display:block; float:left; padding-left:20px; padding-right:10px; margin-top:35px; box-sizing:border-box; \">";
+echo "<div id=\"second_column\" class=\"rwd-con-50\" >";
     
-    echo "<div style=\"float:right; width:320px;\" >";
+    echo "<div style=\"float:right; width:100%; margin-top:20px;\" >";
         echo "<div class=\"input-main-inline vertical-centre\" >";
             echo "<label style=\"width:100px;\" >Fullness</label>";
             echo "<select class=\"fullness required\" name=\"fullness_id\" id=\"fullness_id\" style=\"width:210px; margin-left:5px;\" $disabled>";

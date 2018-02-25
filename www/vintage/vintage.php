@@ -12,8 +12,7 @@ echo "<html>";
 echo "<head>";
 
 require_once("$root/includes/standard_html_head.inc.php");
-//include style sheets
-require_once("$root/includes/css.inc.php");
+require_once("$root/includes/css.inc.php");//include style sheets
 
 echo "<title>Vintage - What Bottle?</title>";
 echo "</head>";
@@ -23,8 +22,8 @@ echo "</head>";
 
     <div id="dialog-producer" class="hidden" title="Add New Producer">
             <p>
-                    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 10px 10px 0;"></span>
-                    Do you wish to add this producer as a new producer?
+                <span class="ui-icon ui-icon-alert" style="float:left; margin:0 10px 10px 0;"></span>
+                Do you wish to add this producer as a new producer?
             </p>
             <p>
                 <b>OK</b> - to add new producer<br/>
@@ -71,9 +70,7 @@ echo "</head>";
      <div id="dialog_select_grapes" class="hidden">
         <?php
 
-            //require_once("$root/vintage/select_grapes.php");
         echo "<div style=\"width:300px;\" id=\"select_grape_container\">";
-
         echo "</div>";
         ?>
 
@@ -97,19 +94,18 @@ echo "<div class=\"page_container\">";
         echo "<div class=\"con_title_bar\" >";
             //wine name
             echo "<div style=\"border-bottom: solid 1px darkgray; padding-bottom:5px; margin-top:5px; margin-bottom:5px;\" >";
-                echo "<div style=\"float:left; width:58px;\" >";
+                echo "<div style=\"float:left; width:48px; margin-right:10px;\" >";
                     echo "<img src=\"/images/vintage_flat_grey_64.png\" height=\"48px\" width=\"48px\" >";
                 echo "</div>";
-                echo "<div style=\"width:auto; float:left; padding-top:5px;\" >";
+                echo "<div style=\"width:auto; float:none; padding-top:5px;\" >";
                     echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >".$_SESSION['var_vintage_temp']['wine'].", ".$_SESSION['var_vintage_temp']['producer']."</h1>";
                     echo "<h3 style=\"color:darkgrey;\">".$_SESSION['var_vintage_temp']['country'].", ".$_SESSION['var_vintage_temp']['region'];
                     if($_SESSION['var_vintage_temp']['subregion']){
-                        echo ", ".$_SESSION['var_vintage_temp']['subregion']."</h3>";
-                    }else{
-                        echo "</h3>";
+                        echo ", ".$_SESSION['var_vintage_temp']['subregion'];
                     }
+                    echo "</h3>";
                 echo "</div>";
-                echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:50px;\"  >";
+                echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left;\"  >";
                     echo "<img id=\"process_indicator\" src=\"/images/ajax_loader.gif\" height=\"24px\" width=\"24px\" />";
                 echo "</div>";
                 echo "<div class=\"clear\"></div>";

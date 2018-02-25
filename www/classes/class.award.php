@@ -1,9 +1,5 @@
 <?php
 
-$root = $_SERVER['DOCUMENT_ROOT'];
-require_once("$root/classes/class.db.php");
-
-
 class award extends db {
 
 public $table = 'tblAward';

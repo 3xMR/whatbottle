@@ -38,8 +38,8 @@ echo "<div id=\"top_nav\" class=\"vertical-centre\" style=\"$color\" >";
     echo "<img class=\"click\" style=\"float:left; margin-left:15px;\" id=\"btn_main_menu\" src=\"/images/burger_menu_grey.png\" height=\"27px\" width=\"27px\" />";
 
     //navigation
-    echo "<div style=\"float:left; margin-left:25px;\" id=\"top_nav_nav\" >";
-        echo "<h3 style=\"color:lightgray;\">Whatbottle?</h3>";
+    echo "<div style=\"float:left; color:lightgray; font-size:1.25em; margin-left:25px;\" id=\"top_nav_nav\" >";
+        echo "<p>Whatbottle?</p>";
     echo "</div>"; //div_top_nav
 
     //right side menu buttons

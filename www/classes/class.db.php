@@ -339,8 +339,6 @@ function get($where=false, $columns=false, $group=false, $sort=false, $limit=fal
     //if(!$failed){
         $query = "SELECT $columns FROM $this->table $where $group $sort $limit";
         
-        if($this->debug){echo "<br/>[class db] => sql query: $query";}
-
         //set db codeset
         mysql_query("SET NAMES utf8");
  

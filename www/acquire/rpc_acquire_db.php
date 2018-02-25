@@ -340,14 +340,12 @@ function save_to_db(){
 
         } else {
             //no vintage records to save
-            log_write("saved acquire - no vintages to save",1,'save_to_db');
             $var_result['success'] = true;
             $var_result['msg'] = "Saved Acquire successfully to DB - but no vintages to save";
         }
         
     } else {
        //failed to save acquire record
-       log_write("failed to save acquire or vintage records",1,'save_to_db');
        $var_result['success'] = false;
        $var_result['error'] = "Failed to save acquire record \n error = $error";
     }
@@ -469,9 +467,6 @@ function delete_acquire_from_db(){
 }
 
 
-//***end functions****
-
-
 if($_REQUEST['action']=='unset_session'){
     //remove array
     unset($_SESSION['var_acquire']);
@@ -533,5 +528,43 @@ function delete_from_db(){
 }
 
 
+function get_acquisition_details(){
+    //retrieve acquisition price, merchant and date details for a given vintage
+    
+    $vintage_id = filter_input(INPUT_POST, 'vintage_id');
+  
+    if(empty($vintage_id)){
+        $var_result['success']=false;
+        $var_result['error']='no vintage_id provided - cannot continue';
+        return $var_result;
+    }
+    
+    $objAcquireVintage = new vintage_has_acquire;
+    $where = " vintage_id = $vintage_id ";
+    $columns = " unit_price, discounted_price, acquire_date ";
+    $sort = "acquire_date DESC";
+    $rst = $objAcquireVintage ->get_extended($where, $columns, null, $sort);
+    
+    if($rst == false && empty($objAcquireVintage ->get_sql_error()) ){
+        //no records returned
+        $var_result['success']=false;
+        $var_result['error']="No records returned for vintage_id";
+        return $var_result;
+    }
+    
+    if($rst == false){
+        //sql error
+        $sqlError = $objAcquireVintage ->get_sql_error();
+        $var_result['success']=false;
+        $var_result['error']="Failed to retrieve acquisition data with sql_error = $sqlError";
+        return $var_result;
+    }
+    
+    //return results
+    $var_result['success']=true;
+    $var_result['data']= $rst;
+    return $var_result;
+    
+}
 
 ?>

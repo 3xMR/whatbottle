@@ -22,8 +22,8 @@ if($root=="/Volumes/sites/whatbottle/03 whatbottle.local/www/" ||
     mysql_select_db("whatbottle") or die(mysql_error());
     $environment = 'dev';
     
-} else if($root=="/Volumes/sites/whatbottle/01 whatbottle.dev/www/" || 
-        $root=="/Users/magnus/Documents/Sites/whatbottle.dev/www/" ){
+} else if($root=="/Volumes/sites/whatbottle/01 whatbottle.test/www/" || 
+        $root=="/Users/magnus/Documents/Sites/whatbottle.test/www/" ){
     //development environment
      //use local dev sql database
     $link = mysql_connect("localhost",  "root", "root") or die(mysql_error());

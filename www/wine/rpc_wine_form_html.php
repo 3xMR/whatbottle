@@ -17,13 +17,20 @@ echo "<div style=\"float:left; background-color:none; \" class=\"con_form_fields
             <input type="hidden" value="<?php echo $_SESSION['var_wine_temp']['status'];?>" name="status" id="status"><br/>
         </div>    
 
+        <div class="input-main-label" >
+            <p>Wine Name</p>
+        </div>
+        
         <div class="input-main">
-            <label>Wine Name</label>
-            <input type="text" value="<?php echo $_SESSION['var_wine_temp']['wine'];?>" name="wine" id="wine_name" >
+            <input type="text" value="<?php echo $_SESSION['var_wine_temp']['wine'];?>" name="wine" id="wine_name" autocomplete="off" >
+        </div>
+        
+        
+        <div class="input-main-label" >
+            <p>Type</p>
         </div>
 
         <div class="input-main">
-            <label>Type</label>
             <?php
                //echo "<div class=\"input_select\">";
                    echo "<select name=\"winetype_id\" id=\"winetype_id\"  >";

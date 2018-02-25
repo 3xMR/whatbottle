@@ -491,7 +491,18 @@ class wine_search {
         
   
     }
-
+    
+    
+    public function set_results_per_page($intResultsPerPage){
+        //set number of results to display per page of pagination
+        
+        if($intResultsPerPage > 0){
+            $this ->page_rows = $intResultsPerPage;
+        }else{
+            return false;
+        }
+        
+    }
 
 }
 

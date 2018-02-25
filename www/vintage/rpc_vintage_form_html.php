@@ -5,7 +5,7 @@
     require_once("$root/classes/class.db.php");
     
     
-echo "<div class=\"con_form_fields\" >";
+//echo "<div class=\"con_form_fields\" >";
     
     //initialise
     $hide_form = false;
@@ -62,42 +62,40 @@ echo "<div class=\"con_form_fields\" >";
      *
      */
 
-
-
-if($hide_form==false){
-    
+   
     //disable fields if not authed
     if(is_authed()){
          $disabled = null;
     }else{
         $disabled = "disabled='disabled'";
     }
+   
+    //***vintage form - required for validation ***
+    echo "<form action=\"/vintage/vintage.php\" method=\"post\" id=\"frm_vintage\" name=\"frm_vintage\" autocomplete=\"off\" >";
     
-    echo "<div class=\"con_column_2_1\">";
-        //***vintage form***
-        echo "<form action=\"/vintage/vintage.php\" method=\"post\" id=\"frm_vintage\" name=\"frm_vintage\" autocomplete=\"off\" >";
-            
-            //hidden fields    
-            echo "<input type=\"hidden\" value=\"$wine_id\" name=\"wine_id\" id=\"wine_id\" />";
-            echo "<input type=\"hidden\" value=\"$vintage_id\" name=\"vintage_id\" id=\"vintage_id\" />";
-            echo "<input type=\"hidden\" value=\"$is_dirty\" name=\"is_dirty\" id=\"is_dirty\" />";
-            
-       
-            echo "<div class=\"vertical-centre input-main-label\" >";
-                echo "<p>Vintage</p>";
-            echo "</div>";
-            echo "<div class=\"input-main bottom-spacer\" style=\"margin-left:5px;\" >";
-                echo "<input type=\"number\" step=\"0\" max=\"9999\" style=\"width:40px; \" value=\"$year\" name=\"year\" id=\"year\" $disabled />";
-            echo "</div>";
- 
+    echo "<div class=\"rwd-con-50\" >";
 
+        //hidden fields    
+        echo "<input type=\"hidden\" value=\"$wine_id\" name=\"wine_id\" id=\"wine_id\" />";
+        echo "<input type=\"hidden\" value=\"$vintage_id\" name=\"vintage_id\" id=\"vintage_id\" />";
+        echo "<input type=\"hidden\" value=\"$is_dirty\" name=\"is_dirty\" id=\"is_dirty\" />";
+
+        echo "<div class=\"input-main-label\" >";
+            echo "<p>Vintage</p>";
+        echo "</div>";
+        
+        echo "<div class=\"input-main bottom-spacer\" style=\"margin-left:5px;\" >";
+            echo "<input type=\"number\" step=\"0\" max=\"9999\" style=\"width:4em; \" value=\"$year\" name=\"year\" id=\"year\" $disabled />";
+        echo "</div>";
+ 
+        
         //Grapes
-        echo "<div class=\"input-main-label vertical-centre clear-left float-left click\"  id=\"edit_grapes\" >";
+        echo "<div class=\"input-main-label vertical-centre clear-left click\"  id=\"edit_grapes\" >";
             echo "<p style=\"float:left;\" >Grapes</p>";
-            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_grapes\" class=\"click ignore_dirty\" />";
+            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:1em; height:1em;\" id=\"edit_grapes\" class=\"click ignore_dirty\" />";
         echo "</div>";
 
-        echo "<div class=\"input-main float-left clear-left bottom-spacer\" >";
+        echo "<div class=\"input-main clear-left bottom-spacer\" >";
             $var_grapes = $_SESSION['var_vintage_temp']['var_grapes'];
             if(!empty($var_grapes)){
                 foreach ($var_grapes as $var_grape){
@@ -113,15 +111,73 @@ if($hide_form==false){
  
         
 
-        //Picture/Label     
-        echo "<div class=\"vertical-centre float-left input-main-label click clear-left\" id=\"btn_edit_image\"  >";
-            echo "<p>Image</p>";
-            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_image\" class=\"ignore_dirty\" />";
+
+        //Alcohol
+        echo "<div class=\"vertical-centre input-main-label clear-left \" >";
+            echo "<p>Alcohol</p>";
+        echo "</div>";
+        echo "<div class=\"vertical-centre input-main clear-left bottom-spacer\" >";
+            echo "<input type=\"number\" step=\"0\" style=\"width:3.5em; float:left; margin-left:5px; text-align:right;\" value=\"$alcohol\" name=\"alcohol\" id=\"alcohol\" $disabled />";
+            echo "<p>&nbsp; %</p>";
+        echo "</div>";     
+        
+        
+        //Ready To Drink
+        echo "<div class=\"vertical-centre input-main-label clear-left\" >";
+            echo "<p>Drinking Guide</p>";
+        echo "</div>";
+        echo "<div class=\"input-main vertical-centre clear-left bottom-spacer\" >";
+            echo "<p>From </p><input type=\"number\" step=\"0\" style=\"width:4em; float:left; margin-left:5px; text-align:right;\" value=\"$drink_year_from\" name=\"drink_year_from\" id=\"drink_year_from\" $disabled />";
+            echo "<p>&nbsp To </p><input type=\"number\" step=\"0\" style=\"width:4em; float:left; margin-left:5px; text-align:right;\" value=\"$drink_year_to\" name=\"drink_year_to\" id=\"drink_year_to\" $disabled />";
+        echo "</div>";
+  
+        
+    echo "</div>"; //column 1
+    
+
+    
+    //***second column***
+    echo "<div class=\"rwd-con-50\" >";
+            
+
+        
+        
+        //Awards
+        echo "<div class=\"vertical-centre input-main-label click clear-left\" style=\"margin-top:10px;\" id=\"btn_edit_awards\"  >";
+            echo "<p>Awards</p>";
+            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:1em; height:1em;\" id=\"edit_awards\" class=\"ignore_dirty\" />";
         echo "</div>";
 
-        echo "<div class=\"image-placeholder click clear-left bottom-spacer\" id=\"image_con\" style=\"margin-left:5px;\" >";
-            if($image_name){
+        echo "<div class=\"input-main clear-left bottom-spacer\" >"; 
+                $var_awards = $_SESSION['var_vintage_temp']['var_awards'];
+                if(!empty($var_awards)){
+                    foreach ($var_awards as $award){
+                        echo "<p style=\"margin-left:5px;\" >".$award['award_org']." - ".$award['award']."</p>";
+                    }
+                } else {
+                    //no awards added
+                    echo "<p style=\"margin-left:5px;\" > - </p>";
+                }
+        echo "</div>"; 
+        
+            
+        //Vintage Comments
+        echo "<div class=\"input-main-label clear-left\" >";
+            echo "<p>Comments</p>";
+        echo "</div>";
 
+        echo "<div class=\"input-main clear-left bottom-spacer  \" >";
+            echo "<textarea style=\"box-sizing:border-box; margin-left:5px; height:60px; width:98%; \" value=\"$vintage_notes\" name=\"vintage_notes\" id=\"vintage_notes\" class=\"_save_field\" $disabled >$vintage_notes</textarea>";
+        echo "</div>";
+        
+        //image    
+        echo "<div class=\"input-main-label vertical-centre clear-left click \" id=\"btn_edit_image\"  >";
+            echo "<p>Image</p>";
+            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:1em; height:1em;\" id=\"edit_image\" class=\"ignore_dirty\" />";
+        echo "</div>";
+    
+        echo "<div class=\"image-placeholder click clear-left bottom-spacer\" id=\"image_con\" style=\"margin-left:5px; margin-top:5px;\" >";
+            if($image_name){
                 $new_root = rtrim($root, '/\\');
                 $image_path = ($image_status=='new') ? $label_upload_path.$image_name : $label_path.$image_name;
 
@@ -146,100 +202,36 @@ if($hide_form==false){
                 echo "<p style=\"text-align:center; vertial-align:middle; line-height:225px; color:gray;\" >Click to Add Image</p>";
             }
         echo "</div>"; //image
-
-        //Alcohol content
-        echo "<div class=\"vertical-centre input-main-label float-left clear-left bottom-spacer\" >";
-            echo "<p>Alcohol</p>";
-        echo "</div>";
-        echo "<div class=\"input-main vertical-centre float-left clear-left bottom-spacer\" >";
-            echo "<input type=\"number\" step=\"0\" style=\"width:35px; float:left; margin-left:5px; text-align:right;\" value=\"$alcohol\" name=\"alcohol\" id=\"alcohol\" $disabled /><p>&nbsp; %</p>";
-        echo "</div>";        
-
-        //Ready To Drink
-        echo "<div class=\"vertical-centre input-main-label float-left clear-left bottom-spacer\" >";
-            echo "<p>Drinking Guide</p>";
-        echo "</div>";
-        echo "<div class=\"input-main vertical-centre float-left clear-left bottom-spacer\" >";
-            echo "<p>From </p><input type=\"number\" step=\"0\" style=\"width:40px; float:left; margin-left:5px; text-align:right;\" value=\"$drink_year_from\" name=\"drink_year_from\" id=\"drink_year_from\" $disabled />";
-            echo "<p>&nbsp To </p><input type=\"number\" step=\"0\" style=\"width:40px; float:left; margin-left:5px; text-align:right;\" value=\"$drink_year_to\" name=\"drink_year_to\" id=\"drink_year_to\" $disabled />";
-        echo "</div>";
-            
-            
-
-        
-        
-   
-        
-        //Awards
-        echo "<div class=\"vertical-centre input-main-label click float-left clear-left\" style=\"margin-top:10px;\" id=\"btn_edit_awards\"  >";
-            echo "<p>Awards</p>";
-            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:16px; height:16px;\" id=\"edit_awards\" class=\"ignore_dirty\" />";
-        echo "</div>";
-
-        echo "<div class=\"input-main float-left clear-left bottom-spacer\" >"; 
-                $var_awards = $_SESSION['var_vintage_temp']['var_awards'];
-                if(!empty($var_awards)){
-                    foreach ($var_awards as $award){
-                        echo "<p style=\"margin-left:5px;\" >".$award['award_org']." - ".$award['award']."</p>";
-                    }
-                } else {
-                    //no awards added
-                    echo "<p style=\"margin-left:5px;\" > - </p>";
-                }
-        echo "</div>";        
-        
-    echo "</div>"; //column_2_1
-    
-
-    
-    //***second column***
-    echo "<div class=\"con_column_2_2\" >";
-        
-        
-            //Vintage Comments
-            echo "<div class=\"input-main-label float-left clear-left\" >";
-                echo "<p>Comments</p>";
-            echo "</div>";
-
-            echo "<div class=\"input-main float-left clear-left \" >";
-                echo "<textarea style=\"margin-left:5px; height:60px; width:395px;\" value=\"$vintage_notes\" name=\"vintage_notes\" id=\"vintage_notes\" class=\"_save_field\" $disabled >$vintage_notes</textarea>";
-            echo "</div>"; 
         
             
-            /*** Tasting Notes ***/
-            echo "<div class=\"input-main-label float-left clear-left\" >";
-                echo "<p>Tasting Notes</p>";
-            echo "</div>";
-            
-            echo "<div style=\"float:left; margin-left:5px; \" id=\"con_all_notes\"  >";
-                //listBox populated by /vintage/rpc_all_notes_html.php
-            echo "</div>";
-            
-            /*** Acquisitions ***/
-            echo "<div class=\"input-main-label float-left clear-left top-spacer\" >";
-                echo "<p>Acquisitions</p>";
-            echo "</div>";
-            
-            echo "<div style=\"float:left; margin-left:5px; \" id=\"con_all_acquisitions\"  >";
-                //listBox populated by
-            echo "</div>";
-        
+        /*** Tasting Notes ***/
+        //echo "<div class=\"input-main-label float-left clear-left\" >";
+        //    echo "<p>Tasting Notes</p>";
+        //echo "</div>";
+
+        //echo "<div style=\"float:left; margin-left:5px; \" id=\"con_all_notes\"  >";
+        //    //listBox populated by /vintage/rpc_all_notes_html.php
+        //echo "</div>";
+
+        /*** Acquisitions ***/
+        //echo "<div class=\"input-main-label float-left clear-left top-spacer\" >";
+       //     echo "<p>Acquisitions</p>";
+        //echo "</div>";
+
+        //echo "<div style=\"float:left; margin-left:5px; \" id=\"con_all_acquisitions\"  >";
+            //listBox populated by
+        //echo "</div>";
+
   
-    echo "</div>"; //con_column_2_2
+    echo "</div>"; //second column
     
-    echo "<div class=\"clear\"></div>";
+    //echo "<div class=\"clear\"></div>";
 
-    echo "</form>";
-
-} else {
-    //handle errors opening page/form
-    echo "<h3>$msg</h3>";
-    echo "<br/><input type=\"button\" name=\"btn_close\" id=\"btn_close\" value=\"Close\" class=\"cancel\" />";
-}
+    echo "</form>"; //required for validation
 
 
 //push con_single_form bottom clear of all other divs
- echo "<div class=\"clear\" ></div>";
+ //echo "<div class=\"clear\" ></div>";
 
 
 ?>

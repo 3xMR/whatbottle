@@ -142,11 +142,10 @@ $(document).on('click','.btn_basket_vintage_remove',function(){
         array.push(id);
     });
     
-    
-    
     var json_array = JSON.stringify(array);
     console.log(json_array);
     remove_vintage_basket(array); //pass array to server for removal
+    
     
 });
 
@@ -159,12 +158,11 @@ $(document).on('click','#btn_hide_basket', function(){
 
 
 //add to basket
-$(document).on('click', '.btn_add_to_basket',function(){
-    console.log('add to basket - vintage = '+$(this).attr('id'));
-    add_vintage_basket($(this).attr('id'));
-    //$(this).hide();
-    //show and then hide basket when adding vintage
-    //$('#basket_panel').slideDown().delay(1500).slideUp();
+$(document).on('click', '.btn_add_to_basket',function(e){
+    var id = $(this).data('vintage_id');
+    console.log('add to basket - vintage = '+id);
+    add_vintage_basket(id);
+    e.stopPropagation();
 });
 
 
@@ -189,17 +187,30 @@ function show_dialog_basket(){
     //show basket dialog - dependent on jquery ui for dialog
     //requires CSS in whatbottle.com
     
-    //load html from rpc_
+    //determine screen size
+    var windowWidth = $(window).width();
+    console.log('login window width = '+windowWidth);
+    if(windowWidth > 500){
+        dialogWidth = 400;
+        positionMy = "right top";
+        positionAt = "left bottom";
+        positionOf = "#btn_basket_top_nav";
+    } else {
+        dialogWidth = windowWidth;
+        positionMy = "right top+15px";
+        positionAt = "right bottom";
+        positionOf = "#top_nav";
+    }   
 
     $("#dialog-basket").dialog({
         modal: true,
         title: "Basket",
-        width: 450,
+        width: dialogWidth,
         minHeight: 200,
         position: { 
-            my: "right top", 
-            at: "left bottom", 
-            of: "#btn_basket_top_nav" 
+            my: positionMy,
+            at: positionAt, 
+            of: positionOf 
         },
         buttons: {
             OK: {
@@ -378,17 +389,33 @@ function logout(){
 function show_dialog_login(){
     //show login dialog - dependent on jquery ui for dialog
     //requires CSS in whatbottle.com
+    
+    //determine screen size
+    var windowWidth = $(window).width();
+    console.log('login window width = '+windowWidth);
+    if(windowWidth > 500){
+        dialogWidth = 400;
+        positionMy = "right top";
+        positionAt = "left bottom";
+        positionOf = "#btn_login_top_nav"
+    } else {
+        dialogWidth = windowWidth;
+        positionMy = "right top+10px";
+        positionAt = "right bottom";
+        positionOf = "#top_nav";
+    }   
+    
 
     $("#dialog-login").dialog({
         modal: true,
         title: "Login",
-        width: 400,
+        width: dialogWidth,
         minHeight: 200,
         close: reset_login_dialog,
         position: { 
-            my: "right top", 
-            at: "left bottom", 
-            of: "#btn_login_top_nav" 
+            my: positionMy,
+            at: positionAt, 
+            of: positionOf 
         },
         buttons: {
             Login: {

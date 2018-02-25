@@ -465,17 +465,39 @@
     this.show_dialog_unsaved = (function(){
         //show unsaved dialog and return promise with value of button clicked
         
+        //determine screen size
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 470;
+        } else {
+            dialogWidth = windowWidth;
+        }   
+        
+
         var $dialog = $('#unsaved_changes').dialog({
             autoOpen: false,
             modal: true,
-            width: 410,
+            width: dialogWidth,
             dialogClass: "no-close"
         });
 
         var showDialog = function(){
 
             var def = $.Deferred();
-
+            
+            var windowWidth = $(window).width();
+            if(windowWidth > 500){
+                dialogWidth = 470;
+                positionMy = "center bottom";
+                positionAt = "right top";
+                positionOf = ".btn_close";
+            } else {
+                dialogWidth = windowWidth;
+                positionMy = "right top+20px";
+                positionAt = "right bottom";
+                positionOf = "#top_nav";
+            }   
+            
             $dialog.dialog({
                 buttons: {
                     Save: function() {                        
@@ -509,7 +531,7 @@
                     }
                 },
                 dialogClass: "clean-dialog",
-                position: { my: "center bottom", at: "right top", of: ".btn_close" }
+                position: { my: positionMy, at: positionAt, of: positionOf }
             });
 
             $dialog.dialog('open');

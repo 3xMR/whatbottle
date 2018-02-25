@@ -103,6 +103,12 @@
                 .addClass(o.addClass) //adds class for custom styling
                 .attr('id',this.title_id)
                 .on("click", $.proxy(this._titleClick, this));
+            
+            console.log('clickTitle = '+o.clickTitle);
+            if(o.clickTitle){
+                //click function provided - so add pointer class
+                self.el_title.addClass('click');
+            }
                 
             //add filter div
             if(o.showFilter){
@@ -162,6 +168,7 @@
             //footer
             var footer = "<div></div>";
             self.el_footer = $(footer).appendTo(el)
+                .height(40)
                 .addClass('listBox_footer')
                 .addClass(o.addClass) //adds class for custom styling
                 .attr('id',this.footer_id);
@@ -228,7 +235,6 @@
                 self.el_footer.css('display','none'); //hide footer
             }
             
-            
             //add border formating
             if(o.showBorder){
                 el.addClass('listBox_element_border');
@@ -254,23 +260,28 @@
                 el.removeClass('listBox_shadow'); //add class to element to show shadow
             }
             
-            //adjust height of listBox
-            var hList = el.height();
-            console.log('listBox target height = ' + o.height);
-            console.log('listBox height = ' + hList);
-            console.log(el);
+            //Adjust height of listBox
+            var hTitle = self.el_title.height();
+            if(o.showFilter){
+            var hFilter = self.el_filter.height();
+            }else{
+                hFilter = 0;
+            }
             var hBody = self.el_body.height();
-            var hFooter = self.el_footer.css('height');
-            console.log('body height = ' + hBody);
-            console.log('footer height = ' + hFooter);
-            var hDiff = hList - o.height;
-            console.log('Difference between listBox height and target height = ' + hDiff);
-            var hBody = hBody - hDiff;
-            console.log('New Body height = ' + hBody);
-            self.el_body.height(hBody);
+            var hFooter = self.el_footer.height();
+            var hStatic = hTitle + hFilter + hFooter + 5;
+            var hBodyTarget = o.height - hStatic;
+            console.log('listBox target height = ' + o.height);
+            console.log('title = ' + hTitle +' filter = '+hFilter+' body = '+hBody+' footer = '+hFooter);
+            console.log('New Body height = ' + hBodyTarget);
+            if(hBodyTarget < 0){
+                hBodyTarget = 35;
+            }
+            self.el_body.height(hBodyTarget);
             
             //load listbox rows
             var def = self.refresh(); 
+            
             
             def.then(function(){
                 //once refresh function has completed
@@ -286,6 +297,35 @@
             //add filter div
             var el = self.el_body.appendTo("<div></div>");
             el.attr('id',self.listbox_id+"_filter").addClass("listBox_filter");
+            
+        },
+        
+        setHeight: function(newHeight){
+            console.log('setHeight Method - newHeight = '+newHeight);
+            if(newHeight < 35){
+                return false;
+            }
+            
+            var self  = this;
+            
+            //Get height of elements
+            var hTitle = self.el_title.height();
+            var hFilter = self.el_filter.height();
+            var hBody = self.el_body.height();
+            var hFooter = self.el_footer.height();
+            var hStatic = hTitle + hFilter + hFooter + 5;
+            var hBodyTarget = newHeight - hStatic;
+            console.log('listBox target height = ' + newHeight);
+            console.log('title = ' + hTitle +' filter = '+hFilter+' body = '+hBody+' footer = '+hFooter);
+            console.log('New Body height = ' + hBodyTarget);
+            if(hBodyTarget < 0){
+                hBodyTarget = 35;
+            }
+            self.el_body.height(hBodyTarget);
+            
+            //load listbox rows
+            var def = self.refresh();
+            
             
         },
         
@@ -357,9 +397,8 @@
         _titleClick: function(event){
             
             this.selected = null;
-            //console.log("_titleClick");
-            //console.log(this);
-            
+            console.log("_titleClick");
+
             this._clear();
             this._trigger('clickTitle', null, this.options.title);
         },

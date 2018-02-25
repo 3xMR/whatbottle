@@ -31,7 +31,7 @@ require_once("$root/includes/script_libraries.inc.php");
             <p>Producer</p>
         </div>
         <div class="input-main">
-            <input type="text" id="add_producer"></input>
+            <input type="text" style="width:100%;" id="add_producer"></input>
         </div>
         <br/>
     </div>
@@ -53,7 +53,7 @@ require_once("$root/includes/script_libraries.inc.php");
             <p>Region</p>
         </div>
         <div class="input-main">
-            <input type="text" id="add_region" ></input>
+            <input type="text" style="width:100%;" id="add_region" ></input>
         </div>
         <br/>
     </div>
@@ -64,7 +64,7 @@ require_once("$root/includes/script_libraries.inc.php");
             <p>Subregion</p>
         </div>
         <div class="input-main">
-            <input type="text" id="add_subregion" ></input>
+            <input type="text" style="width:100%;" id="add_subregion" ></input>
         </div>
         <br/>
     </div>
@@ -97,19 +97,18 @@ echo "<div class=\"page_container\">";
     //wine_form
     echo "<div class=\"con_single_form\" >";
         echo "<input type=\"hidden\" name=\"status\" id=\"status\"/>"; //hidden field to store form editStatus
-        //echo "<div class=\"con_single_form_inner\" >";
 
         //Title bar
         echo "<div class=\"con_title_bar\" >";
             //wine name
             echo "<div style=\"border-bottom: solid 1px darkgray; padding-bottom:5px; margin-top:5px; margin-bottom:5px;\" >";
-                echo "<div style=\"float:left; width:58px;\" >";
-                    echo "<img src=\"/images/wine_flat_grey_64.png\" height=\"48px\" width=\"48px\" >";
+                echo "<div style=\"float:left; width:3em;\" >";
+                    echo "<img style=\"width:2.5em; height:2.5em;\" src=\"/images/wine_flat_grey_64.png\"  >";
                 echo "</div>";
                 echo "<div style=\"width:auto; float:left; padding-top:5px;\" >";
                     echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >Wine Details</h1>";
                 echo "</div>";
-                echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:50px;\"  >";
+                echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:2em;\"  >";
                     echo "<img id=\"process_indicator\" src=\"/images/ajax-loader.gif\" height=\"24px\" width=\"24px\" />";
                 echo "</div>";
                 echo "<div class=\"clear\"></div>";
@@ -118,16 +117,16 @@ echo "<div class=\"page_container\">";
         echo "</div>"; //con_title_bar
 
         //Column 1
-        echo "<div class=\"con_column_2_1\" id=\"wine_form_content\" >";
+        echo "<div class=\"rwd-con-whole\" id=\"wine_form_content\" >";
             //filled by jquery load method - rpc_wine_form_html.php
         echo "</div>";
 
         //Column 2
-        echo "<div class=\"con_column_2_2\" >";
-            echo "<div style=\"float:left; margin-top:5px; margin-left:10px;\" id=\"con_listBox_vintages\" >";
-                // vintages/rpc_listBox_vintages_html.php
-            echo "</div>"; //vintages listBox
-        echo "</div>";
+        //echo "<div class=\"con_column_2_2\" >";
+        //    echo "<div style=\"float:left; margin-top:5px; margin-left:10px;\" id=\"con_listBox_vintages\" >";
+        //        // vintages/rpc_listBox_vintages_html.php
+         //   echo "</div>"; //vintages listBox
+        //echo "</div>";
 
         
         echo "<div id=\"error_labels\" class=\"clear\" style=\"padding:10px; display:none;\" >";
@@ -143,10 +142,10 @@ echo "<div class=\"page_container\">";
             }
             echo "<input type=\"button\" name=\"btn_close\" id=\"btn_close\" value=\"Close\" class=\"btn_close form_input\" />";
 
-            if($_SESSION['var_wine_temp']['status']==1){ //add vintage check box
-                echo "<input type=\"checkbox\" style=\"margin-left:20px;\" value=\"Add Vintage\" name=\"add_vintage\" id=\"chk_add_vintage\" checked>";
-                echo "<label for=\"add_vintage\"> Add Vintage</label>";
-            }
+            //if($_SESSION['var_wine_temp']['status']==1){ //add vintage check box
+            //    echo "<input type=\"checkbox\" style=\"margin-left:20px;\" value=\"Add Vintage\" name=\"add_vintage\" id=\"chk_add_vintage\" checked>";
+            //    echo "<label for=\"add_vintage\"> Add Vintage</label>";
+            //}
 
         echo "</div>";
 
@@ -329,8 +328,9 @@ $(document).ready(function(){
                                 }
                             );
 
-                            //add vintage for new wines if checked
-                            if(data.save_type==='db insert' && $("#chk_add_vintage:checked").val() !== undefined){
+                            //go straigh to add new vintage for new wines
+                            //if(data.save_type==='db insert' && $("#chk_add_vintage:checked").val() !== undefined){
+                            if(data.save_type==='db insert'){
                                 //new wine - checkbox selected so create new vintage
                                 console.log('add vintage - redirect to vintage page');
                                 var rtn_url = "/index.php"; //set rtn url to index rather than this_page
@@ -1518,6 +1518,20 @@ $(document).ready(function(){
         
         var def = $.Deferred();
         
+        //determine screen size
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 370;
+            positionMy = "left bottom";
+            positionAt = "right top";
+            positionOf = '#btn_add_producer'
+        } else {
+            dialogWidth = windowWidth;
+            positionMy = "right top+20px";
+            positionAt = "right bottom";
+            positionOf = "#top_nav";
+        }  
+        
         if( $("#add_producer").val() === $( "#producer" ).val() ){
             var automated_add = true; //set flag if triggered automatically on blur event
             console.log('automated_add');
@@ -1525,7 +1539,7 @@ $(document).ready(function(){
         
         $("#dialog-producer").dialog({
             modal: true,
-            width: 365,
+            width: dialogWidth,
             height:205,
             buttons: {
                 OK: function() {
@@ -1552,7 +1566,7 @@ $(document).ready(function(){
                 }
             },
             dialogClass: "clean-dialog",
-            position: { my: "left bottom", at: "right top", of: '#btn_add_producer' }
+            position: { my: positionMy, at: positionAt, of: positionOf }
         });
         
         return def.promise();

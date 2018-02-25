@@ -2,7 +2,8 @@
 /* 
  * user registration and logon functions
  */
-$root = $_SERVER['DOCUMENT_ROOT'];
+//$root = $_SERVER['DOCUMENT_ROOT'];
+Global $root;
 require_once("$root/classes/class.db.php");
 require_once("$root/classes/class.user.php");
 

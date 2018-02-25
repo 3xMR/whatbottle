@@ -37,7 +37,7 @@ if(!empty($_SESSION['var_acquire']['var_acquire_vintages'])){
                 echo "<th>Paid</th>";
                 echo "<th>Total</th>";
                 if(is_authed()){
-                    echo "<th style=\"width:30px;\"></th>";
+                    echo "<th></th>";
                 }    
             echo "</tr>";
         echo "</thead>";
@@ -45,30 +45,30 @@ if(!empty($_SESSION['var_acquire']['var_acquire_vintages'])){
         //footer
          echo "<tfoot>";
             echo "<tr id=\"total_row\">";
-                echo "<td id=\"vintage_cell\" style=\"width:350px;\" >";
+                echo "<td id=\"vintage_cell\" >";
                     echo "&nbsp;";
                 echo "</td>";
-                echo "<td id=\"qty_total_cell\" >";
-                    echo "<input type=\"number\" step=\"0\" class=\"table_input readonly\" style=\"width:35px; text-align:center; border:none;\" name=\"qty_total\" id=\"qty_total\" READONLY $disabled/>";
+                echo "<td id=\"qty_total_cell\" style=\"width:3em;\" >";
+                    echo "<input type=\"number\" step=\"0\" class=\"table_input readonly\" style=\"text-align:center; border:none;\" name=\"qty_total\" id=\"qty_total\" READONLY $disabled/>";
                 echo "</td>";
-                echo "<td id=\"full_price_total_cell\" >";
+                echo "<td id=\"full_price_total_cell\" style=\"width:4em;\" >";
                     echo "&nbsp;";
                 echo "</td>";
-                echo "<td id=\"discount_percent_cell\" >";
+                echo "<td id=\"discount_percent_cell\" style=\"width:5em;\" >";
                     echo "&nbsp;";
                 echo "</td>";
-                echo "<td id=\"discount_cell\" >";
+                echo "<td id=\"discount_cell\" style=\"width:5em;\" >";
                     echo "&nbsp;";
                 echo "</td>";
-                echo "<td id=\"price_paid_cell\" >";
+                echo "<td id=\"price_paid_cell\" style=\"width:5em;\" >";
                     echo "&nbsp;";
                 echo "</td>";
-                echo "<td id=\"total_price_paid_cell\" >";
+                echo "<td id=\"total_price_paid_cell\" style=\"width:5em;\" >";
                     echo "<input type=\"number\" step=\"0\" class=\"table_input readonly\" name=\"total_price_paid_total\" id=\"total_price_paid_total\" disabled/>";
                 echo "</td>";
                 if(is_authed()){
-                    echo "<td id=\"remove_cell\" >";
-                        echo "&nbsp;";
+                    echo "<td id=\"remove_cell\" style=\"width:2em;\" >";
+                
                     echo "</td>";
                 }
                 
@@ -109,7 +109,7 @@ if(!empty($_SESSION['var_acquire']['var_acquire_vintages'])){
                     echo "<input type=\"hidden\" name=\"vintage_has_acquire_id\" id=\"vintage_has_acquire_id_$id\" value=\"$id\" />";
                 echo "</td>";
                 echo "<td id=\"qty_cell\" >";
-                    echo "<input type=\"number\" step=\"0\" class=\"qty table_input\" style=\"width:35px; text-align:center; border:none;\" name=\"$id:_qty\" id=\"qty_$id\" value=\"$qty\" $disabled/>";
+                    echo "<input type=\"number\" step=\"0\" class=\"qty table_input\" style=\" text-align:center; border:none;\" name=\"$id:_qty\" id=\"qty_$id\" value=\"$qty\" $disabled/>";
                 echo "</td>";
                 echo "<td id=\"full_price_cell\" >";
                     echo "<input type=\"number\" step=\"0\" class=\"full_price table_input\" name=\"$id:_full_price\" id=\"full_price_$id\" value=\"$unit_price\" $disabled/>";
@@ -129,7 +129,7 @@ if(!empty($_SESSION['var_acquire']['var_acquire_vintages'])){
                 if(is_authed()){
                     //only show delete button if authed
                     echo "<td style=\"text-align:center; vertical-align:middle;\" class=\"\" id=\"remove_cell\" >";
-                        echo "<img class=\"btn_remove_row click\" id=\"remove_$id\" src=\"/images/more_grey_flat_24.png\" height=\"18px\" width=\"18px\"/>";
+                        echo "<img class=\"btn_remove_row click\" id=\"remove_$id\" src=\"/images/show_grey_flat_24.png\" height=\"18px\" width=\"18px\"/>";
                     echo "</td>";
                 }
            echo "</tr>";
@@ -141,9 +141,7 @@ if(!empty($_SESSION['var_acquire']['var_acquire_vintages'])){
 
 } else {
     //var_vintages does not exist
-    echo "</br>";
-    echo "<p>No Vintages here yet..</p>";
-    //echo "<hr>";
+    echo "<p style=\"font-size:0.8em;\" >No Vintages here yet..</p>";
 }
 
         

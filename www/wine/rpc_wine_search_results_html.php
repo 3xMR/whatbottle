@@ -8,25 +8,16 @@ require_once("$root/classes/class.db.php");
 require_once("$root/classes/class.wine_search.php");
 //$timer = new Timer();
 
-
-//search variables
-//$wine_id = $_SESSION['var_wine_search_criteria']['wine_id'];
-//$search_text = $_SESSION['var_wine_search_criteria']['search_text'];
-//$producer_id = $_SESSION['var_wine_search_criteria']['producer_id'];
-//$winetype_id = $_SESSION['var_wine_search_criteria']['winetype_id'];
-//$country_id = $_SESSION['var_wine_search_criteria']['country_id'];
-//$region_id = $_SESSION['var_wine_search_criteria']['region_id'];
-//$subregion_id = $_SESSION['var_wine_search_criteria']['subregion_id'];
-//$Award = $_SESSION['var_wine_search_criteria']['check_has_award'];
-//$Note = $_SESSION['var_wine_search_criteria']['check_has_note'];
-//$merchant_id = $_SESSION['var_wine_search_criteria']['merchant_id'];
-//$acquire_id = $_SESSION['var_wine_search_criteria']['acquire_id'];
-//$available = $_SESSION['var_wine_search_criteria']['available'];
-
-
-
 //get list of wines
 $search_obj = new wine_search();
+
+//set number of results per page
+$viewportHeight = filter_input(INPUT_POST, 'viewportHeight');
+$viewportHeight -= 150; //remove height of static elements
+$rowHeight = 45;
+$numRows = floor($viewportHeight/$rowHeight);
+if($numRows < 3){ $numRows = 10;}
+$search_obj ->set_results_per_page($numRows);
 
 $varSearchParam = $_SESSION['var_wine_search_criteria']; //get search parameters from session
 
@@ -75,9 +66,9 @@ if($results){
                     //expand indicator
                     echo "<td valign=middle >";
                         if($vintage_count>0){
-                           echo "<div class=\"wine_panel_toggle click arrow_right\" id=\"arrow_indicator_$wine_id\" style=\"width:30px; height:30px; margin-left:10px; background-color:\" ></div>";
+                           echo "<div class=\"wine_panel_toggle click arrow_right\" id=\"arrow_indicator_$wine_id\" style=\"width:30px; height:30px; margin-left:5px; background-color:\" ></div>";
                         }else{
-                            echo "<div style=\"width:30px; height:30px; margin-left:10px;\" ></div>";
+                            echo "<div style=\"width:30px; height:30px; margin-left:5px;\" ></div>";
                         }
                     echo "</td>";
 
@@ -93,14 +84,15 @@ if($results){
                     echo "</td>";
 
                     //country flag
-                    echo "<td width=60 align=center class=\"wine_panel_toggle click\" >";
+                    echo "<td width=60px align=center class=\"wine_panel_toggle click\" >";
                         echo "<img src=\"$flag\" width=\"28px\" height=\"28px\" />";
                     echo "</td>";
 
                     //wine name
-                    echo "<td width=800 align=left  class=\"wine_panel_toggle click\" >";
-                        echo "<p style=\"color:#363A36; font-size:18px; padding-top:3px; padding-bottom:3px;\">$full_name</p>";
-                        echo "<p style=\"color:darkgray; font-size:14px; padding-bottom:3px;\">$location</p>";
+                    echo "<td width=800px align=left  class=\"wine_panel_toggle click\" >";
+                        //echo "<p style=\"color:#363A36; line-height:1.2em; font-size:1em; padding-top:5px; padding-bottom:3px;\">$full_name</p>";
+                        echo "<h3>$full_name</h3>";
+                        echo "<p style=\"color:darkgray; font-size:0.8em; padding-bottom:5px;\">$location</p>";
                     echo "</td>";
 
                     echo "<td valign=middle >";
@@ -121,7 +113,6 @@ if($results){
         echo "<div class=\"vintages_panel hidden\" id=\"vintages_panel_$wine_id\" >";
 
             foreach ($rst_vintages as $key => $rowVintage ){
-                
                 //print_r($rowVintage);
                 $vintage_id = $rowVintage['vintage_id'];
                 $year = $rowVintage['year'] == 0 ? "n/a" : $rowVintage['year'];
@@ -130,71 +121,56 @@ if($results){
                 $vintage_quality = $rowVintage['vintage_quality'];
                 $quality_width = ($vintage_quality*10)."px";
                 $vintage_value = $rowVintage['vintage_value'];
-                $value_width = ($vintage_value*18)."px";
+                $value_width = ($vintage_value*20)."px";
                 
                 
-                //display vintage
-                echo "<div class=\"vintage_accordian\" id=\"vintage_accordian_$vintage_id\" >";
-                    echo "<table class=\"vintage\" id=\"vintage_accordian_table\">";
-                        echo "<tr>";
-                            echo "<td style=\"vertical-align:middle;\" class=\"year vintage_panel_toggle\" >";
-                                echo "<div style=\"float:left; padding-left:15px; \" >";
-                                    echo "<div class=\"click vintage_expanded_indicator arrow_right\" id=\"arrow_indicator_vintage_$vintage_id\" style=\"width:30px; height:30px;\" ></div>";
-                                echo "</div>";
-                            echo "</td>";
-                            echo "<td style=\"vertical-align:middle;\" class=\"year vintage_panel_toggle\" >";
-                                echo "<div style=\"float:left; \" >";
-                                    echo "<h2 style=\"padding-right:20px;\" >$year</h2>";
-                                echo "</div>";
-                            echo "</td>";
-                            echo "<td style=\"vertical-align:middle;\"  class=\"rating vintage_panel_toggle\" id=\"vintage_bar_$vintage_id\">";
-                                //ratings
-                                echo "<div class=\"vertical-centre\" style=\"float:left; height:22px; width:200px;\" >";
-                                    echo "<div class=\"quality-static-rating-medium\" style=\"width:$quality_width; float:left; margin-right:10px;\" ></div>";
-                                    echo "<div class=\"value-static-rating-medium\" style=\"width:$value_width; float:left; \"></div>";
-                                echo "<div>";
-                            echo "</td>";
-                            echo "<td class=\"spacer vintage_panel_toggle\" id=\"vintage_bar_$vintage_id\">";
-                                echo "&nbsp";
-                            echo "</td>";
-                            
-
-                            //vintage buttons
-                            echo "<td class=\"actions\" >";
-                            //echo "<div class=\"con-button\" >";
-                                echo "<img class=\"btn_edit_vintage click\" value=\"$vintage_id\" id=\"edit_$vintage_id\" name=\"btn_edit_vintage\" src=\"/images/edit_flat_grey_24.png\" width=\"18\" height=\"18\">";
-                            echo "</td>";
-                            //echo "</div>";
-                            echo "<td class=\"actions\">";
-                               echo "<img class=\"btn_add_to_basket click\" id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"18\" height=\"18\">";
-                            echo "</td>";
-                            echo "<td class=\"actions\" >";
-                                if (is_authed()){
-                                    echo "<img value=\"$vintage_id\" class=\"btn_add_tasting_note click\" id=\"add_note_$vintage_id\" src=\"/images/notes_flat_grey_24.png\" width=\"18px\" height=\"18px\" >";
-                                }
-                            echo "</td>";
-          
-                    echo "</tr>";
-                echo "</table>";
-
-                echo "<div class=\"vintage_details\" id=\"vintage_details_$vintage_id\" >";
-
-                    echo "<div class=\"left_column\" style=\"width:20%; \" >";
-
+                //vintage header bar
+                echo "<div class=\"vintage_accordian vintage_panel_toggle \" data-vintage_id=\"$vintage_id\" id=\"vintage_accordian_$vintage_id\" style=\"display:flex; flex-direction:row; align-items:center; width:100%; height:42px; background-color:;\" >"; //container for vintage header row
+                    echo "<div class=\"vintage_expanded_indicator click arrow_right\" data-vintage_id=\"$vintage_id\" id=\"arrow_indicator_vintage_$vintage_id\" style=\"width:16px; height:16px; margin-left:10px; background-color:;\" >";
+                    echo "</div>";
+                    echo "<div data-vintage_id=\"$vintage_id\" style=\"font-size:1.3em; margin-left:10px; background-color:;\" >";
+                        echo "<p>$year</p>";
+                    echo "</div>";
+                    echo "<div class=\"quality-static-rating-medium\" style=\"width:$quality_width; margin-left:10px;\" ></div>";
+                    echo "<div class=\"value-static-rating-medium\" style=\"width:$value_width; margin-left:10px; \"></div>";
+                    echo "<div class=\"vintage_buttons hide_small_screen \" style=\"margin-left:auto; background-color:;\" >";
+                        echo "<img class=\"btn_edit_vintage click \" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"edit_$vintage_id\" name=\"btn_edit_vintage\" src=\"/images/edit_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
+                        echo "<img class=\"btn_add_to_basket click \" data-vintage_id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
+                        if (is_authed()){
+                            echo "<img class=\"btn_add_tasting_note click\" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"add_note_$vintage_id\" src=\"/images/notes_flat_grey_24.png\" width=\"18px\" height=\"18px\" style=\"margin:10px;\" >";
+                        }                        
+                    echo "</div>";
+                    //only show 'more' button on small screen
+                    echo "<div class=\"vintage_buttons show_medium_screen \" style=\"margin-left:auto; background-color:;\" >";
+                        if (is_authed()){
+                            echo "<div class=\"vintage_menu click\" id=\"vintage_menu_$vintage_id\" style=\"float:right; padding-left:10px; padding-right:15px;\">";
+                                echo "<img value=\"$vintage_id\"  src=\"/images/show_grey_flat_32.png\" width=\"24px\" height=\"24px\" >";
+                            echo "</div>";
+                        }
+                    echo "</div>";
+                echo "</div>";
+                
+                //vintage details container
+                echo "<div class=\"vintage_details hidden\" id=\"vintage_details_$vintage_id\"  >";
+                   
+                    echo "<div class=\"left-column\" >";
+    
                         //Label Image
-                        echo "<div class=\"wordwrap\" style=\"padding-top:10px; \" >";
-
-                            $file_name = $rowVintage['image1'];
-                            $new_root = rtrim($root, '/\\');
+                        $file_name = $rowVintage['image1'];
+                        $new_root = rtrim($root, '/\\');
+                        if(!$file_name){
+                            $class = "hide_medium_small_screen"; //if no image added show nothing on smaller screens
+                        }
+                        
+                        echo "<div class=\"vintage-image $class\" >";
 
                             if($file_name > ""){
                                 //TODO: resolve issue with trailing slash difference between .local and .com
-
                                 $image_path = $label_path.$file_name;
                                 if(file_exists($new_root.$image_path)){
                                     echo "<img style=\"display:block; margin-left:auto; margin-right:auto;\" ".fnImageResize($image_path,$new_root,160)." />";
                                 } else {
-                                    echo "<br/>file NOT found";
+                                    echo "<br/>file not found";
                                 }
                             }else{
                                 //no image file provided show default
@@ -205,86 +181,99 @@ if($results){
                             }
 
                         echo "</div>";
-
-                    echo "</div>"; //left_column
-
-                    echo "<div class=\"centre_column\" style=\"width:40%; padding-left:20px; border-left:dashed 1px lightgray;\" >";
-
-                         //Wine Type
-                        echo "<h3>Type</h3>";
-                        echo "<p class=\"text_2\" >".$rowVintage['winetype']."</p>";
                         
-                        //Drinking Guide
-                        if(!empty($rowVintage['drink_year_to'])){
-                           echo "<h3>Drinking Guide</h3>";
-                           $drink_text = null;
-                           if(!empty($rowVintage['drink_year_from'])){
-                               $drink_text = $rowVintage['drink_year_from']." - ";
-                           }
-                           $drink_text .= $rowVintage['drink_year_to'];
-                           echo "<p class=\"text_2\" >$drink_text</p>";
-                        }
+                        echo "<div class=\"clear\"></div>";
 
+                    echo "</div>"; //left-column
+
+                    //echo "<div class=\"centre_column\" style=\"padding-left:20px; border-left:dashed 1px lightgray;\" >";
+                    echo "<div class=\"rwd-con-half\" >"; 
+                    
+                         //Wine Type
+                        echo "<div class=\"vintage-section \" >";
+                            echo "<h3>Type</h3>";
+                            echo "<p class=\"text_2\" >".$rowVintage['winetype']."</p>";
+                        echo "</div>";
+                        
                         //Grapes
-                        echo "<h3 style=\"margin-top:10px;\">Grapes</h3>";
                         $grapes_obj = new vintage_has_grape;
                         $where = " vintage_id = ".$vintage_id;
                         $var_grapes = $grapes_obj -> get_extended($where);
 
                         if(!empty($var_grapes)){
-                            foreach ($var_grapes as $var_grape){
-                                echo "<p class=\"text_2\">";
-                                    echo $var_grape['grape'];
-                                    if($var_grape['percent']>0){
-                                        echo " (".$var_grape['percent']."%)";
-                                    }
-                                echo "</p>";
-                            }
-                        } else {
-                            //no grapes added
-                            echo "<p class=\"text_2\"> - </p>";
+                            echo "<div class=\"vintage-section \" >";
+                                echo "<h3>Grapes</h3>";
+                                foreach ($var_grapes as $var_grape){
+                                    echo "<p class=\"text_2\" style=\"padding-bottom:2px;\" >";
+                                        echo $var_grape['grape'];
+                                        if($var_grape['percent']>0){
+                                            echo " (".$var_grape['percent']."%)";
+                                        }
+                                    echo "</p>";
+                                }
+                            echo "</div>";
                         }
                       
 
                         //Alcohol
-                        echo "<h3 style=\"margin-top:10px;\">Alcohol</h3>";
-                        $str_alcohol = $rowVintage['alcohol'] > 0 ?  $rowVintage['alcohol']."%" : " - ";
-                        echo "<p class=\"text_2\">$str_alcohol</p>";
-                
+                        if($rowVintage['alcohol']>0){
+                            echo "<div class=\"vintage-section \" >";
+                                echo "<h3>Alcohol</h3>";
+                                //$str_alcohol = $rowVintage['alcohol'] > 0 ?  $rowVintage['alcohol']."%" : " - ";
+                                echo "<p class=\"text_2\">".$rowVintage['alcohol']."%</p>";
+                            echo "</div>";
+                        }
+                        
+                        //Drinking Guide  
+                        if(!empty($rowVintage['drink_year_to'])){
+                           echo "<div class=\"vintage-section \" >";
+                                echo "<h3>Drinking Guide</h3>";
+                                $drink_text = null;
+                                if(!empty($rowVintage['drink_year_from'])){
+                                    $drink_text = $rowVintage['drink_year_from']." - ";
+                                }
+                                $drink_text .= $rowVintage['drink_year_to'];
+                                echo "<p class=\"text_2\" >$drink_text</p>";
+                            echo "</div>";
+                        }
                         
                         //Awards
                         $awards_obj = new vintage_has_award();
                         $where = "vintage_id = $vintage_id";
                         $var_awards = $awards_obj -> get_extended($where);
-                        
-                        echo "<h3 style=\"margin-top:10px;\">Awards:</h3>";
+
                         if(!empty($var_awards)){
-                            foreach ($var_awards as $key => $var_award){
-                                echo "<p class=\"text_2\" >".$var_award['award_org']." - ".$var_award['award']."</p>";
-                            }
-                        } else{
-                            echo "<p class=\"text_2\"> - </p>"; //no awards to display
+                            echo "<div class=\"vintage-section \" >";
+                                echo "<h3>Awards:</h3>";
+                                foreach ($var_awards as $key => $var_award){
+                                    echo "<p class=\"text_2\" style=\"padding-bottom:2px;\" >".$var_award['award_org']." - ".$var_award['award']."</p>";
+                                }
+                            echo "</div>";
                         }
                         
-                        //Comments
-                        echo "<h3 style=\"margin-top:10px;\">Comments</h3>";
-                        $str_comments = !empty( $rowVintage['vintage_notes'] ) ? $rowVintage['vintage_notes'] : " - ";
-                        echo "<p class=\"text_2\">$str_comments</p>";
+                    echo "</div>"; //rwd-con-half    
                         
+                    //echo "<div class=\"right_column\" style=\"text-align:left; \" >";
+                    echo "<div class=\"rwd-con-half\" >";  
+                    
+                    //Comments
+                    if(!empty( $rowVintage['vintage_notes'] )){
+                        echo "<div class=\"vintage-section \" >";
+                            echo "<h3>Comments</h3>";
+                            //$str_comments = !empty( $rowVintage['vintage_notes'] ) ? $rowVintage['vintage_notes'] : " - ";
+                            echo "<p class=\"text_2\">".$rowVintage['vintage_notes']."</p>";
+                        echo "</div>";
+                    }
 
-                    echo "</div>"; //centre_column
-
-
-                    echo "<div class=\"right_column\" style=\"width:40%; text-align:left; \" >";
-                        
-                        //Tasting Notes
-                        echo "<h3>Tasting Notes</h3>";
-                        $obj = new tasting_note();
-                        $where = "vintage_id = $vintage_id";
-                        $sort = "note_date DESC";
-                        $var_notes = $obj -> get($where, $columns=false, $group=false, $sort, $limit=false);
-
-                        if($var_notes){
+                    //Tasting Notes
+                    $obj = new tasting_note();
+                    $where = "vintage_id = $vintage_id";
+                    $sort = "note_date DESC";
+                    $var_notes = $obj -> get($where, $columns=false, $group=false, $sort, $limit=false);
+                    
+                    if($var_notes){
+                        echo "<div class=\"vintage-section \" >";
+                            echo "<h3>Tasting Notes</h3>";
                             foreach($var_notes as $note){
                                 //return list of award orgs
                                 $note_id = $note['note_id'];
@@ -296,23 +285,22 @@ if($results){
                                 $quality_width .= "px";
                                 $note_date_db = $note['note_date'];
                                 $note_date = $note_date_db > 0 ? date_us_to_uk($note_date_db,'d-M-Y') : null; //convert date
-                                
-                                echo "<div class=\"note_link link ignore_dirty\" id=\"$note_id\" style=\"float:left; width:300px; margin-bottom:5px; cursor:pointer; \">";
+
+                                echo "<div class=\"note_link link ignore_dirty\" id=\"$note_id\" style=\"float:left; margin-bottom:5px; cursor:pointer; \">";
                                     echo "<div class=\"vertical-centre\" style=\"height:18px;\" >";
-                                        echo "<div style=\"width:85px; float:left;\"><p class=\"text_2\" style=\"float:left\" >$note_date</p></div>";
+                                        echo "<div style=\"width:100px; float:left; white-space:nowrap;\"><p class=\"text_2\" style=\"float:left\" >$note_date</p></div>";
                                         echo "<div class=\"quality-static-rating-small\" style=\"float:left; margin-left:15px; width:$quality_width; \" ></div>";
                                         echo "<div class=\"value-static-rating-small\" style=\"float:left; margin-left:5px; width:$value_width; \" ></div>";
                                     echo "</div>";
                                 echo "</div>";
                                 echo "<div class=\"clear\" ></div>";
                             }
-                        } else {
-                            echo "<p class=\"text_2\"> - </p>";
+                            echo "</div>";
                         }
-
+                        
                         //Acquisitions
-                        echo "<div id=\"con_acquisitions_vintage\" >";
-                            echo "<h3 style=\"margin-top:5px; \" >Acquisitions</h3>";
+                        echo "<div id=\"con_acquisitions_vintage\" class=\"vintage-section \" >";
+                            echo "<h3>Acquisitions</h3>";
                             $acquire_obj = new vintage_has_acquire();
                             $where = "vintage_id = $vintage_id";
                             $columns = "";
@@ -330,32 +318,30 @@ if($results){
                                     $discounted_price = number_format($acquire['discounted_price'],2);
                                     $unit_price = number_format($acquire['unit_price'],2);
 
-                                    echo "<div class=\"acquire_link link ignore_dirty\" id=\"$acquire_id\" style=\"float:left; width:325px; padding-bottom:5px; margin-bottom:5px; border-bottom:1px dashed lightgray;\" >";
-
-                                        echo "<div style=\"float:left; width:75%; color:#606060;\" >";
-                                            echo "<p>$acquire_merchant</p>";
-                                        echo "</div>";
-                                        echo "<div style=\"float:right; text-align:right; width:25%;\" >";
+                                    echo "<div class=\"acquire_link link ignore_dirty\" id=\"$acquire_id\" data-vintage_id=\"$vintage_id\" style=\"float:left; width:auto; padding-bottom:5px; margin-bottom:5px; border-bottom:1px dashed lightgray;\" >";
+                                        echo "<div style=\"float:left; width:100px; text-align:left;\" >";
                                             echo "<p>$acquire_date</p>";
                                         echo "</div>";
-
+                                        echo "<div style=\"float:left; margin-left:15px;\" >";
+                                            echo "<p>$acquire_merchant</p>";
+                                        echo "</div>";
+                                        
                                         echo "<div class=\"clear\" ></div>";
 
                                         echo "<div style=\"margin-top:7px; \">"; //second row
-
-                                            echo "<div style=\"float:left; width:33.3%; \" >";
-                                                echo "<p style=\"font-size:80%; display:inline; color:#B5ADAD;\" >Quantity:</p>";
-                                                echo "<p style=\"font-size:80%; display:inline; \" > $acquire_qty</p>";
+                                            echo "<div style=\"float:left; width:auto;\" >";
+                                                echo "<p style=\"font-size:0.8em; display:inline; \" >Quantity:</p>";
+                                                echo "<p class=\"text_2\" style=\"font-size:0.8em; display:inline; \" > $acquire_qty</p>";
                                             echo "</div>";
 
-                                            echo "<div style=\"float:left; width:33.3%; \" >";
-                                                echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Price Paid:</p>";
-                                                echo "<p style=\"font-size:80%; display:inline;\" > £ $discounted_price</p>";
+                                            echo "<div style=\"float:left; width:auto; margin-left:15px; \" >";
+                                                echo "<p style=\"font-size:0.8em; display:inline;\" >Price Paid:</p>";
+                                                echo "<p class=\"text_2\" style=\"font-size:0.8em; display:inline;\" > £ $discounted_price</p>";
                                             echo "</div>";
 
-                                            echo "<div style=\"float:left; text-align:right;  width:33.3%; \" >";
-                                                echo "<p style=\"font-size:80%; color:#B5ADAD; display:inline;\" >Full Price:</p>";
-                                                echo "<p style=\"font-size:80%; display:inline;\" > £ $unit_price</p>";
+                                            echo "<div style=\"float:left; text-align:right;  width:auto; margin-left:15px;  \" >";
+                                                echo "<p class=\"text_2\" style=\"font-size:0.8em; display:inline;\" >Full Price:</p>";
+                                                echo "<p style=\"font-size:0.8em; display:inline;\" > £ $unit_price</p>";
                                             echo "</div>";                                        
 
                                         echo "</div>"; //second_row
@@ -365,28 +351,21 @@ if($results){
                                     echo "</div>"; //acquire_link
                                 } //foreach acquisition
                                 
+                                echo "<div class=\"clear\" ></div>";
+                                
                                 //Available details
-                                echo "<div id=\"con_available_$vintage_id\" style=\"float:left; width:100%;\" >";
-                                    echo "<div class=\"vertical-centre input-main-label\" style=\"margin-top:5px;\" >";
-                                        echo "<p style=\"color:#B5ADAD;\" >Available Bottles</p>";
-                                        echo "<input type=\"image\" class=\"btn_edit_override\" style=\"float:left; margin-left:10px;\" value=\"$vintage_id\" id=\"override_$vintage_id\" name=\"btn_edit_override\" src=\"/images/edit_flat_grey_24.png\" width=\"16px\" height=\"16px\" >";
+                                echo "<div id=\"con_available_$vintage_id\" >";
+                                    echo "<div class=\"vertical-centre input-main-label\" style=\"margin-bottom:0px;\" >";
+                                        echo "<h3 style=\"display:inline-block; float:left;\" >Available Bottles</h3>";
+                                        echo "<input type=\"image\" class=\"btn_edit_override\" style=\"float:left; margin-left:10px; \" value=\"$vintage_id\" id=\"override_$vintage_id\" name=\"btn_edit_override\" src=\"/images/edit_flat_grey_24.png\" width=\"16px\" height=\"16px\" >";
                                     echo "</div>";
-                                    echo "<div class=\"clear\"></div>";
+                                    //echo "<div class=\"clear\"></div>";
                                     $obj_vintage = new vintage($vintage_id);
-                                    
                                     $acquisition_bottle_count = $obj_vintage ->get_acquisition_bottle_count();
                                     if($acquisition_bottle_count){
-                                        echo "<div style=\"float:left; width:33.3%; \" >";
-                                            echo "<p style=\"color:#B5ADAD; display:inline;\" >Acquired: </p>";
-                                            echo "<p style=\"display:inline;\" >$acquisition_bottle_count</p>";
-                                        echo "</div>";   
-                                    }
-                                    
-                                    $available_bottle_count = $obj_vintage ->get_available_bottle_count();
-                                    if(is_array($available_bottle_count)){
-                                        echo "<div style=\"float:left; width:33.3%; \" >";
-                                            echo "<p style=\"font-size:100%; color:#B5ADAD; display:inline;\" >Available: </p>";
-                                            echo "<p style=\"font-size:100%; display:inline;\" >".$available_bottle_count['available_bottles']." </p>";
+                                        $available_bottle_count = $obj_vintage ->get_available_bottle_count();
+                                        echo "<div style=\"float:left; clear:left; \" >";
+                                            echo "<p> Available: ".$available_bottle_count['available_bottles']."&nbsp; &nbsp; Acquired: ". $acquisition_bottle_count."</p>";
                                         echo "</div>";
                                     }
                                     echo "<div class=\"clear\"></div>";
@@ -394,19 +373,19 @@ if($results){
   
                                 
                             } else {
-                                echo "<p class=\"text_2\"> - </p>"; //no acquisitions
+                                echo "<p> - </p>"; //no acquisitions
                             }
                         
                             echo "<div class=\"clear\" ></div>";
                             
                         echo "</div>"; //con_acquisitions_vintage
 
-                    echo "</div>"; //right_column
+                    echo "</div>"; //rwd-con-half
 
 
                     echo "<div class=\"clear\"></div>"; //clear all three columns
 
-                echo "</div>"; //vintage_details
+                //echo "</div>"; //vintage_details
 
             echo "</div>"; //vintage_accordian
 
@@ -428,7 +407,7 @@ if($results){
         echo "<div class=\"vertical-centre con_pagination\" id=\"index_pagination\" style=\"height:30px; width:250px; padding-right:10px; float:right; \" >";
             echo "<img class=\"click\" id=\"btn_last\" src=\"/images/last_grey_flat_24.png\" height=\"18px\" width=\"18px\" />";
             echo "<img class=\"click\" id=\"btn_next\" src=\"/images/next_grey_flat_24.png\" height=\"18px\" width=\"18px\" />";
-            echo "<span style=\"color:darkgray; font-size:14px;\" >$str_pagination</span>";
+            echo "<p style=\"color:darkgray; font-size:0.8em;\" >$str_pagination</p>";
             echo "<img class=\"click\" id=\"btn_prev\" src=\"/images/previous_grey_flat_24.png\" height=\"18px\" width=\"18px\" />";
             echo "<img class=\"click\" id=\"btn_first\" src=\"/images/first_grey_flat_24.png\" height=\"18px\" width=\"18px\" />";
         echo "</div>";
