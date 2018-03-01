@@ -1,7 +1,12 @@
 <?php
 /* 
+ * Release 4.32
+ * Released: 01.03.2018
+ * Notes:
+ * Minor formating changes post major release
+ * 
  * Release 4.3
- * Released: 25.03.2018
+ * Released: 25.02.2018
  * Notes:
  * Major responsive design overhaul
  * Index, wine, vintage, acquisition and all dialogs now responsive design enabled

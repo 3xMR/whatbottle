@@ -91,7 +91,7 @@ if($results){
                     //wine name
                     echo "<td width=800px align=left  class=\"wine_panel_toggle click\" >";
                         //echo "<p style=\"color:#363A36; line-height:1.2em; font-size:1em; padding-top:5px; padding-bottom:3px;\">$full_name</p>";
-                        echo "<h3>$full_name</h3>";
+                        echo "<h3 style=\"margin-top:3px;\" >$full_name</h3>";
                         echo "<p style=\"color:darkgray; font-size:0.8em; padding-bottom:5px;\">$location</p>";
                     echo "</td>";
 
@@ -133,15 +133,16 @@ if($results){
                     echo "</div>";
                     echo "<div class=\"quality-static-rating-medium\" style=\"width:$quality_width; margin-left:10px;\" ></div>";
                     echo "<div class=\"value-static-rating-medium\" style=\"width:$value_width; margin-left:10px; \"></div>";
-                    echo "<div class=\"vintage_buttons hide_small_screen \" style=\"margin-left:auto; background-color:;\" >";
-                        echo "<img class=\"btn_edit_vintage click \" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"edit_$vintage_id\" name=\"btn_edit_vintage\" src=\"/images/edit_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
-                        echo "<img class=\"btn_add_to_basket click \" data-vintage_id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
-                        if (is_authed()){
+                    //vintage buttons
+                    echo "<div class=\"vintage_buttons hide_small_screen\" style=\"margin-left:auto; background-color:;\" >";
+                        if (is_authed()){    
+                            echo "<img class=\"btn_edit_vintage click \" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"edit_$vintage_id\" name=\"btn_edit_vintage\" src=\"/images/edit_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
+                            echo "<img class=\"btn_add_to_basket click \" data-vintage_id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
                             echo "<img class=\"btn_add_tasting_note click\" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"add_note_$vintage_id\" src=\"/images/notes_flat_grey_24.png\" width=\"18px\" height=\"18px\" style=\"margin:10px;\" >";
                         }                        
                     echo "</div>";
                     //only show 'more' button on small screen
-                    echo "<div class=\"vintage_buttons show_medium_screen \" style=\"margin-left:auto; background-color:;\" >";
+                    echo "<div class=\"vintage_buttons hide_medium_screen \" style=\"margin-left:auto; background-color:;\" >";
                         if (is_authed()){
                             echo "<div class=\"vintage_menu click\" id=\"vintage_menu_$vintage_id\" style=\"float:right; padding-left:10px; padding-right:15px;\">";
                                 echo "<img value=\"$vintage_id\"  src=\"/images/show_grey_flat_32.png\" width=\"24px\" height=\"24px\" >";
@@ -159,7 +160,7 @@ if($results){
                         $file_name = $rowVintage['image1'];
                         $new_root = rtrim($root, '/\\');
                         if(!$file_name){
-                            $class = "hide_medium_small_screen"; //if no image added show nothing on smaller screens
+                            $class = "hide_small_screen"; //if no image added show nothing on smaller screens
                         }
                         
                         echo "<div class=\"vintage-image $class\" >";
@@ -318,7 +319,7 @@ if($results){
                                     $discounted_price = number_format($acquire['discounted_price'],2);
                                     $unit_price = number_format($acquire['unit_price'],2);
 
-                                    echo "<div class=\"acquire_link link ignore_dirty\" id=\"$acquire_id\" data-vintage_id=\"$vintage_id\" style=\"float:left; width:auto; padding-bottom:5px; margin-bottom:5px; border-bottom:1px dashed lightgray;\" >";
+                                    echo "<div class=\"acquire_link link ignore_dirty\" id=\"$acquire_id\" data-vintage_id=\"$vintage_id\" style=\"float:left; width:100%; padding-bottom:5px; margin-bottom:5px; border-bottom:1px dashed lightgray;\" >";
                                         echo "<div style=\"float:left; width:100px; text-align:left;\" >";
                                             echo "<p>$acquire_date</p>";
                                         echo "</div>";
@@ -329,20 +330,22 @@ if($results){
                                         echo "<div class=\"clear\" ></div>";
 
                                         echo "<div style=\"margin-top:7px; \">"; //second row
-                                            echo "<div style=\"float:left; width:auto;\" >";
-                                                echo "<p style=\"font-size:0.8em; display:inline; \" >Quantity:</p>";
-                                                echo "<p class=\"text_2\" style=\"font-size:0.8em; display:inline; \" > $acquire_qty</p>";
+                                            echo "<div style=\"float:left; width:auto; margin-right:15px;\" >";
+                                                echo "<p style=\"font-size:0.85em; display:inline; \" >Qty:</p>";
+                                                echo "<p class=\" \" style=\"font-size:0.85em; display:inline; \" > $acquire_qty</p>";
                                             echo "</div>";
 
-                                            echo "<div style=\"float:left; width:auto; margin-left:15px; \" >";
-                                                echo "<p style=\"font-size:0.8em; display:inline;\" >Price Paid:</p>";
-                                                echo "<p class=\"text_2\" style=\"font-size:0.8em; display:inline;\" > £ $discounted_price</p>";
+                                            echo "<div style=\"float:left; text-align:right; width:auto; margin-right:15px;\" >";
+                                                echo "<p class=\" \" style=\"font-size:0.85em; display:inline;\" >Price:</p>";
+                                                echo "<p style=\"font-size:0.85em; display:inline;\" > £ $unit_price</p>";
+                                            echo "</div>";   
+                                            
+                                            echo "<div style=\"float:left; width:auto; \" >";
+                                                echo "<p style=\"font-size:0.85em; display:inline;\" >Paid:</p>";
+                                                echo "<p class=\" \" style=\"font-size:0.85em; display:inline;\" > £ $discounted_price</p>";
                                             echo "</div>";
 
-                                            echo "<div style=\"float:left; text-align:right;  width:auto; margin-left:15px;  \" >";
-                                                echo "<p class=\"text_2\" style=\"font-size:0.8em; display:inline;\" >Full Price:</p>";
-                                                echo "<p style=\"font-size:0.8em; display:inline;\" > £ $unit_price</p>";
-                                            echo "</div>";                                        
+                                     
 
                                         echo "</div>"; //second_row
 
@@ -357,7 +360,9 @@ if($results){
                                 echo "<div id=\"con_available_$vintage_id\" >";
                                     echo "<div class=\"vertical-centre input-main-label\" style=\"margin-bottom:0px;\" >";
                                         echo "<h3 style=\"display:inline-block; float:left;\" >Available Bottles</h3>";
-                                        echo "<input type=\"image\" class=\"btn_edit_override\" style=\"float:left; margin-left:10px; \" value=\"$vintage_id\" id=\"override_$vintage_id\" name=\"btn_edit_override\" src=\"/images/edit_flat_grey_24.png\" width=\"16px\" height=\"16px\" >";
+                                        if(is_authed()){
+                                            echo "<input type=\"image\" class=\"btn_edit_override\" style=\"float:left; margin-left:10px; \" value=\"$vintage_id\" id=\"override_$vintage_id\" name=\"btn_edit_override\" src=\"/images/edit_flat_grey_24.png\" width=\"16px\" height=\"16px\" >";
+                                        }
                                     echo "</div>";
                                     //echo "<div class=\"clear\"></div>";
                                     $obj_vintage = new vintage($vintage_id);

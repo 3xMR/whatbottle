@@ -36,7 +36,7 @@ Borders: #D0D0D0
 
 
 /* iPhone 8 Plus and smaller */
-@media screen and (max-width: 414px) {
+@media screen and (max-width: 414px){
     
     html {
         font-size: 13px;
@@ -53,6 +53,7 @@ Borders: #D0D0D0
     .hide_small_screen {
         display: none;
     }
+    
     
     .small_screen_only {
         display: none;
@@ -91,7 +92,7 @@ Borders: #D0D0D0
 }
 
 
-@media screen and (min-width: 767px) {
+@media screen and (min-width: 415px) and (max-width: 833px)  {
     
     html {
         font-size: 16px;
@@ -106,6 +107,10 @@ Borders: #D0D0D0
     }
     
     .show_medium_screen {
+        display: none;
+    }
+    
+    .hide_medium_screen {
         display: none;
     }
     
@@ -171,7 +176,11 @@ Borders: #D0D0D0
         display: none;
     }
     
-    .rwd-con-50 {
+    .hide_medium_screen {
+        display: none;
+    }
+    
+    .rwd-con-50 { /* two columns of equal size */
         /*background-color:yellow;*/
         float:left;
         box-sizing: border-box; /*prevent padding increasing size beyond 100% */
@@ -188,6 +197,7 @@ Borders: #D0D0D0
     }
     
     .rwd-con-half {
+        /*background-color:lightpink;*/
         float:left;
         box-sizing: border-box; /*prevent padding increasing size beyond 100% */
         padding: 0px 0px 0px 0px;
@@ -195,12 +205,22 @@ Borders: #D0D0D0
     }
     
     .left-column {
+        /*background-color:greenyellow;*/
+        float:left;
         width: 20%;
+        padding: 0px 0px 0px 0px;
         box-sizing: border-box; /*prevent padding increasing size beyond 100% */
     }
     
-
+    .vintage-image{
+        box-sizing: border-box; /*prevent padding increasing size beyond 100%*/
+        margin-bottom:10px;
+        margin-right:10px;
+        margin-left:10px;
+        padding:5px;
+    }
     
+
     
 }
 

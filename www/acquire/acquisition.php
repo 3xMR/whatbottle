@@ -78,7 +78,7 @@ echo "<div class=\"con_single_form\" >";
     echo "<form action=\"$url\" method=\"post\" name=\"form\" id=\"form\" >";
     
     //column_1
-    echo "<div class=\"rwd-con-50\" style=\"background-color:; margin-top:10px;\" >";
+    echo "<div class=\"rwd-con-50\" style=\"background-color:; margin-top:10px; min-width:358px;\" >";
 
             echo "<div class=\"con_form_input\" >";
                 //Date
