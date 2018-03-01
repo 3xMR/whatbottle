@@ -54,6 +54,10 @@ Borders: #D0D0D0
         display: none;
     }
     
+    .small_screen_only {
+        display: none;
+    }
+    
     .left-column {
         /*background-color:greenyellow;*/
         width: 100%;
@@ -86,6 +90,7 @@ Borders: #D0D0D0
     
 }
 
+
 @media screen and (min-width: 767px) {
     
     html {
@@ -94,6 +99,10 @@ Borders: #D0D0D0
     
     body {
         font-size: 16px;
+    }
+    
+    .small_screen_only {
+        display: none;
     }
     
     .show_medium_screen {
@@ -154,6 +163,9 @@ Borders: #D0D0D0
         font-size: 16px;
     }
     
+    .small_screen_only {
+        display: none;
+    }
     
     .show_medium_screen {
         display: none;
