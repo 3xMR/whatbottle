@@ -1,9 +1,15 @@
 <?php
 /* 
+
  * Release 4.32
- * Released: 01.03.2018
+ * Released: 04.03.2018
  * Notes:
  * Minor formating changes post major release
+ * Fixed search bug, now resets all search filters when entering new text in autocomplete
+ * Fixed available override dialog box
+ * Reworked Image Manager so it now supports editing images directly from home page
+ * and so that it works on mobile
+ * 
  * 
  * Release 4.3
  * Released: 25.02.2018
@@ -47,7 +53,6 @@
  *      Validations changed for Wine and Vintage forms
  * 
  * Backlog:
- * TODO: Make tasting note responsive design
  * TODO: Put wine and vintage count on reporting page
  * TODO: Add ability to change password
  * TODO: free text search on notes
@@ -195,7 +200,7 @@ echo "<html>";
                 
                 echo "<div class=\"input-main vertical-centre bottom-spacer\" style=\"height:50px; width:123px; margin-left:auto; margin-right:auto;\" >";
                     echo "<img src=\"/images/minus_grey_flat_32.png\" style=\"float:left; width:24px; height:24px; margin-right:15px; margin-left:0px; \" id=\"decrement_override\" class=\"ignore_dirty\" />";  
-                    echo "<input type=\"number\" step=\"0\" min=\"-1\" max=\"5\" id=\"available_bottles\" disabled=\"disabled\" style=\"float:left; text-align:center; width:35px; height:35px; font-size:200%;\" >";
+                    echo "<input type=\"number\" step=\"0\" min=\"-1\" max=\"5\" id=\"available_bottles\" disabled=\"disabled\" style=\"float:left; text-align:center; width:35px; height:35px; font-size:1.5em;\" >";
                     echo "<img src=\"/images/plus_grey_flat_32.png\" style=\"float:left; width:24px; height:24px; margin-left:15px; \" id=\"increment_override\" class=\"ignore_dirty\" />";  
                 echo "</div>";
                 echo "<div class=\"clear\" ></div>";
@@ -1483,9 +1488,23 @@ $(document).ready(function(){
     
     function show_override_available_dialog(object){
         
+        //determine screen size
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 320;
+            positionMy = "left top";
+            positionAt = "right bottom";
+            positionOf = object;
+        } else {
+            dialogWidth = 320;
+            positionMy = "centre top+20px";
+            positionAt = "center bottom";
+            positionOf = "#top_nav";
+        } 
+        
         $("#dialog-override").dialog({
             modal: true,
-            width: 'auto',
+            width: dialogWidth,
             buttons: {
                 OK: function() {
                     put_available_override_data();
@@ -1503,7 +1522,7 @@ $(document).ready(function(){
      
             },
             dialogClass: "clean-dialog",
-            position: { my: "left top", at: "right bottom", of: object }
+            position: { my: positionMy, at: positionAt, of: positionOf }
         });
   
     }
@@ -1644,10 +1663,11 @@ $(document).ready(function(){
        //and save image back to db and session - db commit is currently through vintage.php
         obj_page.leave_page({
             dst_url:        "/vintage/select_image.php",
-            rtn_url:        "/index.php",
+            rtn_url:        this_page,
             page_action:    'leave',
-            dst_type:       "image",
+            dst_type:       "image", //loading vintage details will load image details to session
             dst_action:     "open",
+            object_id:      vintage_id,
             parent_id:      vintage_id,
             child:          true
         });
@@ -1746,6 +1766,15 @@ $(document).ready(function(){
     });
     
     
+    $(document).on('click','.btn_edit_image',function(){
+        //add new note event
+        var vintage_id = ($(this).attr('id').replace("edit_image_", ""))*1;
+        console.log("edit_image vintage_id = "+vintage_id);
+        open_image(vintage_id, this); //pass 'this' context for dialog position
+        
+    });
+
+
     $(document).on('click','.btn_edit_override',function(){
         //add new note event
         var vintage_id = ($(this).attr('id').replace("override_", ""))*1;
@@ -1753,7 +1782,7 @@ $(document).ready(function(){
         override_available_bottles(vintage_id, this); //open quick note form, pass this context for dialog position
         
     });
-
+    
 
     $(document).on('click','.edit_wine_btn',function(){
         //open wine to edit
