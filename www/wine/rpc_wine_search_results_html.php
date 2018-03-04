@@ -163,24 +163,50 @@ if($results){
                             $class = "hide_small_screen"; //if no image added show nothing on smaller screens
                         }
                         
-                        echo "<div class=\"vintage-image $class\" >";
+                        echo "<div class=\"vintage-image $class\" style=\"position:relative;\" >";
 
                             if($file_name > ""){
-                                //TODO: resolve issue with trailing slash difference between .local and .com
                                 $image_path = $label_path.$file_name;
                                 if(file_exists($new_root.$image_path)){
-                                    echo "<img style=\"display:block; margin-left:auto; margin-right:auto;\" ".fnImageResize($image_path,$new_root,160)." />";
+                                    echo "<img style=\"display:block; margin-left:auto; margin-right:auto;\" ".fnImageResize($image_path,$new_root,150)." />";
                                 } else {
                                     echo "<br/>file not found";
                                 }
                             }else{
                                 //no image file provided show default
-                                //TODO: click to add image
-                                $image_path = "/images/winebottle.jpg";
-                                $img = fnImageResize($image_path, $new_root, 160);
-                                echo "<img style=\"display:block; margin-left:auto; margin-right:auto;\" $img />";
+                                //echo "wine_type = $wine_type";
+                                switch($wine_type){
+                                    case 1: //red
+                                        $image_path = "/images/winebottle_red.png";
+                                        break;
+                                    case 2: //white
+                                        $image_path = "/images/winebottle_white.png";
+                                        break;
+                                    case 3: //rose
+                                        $image_path = "/images/winebottle_rose.png";
+                                        break;
+                                    case 4: //sparkling white
+                                        $image_path = "/images/winebottle_sparkling_white.png";
+                                        break;
+                                    case 5: //dessert
+                                        $image_path = "/images/winebottle_white.png";
+                                        break;
+                                    case 8: //sparkling red
+                                        $image_path = "/images/winebottle_red.png";
+                                        break;
+                                    default:
+                                        $image_path = "/images/winebottle_red.png";
+                                }
+                                $img = fnImageResize($image_path, $new_root, 150);
+                                echo "<img style=\" display:block; margin-left:auto; margin-right:auto;\" $img />";
                             }
 
+                            echo "<div class=\"$class\" style=\"position:absolute; bottom:0px; left:0px; z-index:100;\" >";
+                                //if(is_authed()){
+                                    echo "<input type=\"image\" class=\"btn_edit_image\" value=\"$vintage_id\" id=\"edit_image_$vintage_id\" name=\"btn_edit_image\" src=\"/images/plus_circle_grey_flat_32.png\" width=\"18px\" height=\"18px\" >";
+                               // }
+                            echo "</div>";
+                        
                         echo "</div>";
                         
                         echo "<div class=\"clear\"></div>";
@@ -289,9 +315,9 @@ if($results){
 
                                 echo "<div class=\"note_link link ignore_dirty\" id=\"$note_id\" style=\"float:left; margin-bottom:5px; cursor:pointer; \">";
                                     echo "<div class=\"vertical-centre\" style=\"height:18px;\" >";
-                                        echo "<div style=\"width:100px; float:left; white-space:nowrap;\"><p class=\"text_2\" style=\"float:left\" >$note_date</p></div>";
-                                        echo "<div class=\"quality-static-rating-small\" style=\"float:left; margin-left:15px; width:$quality_width; \" ></div>";
-                                        echo "<div class=\"value-static-rating-small\" style=\"float:left; margin-left:5px; width:$value_width; \" ></div>";
+                                        echo "<div style=\"width:100px; float:left; white-space:nowrap; margin-right:15px; margin-top:3px;\"><p class=\"text_2\" style=\"float:left\" >$note_date</p></div>";
+                                        echo "<div class=\"quality-static-rating-small\" style=\"float:left; margin-right:15px; margin-top:3px; width:$quality_width; \" ></div>";
+                                        echo "<div class=\"value-static-rating-small\" style=\"float:left; width:$value_width; margin-top:3px;\" ></div>";
                                     echo "</div>";
                                 echo "</div>";
                                 echo "<div class=\"clear\" ></div>";
@@ -320,7 +346,7 @@ if($results){
                                     $unit_price = number_format($acquire['unit_price'],2);
 
                                     echo "<div class=\"acquire_link link ignore_dirty\" id=\"$acquire_id\" data-vintage_id=\"$vintage_id\" style=\"float:left; width:100%; padding-bottom:5px; margin-bottom:5px; border-bottom:1px dashed lightgray;\" >";
-                                        echo "<div style=\"float:left; width:100px; text-align:left;\" >";
+                                        echo "<div style=\"float:left; width:100px; text-align:left; \" >";
                                             echo "<p>$acquire_date</p>";
                                         echo "</div>";
                                         echo "<div style=\"float:left; margin-left:15px;\" >";

@@ -39,7 +39,7 @@
         $image_status = $_SESSION['var_vintage_temp']['var_images']['temp']['status'];
         $drink_year_from = $_SESSION['var_vintage_temp']['drink_year_from'];
         $drink_year_to = $_SESSION['var_vintage_temp']['drink_year_to'];
-        //TODO: add Available
+   
         $is_dirty = $_SESSION['var_vintage_temp']['is_dirty'];
 
         if( $_SESSION['var_vintage_temp']['status'] > 1){

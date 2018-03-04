@@ -92,7 +92,7 @@ echo "</head>";
                 if(is_authed()){
                     echo "<input type=\"button\" id=\"btn_save\" name=\"btn_save\" value=\"Save\" $disabled\>";
                     echo "<input type=\"button\" id=\"btn_new\" name=\"btn_new\" value=\"New\" $disabled\>";
-                    echo "<input type=\"button\" id=\"btn_delete\" name=\"btn_delete\" value=\"Delete\" $disabled\>";
+                    echo "<input class=\"hide_small_screen\" type=\"button\" id=\"btn_delete\" name=\"btn_delete\" value=\"Delete\" $disabled\>";
                 }
                 echo "<input type=\"button\" class=\"btn_close\" id=\"btn_close\" name=\"btn_close\" value=\"Close\" \>";
             echo "</div>"; //bottom_row
@@ -107,6 +107,7 @@ echo "</head>";
 <!-- Pop-up Menus-->
 <div id='main_menu' class="pop_up" style="width:225px; display:none; position:fixed; z-index:35;">
     <div class="ui-menu-item-first">New Note<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Delete Note<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
      <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
@@ -333,9 +334,23 @@ $(document).ready(function(){
             return false;
         }
         
+        //determine screen size
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 470;
+            positionMy = "left bottom";
+            positionAt = "right top";
+            positionOf = '#btn_delete';
+        } else {
+            dialogWidth = windowWidth;
+            positionMy = "right top+20px";
+            positionAt = "right bottom";
+            positionOf = "#top_nav";
+        }   
+        
         $("#dialog-delete").dialog({
             modal: true,
-            width: '410px',
+            width: dialogWidth,
             buttons: {
                 OK: function() {
                     //delete
@@ -350,7 +365,7 @@ $(document).ready(function(){
                 }
             },
             dialogClass: "clean-dialog",
-            position: { my: "left bottom", at: "right top", of: '#btn_delete' }
+            position: { my: positionMy, at: positionAt, of: positionOf }
         });   
         
     }
@@ -420,6 +435,9 @@ $(document).ready(function(){
                         break;
                     case 'New Note':
                         new_note();;
+                        break;
+                    case 'Delete Note':
+                        delete_note();;
                         break;
                     case 'Reference Data':
                         open_reference_data();

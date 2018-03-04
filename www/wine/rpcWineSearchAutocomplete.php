@@ -22,10 +22,13 @@ $var_result = array();
 
 $term = mysql_escape_string(trim($q));
 
-//get list of wines
 $search_obj = new wine_search();
 
-$_SESSION['var_wine_search_criteria']['search_text'] = $term;
+if(strlen($term)==1){
+    unset($_SESSION['var_wine_search_criteria']); //single character means new search, so clear old search criteria held in session
+}
+
+$_SESSION['var_wine_search_criteria']['search_text'] = $term; //put search text to session
 $varSearchParam = $_SESSION['var_wine_search_criteria']; //get search parameters from session
 $varSearchParam['search_text'] = $term; //update parameters
 $varSearchParam['type'] = "wines"; //update parameters

@@ -52,15 +52,15 @@ echo "<div class=\"page_container\" >";
             //wine name
             echo "<div style=\"border-bottom: solid 1px darkgray; padding-bottom:5px; margin-top:5px; margin-bottom:5px;\" >";
                 echo "<div style=\"float:left; width:58px;\" >";
-                    echo "<img src=\"/images/vintage_flat_grey_64.png\" height=\"48px\" width=\"48px\" >";
+                    echo "<img src=\"/images/images_grey_flat_64.png\" height=\"48px\" width=\"48px\" >";
                 echo "</div>";
                 echo "<div style=\"width:auto; float:left; padding-top:5px;\" >";
-                    echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >".$_SESSION['var_vintage_temp']['year']." ".$_SESSION['var_vintage_temp']['wine'].", ".$_SESSION['var_vintage_temp']['producer']."</h1>";
-                    echo "<h3 style=\"color:darkgrey;\">".$_SESSION['var_vintage_temp']['country'].", ".$_SESSION['var_vintage_temp']['region'];
+                    echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >Image Manager</h1>";
+                    echo "<h4 style=\"color:darkgray;\" >".$_SESSION['var_vintage_temp']['year']." ".$_SESSION['var_vintage_temp']['wine'].", ".$_SESSION['var_vintage_temp']['producer'];
                     if($_SESSION['var_vintage_temp']['subregion']){
-                        echo ", ".$_SESSION['var_vintage_temp']['subregion']."</h3>";
+                        echo ", ".$_SESSION['var_vintage_temp']['subregion']."</h4>";
                     }else{
-                        echo "</h3>";
+                        echo "</h4>";
                     }
                 echo "</div>";
                 echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:50px;\"  >";
@@ -71,134 +71,155 @@ echo "<div class=\"page_container\" >";
         echo "</div>"; //con_title_bar
 
         
-        echo "<div  id=\"con_edit\" >";
-            echo "<div id=\"con_image_outer_frame\" >";
-                echo "<div id=\"con_image_inner_frame\" >";
-                    echo "<img id=\"edit_image\" src=\"\" style=\"margin-left:auto; margin-right:auto;\"  >"; //filled by jS
-                echo "</div>";
-            echo "</div>";
-        echo "</div>";
-        
-        
-        echo "<div id=\"con_same_wine_images\" >"; //display labels for other vintages of the same wine
-  
-            $obj_vintage = new vintage();
-            $columns = "vintage_id,year, image1";
-            $where = " wine_id = $wine_id AND vintage_id <> $vintage_id ";
-            $rst_vintages = $obj_vintage->get($where, $columns);
+        echo "<div class=\"rwd-con-33\" >"; //column 1
             
-            echo "<div id=\"con_other_vintages\" >";
-                echo "<div id=\"con_other_vintages_title\" >";
-                    echo "<p>Other Vintage Labels</p>";
+            //Main Image
+            echo "<div  id=\"con_edit\" >";
+                echo "<div id=\"con_image_outer_frame\" >";
+                    echo "<div id=\"con_image_inner_frame\" >";
+                        echo "<img id=\"edit_image\" src=\"\" style=\"margin-left:auto; margin-right:auto;\"  >"; //filled by jS
+                    echo "</div>";
                 echo "</div>";
-                echo "<div style=\"float:left; width:900px;\">";
-                    if($rst_vintages){
-                        foreach($rst_vintages as $vintage_image){
-                            $image_name = $vintage_image['image1'];
-                            $image_path = "/images/labels/$image_name";
-                            $vintage_id = $vintage_image['vintage_id'];
-
-                            //set size of image to fit in placeholder
-                            list($source_width, $source_height, $type, $attr) = getimagesize("$path/$image_path");
-                            $target_width = 125;
-                            $target_height = 188;
-                            $height_ratio = $source_height/$target_height;
-                            $width_ratio = $source_width/$target_width;
-                            $target_ratio = ($height_ratio > $width_ratio) ? $height_ratio : $width_ratio;
-                            $set_height = $source_height/$target_ratio;
-                            $set_width = $source_width/$target_ratio;
-
-                            echo "<div id=\"con_wine_vintages\" style=\"width:131px; height:215px; border:solid 1px gray; float:left; margin-left:5px; margin-right:5px;\" >";
-                                echo "<div style=\"width:100%; height:15px; text-align:center; color:white; padding:3px 0px 3px 0px; background-color:darkgray; border-bottom:solid 1px gray;\" >";
-                                    echo "<p>".$vintage_image['year']."</p>";
-                                echo "</div>";
-                                echo "<div class=\"other_vintage_image\" id=\"$image_name\" style=\"width:125px; height:188px; padding:3px;\" >";
-                                    echo "<img src=\"$image_path\" width=\"$set_width\" height=\"$set_height\" style=\" display:block; margin-left:auto; margin-right:auto;\" >";
-                                echo "</div>";
-                            echo "</div>";
-
-                        }
-                    }
-                echo "</div>";
+            echo "</div>"; //con_edit
+            
+            echo "<div class=\"clear\"></div>";
+            
+            echo "<div class=\"con_sub_button_bar\" style=\"clear:both; width:250px;\" id=\"con_edit_controls\" >";      
+                echo "<input type=\"button\" name=\"btn_rotate_left\" id=\"btn_rotate_left\" value=\"Left\" />";
+                echo "<input type=\"button\" name=\"btn_rotate_right\" id=\"btn_rotate_right\" value=\"Right\" />";
+                echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" value=\"Delete\" />";
+                echo "<input type=\"button\" name=\"btn_crop\" id=\"btn_crop\" value=\"Crop\" />";
             echo "</div>";
             
-            echo "<div class=\"con_sub_button_bar\" style=\"width:auto; margin-top:5px;\" >";
+            echo "<div class=\"con_sub_button_bar\" style=\"width:auto; margin-top:5px; margin-bottom:10px; clear:both;\" >";
                 echo "<input type=\"button\" name=\"btn_search\" id=\"btn_search\" value=\"Google Search\" />";
             echo "</div>";
             
-        echo "</div>";
-
+            //image uploader
+            echo "<div style=\"clear:both; margin-top:10px; width:100%;\" id=\"file-uploader\" >";
+                echo "<noscript>";
+                    echo "<p>Please enable JavaScript to use file uploader.</p>";
+                echo "</noscript>";
+            echo "</div>";
+            
+        echo "</div>"; //rwd-con-33 column 1
         
-
-
         
-        
-        echo "<div class=\"con_sub_button_bar\" style=\"clear:both; width:auto;\" id=\"con_edit_controls\" >";
-            echo "<hr/>";
-                echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" value=\"Delete Image\" />";
-                echo "<input type=\"button\" name=\"btn_rotate_left\" id=\"btn_rotate_left\" value=\"Rotate Left\" />";
-                echo "<input type=\"button\" name=\"btn_rotate_right\" id=\"btn_rotate_right\" value=\"Rotate Right\" />";
-                echo "<input type=\"button\" name=\"btn_crop\" id=\"btn_crop\" value=\"Crop\" />";
-        echo "</div>";
-        
-        echo "<div style=\"clear:both; margin-top:10px; width:auto;\" id=\"file-uploader\" >";
-            echo "<noscript>";
-                echo "<p>Please enable JavaScript to use file uploader.</p>";
-            echo "</noscript>";
-        echo "</div>";
-        
+        echo "<div class=\"rwd-con-66\" >"; //column 2
+            
+            //check if other vintages have any images set
+            $obj_vintage = new vintage();
+            $columns = "vintage_id,year, image1";
+            $where = " wine_id = $wine_id AND vintage_id <> $vintage_id AND image1 > '' ";
+            $rst_vintages = $obj_vintage->get($where, $columns);
 
-    
-        //debug panel
-        echo "<div class=\"clear\" id=\"debug_panel\">";
-                //only show when trying to debug
+            if($rst_vintages){
+                
+                echo "<div id=\"con_same_wine_images\" >"; //display labels for other vintages of the same wine
 
-                echo "<div style=\"float:left; width:300px;\" id=\"con_saved\" >";
-                    echo "<h2>Temp Image:</h2>";
-                    echo "<img id=\"temp_image\" src=\"\" width=\"200\" >";
-                echo "</div>";
+                    echo "<div id=\"con_other_vintages_title\" >";
+                        echo "<p>Other Vintage Labels</p>";
+                    echo "</div>";
 
-                echo "<div style=\"float:left; width:300px;\" id=\"con_saved\" >";
-                    echo "<h2>Saved Image:</h2>";
-                    echo "<img id=\"saved_image\" src=\"\" width=\"200\" >";
-                echo "</div>";
+                    echo "<div id=\"con_other_vintages\" >";
 
+                        echo "<div id=\"con_other_vintages_scroll\" >";
+                            //if($rst_vintages){
+                                foreach($rst_vintages as $vintage_image){
+                                    $image_name = $vintage_image['image1'];
+                                    $image_path = "/images/labels/$image_name";
+                                    $vintage_id = $vintage_image['vintage_id'];
+
+                                    //set size of image to fit in placeholder
+                                    list($source_width, $source_height, $type, $attr) = getimagesize("$path/$image_path");
+                                    $target_width = 125;
+                                    $target_height = 188;
+                                    $height_ratio = $source_height/$target_height;
+                                    $width_ratio = $source_width/$target_width;
+                                    $target_ratio = ($height_ratio > $width_ratio) ? $height_ratio : $width_ratio;
+                                    $set_height = $source_height/$target_ratio;
+                                    $set_width = $source_width/$target_ratio;
+
+                                    echo "<div id=\"con_wine_vintages\" style=\"width:131px; height:225px; border:solid 1px lightgray; float:left; margin-left:5px; margin-right:5px;\" >";
+                                        echo "<div style=\"width:100%; text-align:center; color:darkgray; padding:3px 0px 3px 0px; border-bottom:solid 1px lightgray;\" >";
+                                            echo "<p style=\"font-size:0.9em;\">".$vintage_image['year']."</p>";
+                                        echo "</div>";
+                                        echo "<div class=\"other_vintage_image\" id=\"$image_name\" style=\"width:125px; height:188px; padding:3px;\" >";
+                                            echo "<img src=\"$image_path\" width=\"$set_width\" height=\"$set_height\" style=\" display:block; margin-left:auto; margin-right:auto;\" >";
+                                        echo "</div>";
+                                    echo "</div>";
+
+                                } //foreach
+                            //}
+                        echo "</div>"; //con_other_vintages_scroll
+
+                    echo "</div>"; //con_other_vintages
+
+                    echo "<div class=\"clear\"></div>";
+  
+                echo "</div>"; //con_same_wine_images
+                
+            } //end if(rst_vintages)   
+                
                 echo "<div class=\"clear\"></div>";
+                
+        echo "</div>"; //rwd-con-66
+       
+        //debug panel
+        echo "<div class=\"clear\" id=\"debug_panel\" >";
+            //only show when trying to debug
 
-                echo "wine_id: <input type=\"\" name=\"wine_id\" value=\"".$_SESSION['var_vintage_temp']['wine_id']."\" /><br/>";
-                echo "vintage_id: <input type=\"\" name=\"vintage_id\" value=\"".$_SESSION['var_vintage_temp']['vintage_id']."\" /><br/>";
-                echo "search term: <input type=\"\" id=\"search_term\" name=\"search_term\" value=\"$search_term\" /><br/>";
-                echo "<br/>";
+            echo "<div style=\"float:left; width:300px;\" id=\"con_saved\" >";
+                echo "<h2>Temp Image:</h2>";
+                echo "<img id=\"temp_image\" src=\"\" width=\"200\" >";
+            echo "</div>";
 
-                echo "edit_name: <input type=\"\" id=\"edit_name\" name=\"file_name\" size=\"100\" /><br/>";
-                echo "edit_status: <input type=\"\" id=\"edit_status\" /><br/>";
+            echo "<div style=\"float:left; width:300px;\" id=\"con_saved\" >";
+                echo "<h2>Saved Image:</h2>";
+                echo "<img id=\"saved_image\" src=\"\" width=\"200\" >";
+            echo "</div>";
 
-                //echo "edit_prev_name: <input type=\"\" id=\"file_prev_name\" size=\"100\"/><br/>";
-                //echo "edit_prev_status: <input type=\"\" id=\"file_prev_status\" /><br/>";
+            echo "<div class=\"clear\"></div>";
 
-                echo "temp_name: <input type=\"\" id=\"temp_name\" size=\"100\" /><br/>";
-                echo "temp_status: <input type=\"\" id=\"temp_status\" /><br/>";
+            echo "wine_id: <input type=\"\" name=\"wine_id\" value=\"".$_SESSION['var_vintage_temp']['wine_id']."\" /><br/>";
+            echo "vintage_id: <input type=\"\" name=\"vintage_id\" value=\"".$_SESSION['var_vintage_temp']['vintage_id']."\" /><br/>";
+            echo "search term: <input type=\"\" id=\"search_term\" name=\"search_term\" value=\"$search_term\" /><br/>";
+            echo "<br/>";
 
-                echo "saved_name: <input type=\"\" id=\"saved_name\" size=\"100\" /><br/>";
-                echo "saved_status: <input type=\"\" id=\"saved_status\" /><br/>";
+            echo "edit_name: <input type=\"\" id=\"edit_name\" name=\"file_name\" size=\"100\" /><br/>";
+            echo "edit_status: <input type=\"\" id=\"edit_status\" /><br/>";
 
-                echo "src_x: <input type=\"text\" size=\"4\" id=\"x\" name=\"x\" />";
-                echo "src_y: <input type=\"text\" size=\"4\" id=\"y\" name=\"y\" />";
-                echo "<input type=\"text\" size=\"4\" id=\"x2\" name=\"x2\" />";
-                echo "<input type=\"text\" size=\"4\" id=\"y2\" name=\"y2\" />";
-                echo "targ_w: <input type=\"text\" size=\"4\" id=\"w\" name=\"w\" />";
-                echo "targ_h: <input type=\"text\" size=\"4\" id=\"h\" name=\"h\" />";
+            //echo "edit_prev_name: <input type=\"\" id=\"file_prev_name\" size=\"100\"/><br/>";
+            //echo "edit_prev_status: <input type=\"\" id=\"file_prev_status\" /><br/>";
+
+            echo "temp_name: <input type=\"\" id=\"temp_name\" size=\"100\" /><br/>";
+            echo "temp_status: <input type=\"\" id=\"temp_status\" /><br/>";
+
+            echo "saved_name: <input type=\"\" id=\"saved_name\" size=\"100\" /><br/>";
+            echo "saved_status: <input type=\"\" id=\"saved_status\" /><br/>";
+
+            echo "src_x: <input type=\"text\" size=\"4\" id=\"x\" name=\"x\" />";
+            echo "src_y: <input type=\"text\" size=\"4\" id=\"y\" name=\"y\" />";
+            echo "<input type=\"text\" size=\"4\" id=\"x2\" name=\"x2\" />";
+            echo "<input type=\"text\" size=\"4\" id=\"y2\" name=\"y2\" />";
+            echo "targ_w: <input type=\"text\" size=\"4\" id=\"w\" name=\"w\" />";
+            echo "targ_h: <input type=\"text\" size=\"4\" id=\"h\" name=\"h\" />";
+
+            echo "<div class=\"clear\"></div>";
 
         echo "</div>";
+        
+  
 
         //form buttons
-        echo "<div class=\"con_button_bar\" >";
+        echo "<div class=\"con_button_bar\" style=\"clear:both;\" >";
             echo "<input type=\"button\" id=\"btn_save\" name=\"btn_save\" value=\"Save\" />";
             echo "<input type=\"button\" id=\"btn_close\" class=\"btn_close\" name=\"btn_close\" value=\"Close\" />";         
         echo "</div>"; //con_form_buttons
 
         echo "<div class=\"clear\"></div>";
-
+        
+ 
     echo "</div>"; //single_form_container
 
 echo "</div>"; //page_container
@@ -216,8 +237,12 @@ $(document).ready(function(){
     //TODO: Ajax spinners - change color to gray or black , currently green and there shouldn't be two
     //TODO: Show spinner when uploading and processing images as it is slow across internet
     //TODO: When uploading image it shows full size before being resized
+    //TODO: Only show edit commands when image is uploaded
     //FIX: Rotate image not working on .com
     //FIX: Image still showing when deleted on .com
+    //FIX: Unsaved changes dialog off page
+    
+    
 
     //globals
     var src_images = "/images/labels/";
@@ -294,6 +319,8 @@ $(document).ready(function(){
                     obj_page.set_is_dirty(true); //set is_dirty
                     get_image(); //reload images
                     
+                    $('.qq-upload-success').remove(); //clear upload list
+                    
                     if(typeof callback === 'function'){
                        callback();
                     }
@@ -302,7 +329,6 @@ $(document).ready(function(){
                     var msg = 'Delete Image failed with error: '+data.error;
                     console.log(msg);
                 }
-                
                 
 
         }, "json");
@@ -663,6 +689,7 @@ $(document).ready(function(){
                         //hide image
                         console.log('no edit_image returned - hide edit_image');
                         //$('#con_edit').hide();
+                        $('#edit_image').attr("src", src).hide(); //update image src and hide
                         $('#con_edit_controls').hide();
                     }
                     
@@ -744,7 +771,15 @@ $(document).ready(function(){
 
         var edit_name = $('#edit_name').val();
         var edit_status = $('#edit_status').val();
+        var blnSaveImageToDb = false;
+        
         console.log('save_page edit_name: '+edit_name+' edit_status: '+edit_status);
+ 
+        if(obj_page.options.return_url == "/index.php"){
+            //save directly to db - image manager opened directly from index.php rather than from vintage.php
+            console.log('save image directly to db - bypass temp image handling');
+            blnSaveImageToDb = true;
+        }
         
         //push details to session   
         $.post("/vintage/rpc_vintage.php", {
@@ -755,6 +790,10 @@ $(document).ready(function(){
                     var msg = "Save Image successful";
                     console.log('save_image_to_vintage successful msg:'+data.msg);
                     obj_page.set_is_dirty(false); 
+                    //if flag set then save image to db
+                    if(blnSaveImageToDb){
+                        save_image_to_db();
+                    }
 
                     $(".con_button_bar").notify(msg,{
                         position: "top left",
@@ -789,6 +828,57 @@ $(document).ready(function(){
         return def.promise();
         
     }
+    
+    
+    function save_image_to_db(){
+        //save image directly to db
+        //used when opening image directly from index.php
+        
+        var def = $.Deferred();
+        
+        $.post("/vintage/rpc_vintage.php", {
+            action: 'save_image'
+            },
+            function(data){
+                if(data.success){
+                    var msg = "Save image to db successful";
+                    console.log('save_image_to_db successful msg:'+data.msg);
+                    obj_page.set_is_dirty(false); 
+
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "success",
+                        arrowShow: false
+                        }
+                    );
+
+                    //get_image(); //reload image
+                    if(typeof callback === 'function'){
+                        callback();
+                    }
+                    
+                    def.resolve(data); //resolve promise
+
+                }else{
+                    var msg = 'Save image to db failed with error: '+data.error;
+                    console.log(msg);
+                    def.reject(msg);
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "error",
+                        arrowShow: false
+                        }
+                    );
+                }
+
+        }, "json");
+        
+        return def.promise();
+        
+    }
+    
 
 
 

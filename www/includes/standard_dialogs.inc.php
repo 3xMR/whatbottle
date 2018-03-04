@@ -65,13 +65,13 @@
         <div style="margin-top:25px;">
             <!--<h4 style="margin-left:0px;"> Username</h4>-->
             <div class="input-main" style="margin-top:10px;"  >
-                <input name="username" type="email" class="input_text"  style="width:100%;" value="" placeholder="email" id="username" autocapitalize="off">
+                <input name="username" type="email" class="input_text _ignore_dirty"  style="width:100%;" value="" placeholder="email" id="username" autocapitalize="off">
             </div>
         </div>
         <div style="margin-top:25px; margin-bottom:10px;"> 
             <!--<h4 style="margin-left:5px;">Password</h4>-->
             <div class="input-main" style="margin-top:10px;">
-                <input type="password" name="password" autocapitalize="off" class="input_text"  style="width:100%;" value="" placeholder="password" id="password" >
+                <input type="password" name="password" autocapitalize="off" class="input_text _ignore_dirty"  style="width:100%;" value="" placeholder="password" id="password" >
             </div>
         </div>
 

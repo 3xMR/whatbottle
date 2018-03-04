@@ -354,111 +354,7 @@
         
                       
     }; //this.load_and_redirect
-    
-    
-    
-    
-    
-    this.old_load_and_redirect =  function(obj_dst){
-        /* Handles loading dst page to memory/session and setting up page flow
-         * before redirecting
-         * 
-         * get_from_db - to set destination page details if required
-         * dst_type determines dst_page details to be loaded in get_from_db
-         * 
-         */
-        
-        /*** LEAVE ***/
-        if(obj_dst.page_action === 'leave'){
-            console.log("page_action=leave");
-            
-            if(!obj_dst.dst_type){
-                //no dst_type set so no need to get_from_db
-                redirect(obj_dst.dst_url);
-                return true;
-            }
-            
-            $.when( self.get_from_db(obj_dst) ).then(function(data){ //get dst_page data from db using object_id
-    
-                    if(data.success === true){ //get_from_db was successful
-                        console.log("fn:load_and_redirect: get_from_db - complete");
-
-                        //update page flow
-                        $.when(self.page_flow_set(obj_dst)).then(function(data){ //page_flow_set was successful - redirect
-                            console.log("redirect to dst_url="+obj_dst.dst_url);
-                            alert('about to redirect');
-                            redirect(obj_dst.dst_url);
-                            return true;
-
-                        }, function(data){;//page_flow_set failed/rejected
-                            msg = "fn:load_and_redirect: page_flow_set failed cannot continue. error: "+data;
-                            console.log(msg);
-                            alert(msg);
-                            return false;
-                        });
-
-
-                    } else {
-                        var msg = "fn:load_and_redirect: get_from_db - failed error="+data.error;
-                        console.log(msg);
-                        alert(msg);
-                        return false;
-                    }
-
-                });
-      
-            } //leave
-            
-            /*** CLOSE ***/
-            
-            if(obj_dst.page_action === 'close') {
-                //no need to load data for destination page - just redirect
-                console.log('page_action = close');
-                console.log('obj_page options:');
-                console.log(o);
-                
-                
-                if(typeof obj_dst.before_close == 'function'){ //call before_close function
-                    console.log('calling before_close function');
-                    obj_dst.before_close();
-                }
-                
-                //set default dest/return url if none set
-                if(!o.return_url || o.return_url == null){
-                    obj_dst.dst_url = o.default_url;
-                    console.log("return_url not set - redirect to obj_dst.dst_url: "+obj_dst.dst_url);
-                }else{
-                    obj_dst.dst_url = o.return_url;
-                }
-
- 
-                //if pop_up page don't set page flow just redirect
-                //if(o.pop_up){ 
-                //    console.log("pop_up page");
-                //    console.log("redirect to return_url="+o.return_url);
-                //    redirect(o.return_url);
-                //    return true;
-                //}
-                
-                console.log("redirect to return_url="+obj_dst.dst_url);
-                alert('about to redirect');
-                redirect(obj_dst.dst_url);
-                return true;
-
-            } 
-            
-            //*** Undefined ***
-            if(obj_dst.page_action === undefined || obj_dst.page_action === null){
-                //no page exit action specified - alert
-                var msg = "fn:load_and_redirect: page_action not set to leave - nothing to do";
-                console.log(msg);
-                alert(msg);
-                return false;
-            }     
-            
-            
-    }; //this.load_and_redirect
-    
+     
 
     
         
@@ -743,7 +639,8 @@
                         console.log("fn:get_from_db - dst_type: image");
 
                         return $.post("/vintage/rpc_vintage.php", {
-                            rpc_action: 'put_image_vintage'
+                            rpc_action: 'put_image_vintage',
+                            vintage_id: obj_dst.parent_id
                         }, function(data){},"json");
                         
                     break;

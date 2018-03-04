@@ -193,7 +193,7 @@ if($note_value>0){
 echo "<div class=\"rwd-con-100\" >";
 
     echo "<div class=\"vertical-centre input-main-inline\" style=\"float:left; height:2em; display:block; margin-top:15px; margin-right:30px;\" >";
-        echo "<p>Date</p>";
+        echo "<p style=\"width:45px;\">Date</p>";
         echo "<input type=\"text\" style=\"width:150px; margin-left:5px;\" class=\"date input-main-input\" name=\"note_date\" id=\"note_date\" value=\"$note_date\" $disabled/>";
     echo "</div>";
 

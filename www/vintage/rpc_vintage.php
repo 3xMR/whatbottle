@@ -258,10 +258,13 @@ function put_to_session(){
 
 
 
-function get_vintage_from_db(){
+function get_vintage_from_db($vintage_id){
     //get vintage details from db and load to session
-
-    $vintage_id = $_REQUEST['vintage_id'];
+    
+    if(empty($vintage_id)){ //use parameter if present
+        $vintage_id = filter_input(INPUT_POST, "vintage_id", FILTER_SANITIZE_NUMBER_INT);
+    }
+    
     if(isset($_REQUEST['wine_id'])){$wine_id = $_REQUEST['wine_id'];}
     $status = $_REQUEST['status'];
     $var_result = array();
@@ -1315,6 +1318,8 @@ function save_image(){
     $image_saved_status = $_SESSION['var_vintage_temp']['var_images']['saved']['status'];
     $image_edit_name = $_SESSION['var_vintage_temp']['var_images']['edit']['name'];
     $image_edit_status = $_SESSION['var_vintage_temp']['var_images']['edit']['status'];
+    $image_temp_name = $_SESSION['var_vintage_temp']['var_images']['temp']['name'];
+    $image_temp_status = $_SESSION['var_vintage_temp']['var_images']['temp']['status'];
     $vintage_id = $_SESSION['var_vintage_temp']['vintage_id'];
 
     
@@ -1726,7 +1731,7 @@ function get_image(){
     $var_result['temp_name'] = $var_images['temp']['name']; //vintage page - before commit to db
     $var_result['temp_status'] = $var_images['temp']['status']; //vintage page - before commit to db
 
-    $var_result['edit_name'] = $var_images['edit']['name']; //edit page
+    $var_result['edit_name'] = $var_images['edit']['name']; //edit page - select_image.php
     $var_result['edit_status'] = $var_images['edit']['status']; //edit page
         
         //Check if edit_name image exists and if not clear session if status not deleted
@@ -2043,6 +2048,12 @@ function put_image_vintage(){
     //put image details to session - before opening edit page
     
     global $new_root, $label_path, $label_upload_path;
+    
+    if( ($vintage_id = filter_input(INPUT_POST, "vintage_id", FILTER_SANITIZE_NUMBER_INT)) ){
+        //vintage_id provided so load vintage to session first
+        get_vintage_from_db($vintage_id);
+    }
+    
     $var_images = $_SESSION['var_vintage_temp']['var_images'];
     $image_name = $var_images['temp']['name'];
 
