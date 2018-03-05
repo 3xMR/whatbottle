@@ -66,6 +66,7 @@
  * TODO: free text search on notes
  * TODO: Double-click on image to open image_manager page as overlay
  * TODO: Click Whatbottle text to go to /index.php
+ * TODO: centre align vertically vintage year with stars and pound signs
  * 
  *
  */

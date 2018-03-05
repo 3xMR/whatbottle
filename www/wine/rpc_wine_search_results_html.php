@@ -125,13 +125,13 @@ if($results){
                 
                 
                 //vintage header bar
-                echo "<div class=\"vintage_accordian vintage_panel_toggle \" data-vintage_id=\"$vintage_id\" id=\"vintage_accordian_$vintage_id\" style=\"display:flex; flex-direction:row; align-items:center; width:100%; height:42px; background-color:;\" >"; //container for vintage header row
+                echo "<div class=\"vintage_accordian vintage_panel_toggle\" data-vintage_id=\"$vintage_id\" id=\"vintage_accordian_$vintage_id\" style=\"display:flex; flex-direction:row; align-items:center; width:100%; height:42px; background-color:#F8F8F8;\" >"; //container for vintage header row
                     echo "<div class=\"vintage_expanded_indicator click arrow_right\" data-vintage_id=\"$vintage_id\" id=\"arrow_indicator_vintage_$vintage_id\" style=\"width:16px; height:16px; margin-left:10px; background-color:;\" >";
                     echo "</div>";
-                    echo "<div data-vintage_id=\"$vintage_id\" style=\"font-size:1.3em; margin-left:10px; background-color:;\" >";
-                        echo "<p>$year</p>";
+                    echo "<div data-vintage_id=\"$vintage_id\" style=\" margin-left:10px; background-color:;\" >";
+                        echo "<p style=\"font-size:1.4em;\" >$year</p>";
                     echo "</div>";
-                    echo "<div class=\"quality-static-rating-medium\" style=\"width:$quality_width; margin-left:10px;\" ></div>";
+                    echo "<div class=\"quality-static-rating-medium\" style=\"width:$quality_width; margin-left:10px; background-color:;\" ></div>";
                     echo "<div class=\"value-static-rating-medium\" style=\"width:$value_width; margin-left:10px; \"></div>";
                     //vintage buttons
                     echo "<div class=\"vintage_buttons hide_small_screen\" style=\"margin-left:auto; background-color:;\" >";
