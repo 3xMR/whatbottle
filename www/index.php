@@ -9,6 +9,9 @@
  * Release 4.32
  * Released: 04.03.2018
  * Notes:
+ * Unsaved changes dialog appears on close without changes, caused by autofill on login form
+ * Label images not appearing on index page when they have been added and are visible on vintage page
+ * Add/Edit Image button showing on Index.php even when not authed
  * Minor formating changes post major release
  * Fixed search bug, now resets all search filters when entering new text in autocomplete
  * Fixed available override dialog box

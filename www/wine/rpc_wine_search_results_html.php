@@ -159,9 +159,8 @@ if($results){
                         //Label Image
                         $file_name = $rowVintage['image1'];
                         $new_root = rtrim($root, '/\\');
-                        if(!$file_name){
-                            $class = "hide_small_screen"; //if no image added show nothing on smaller screens
-                        }
+                        $class = (empty($file_name) ? "hide_small_screen" : null); //if no image file_name show nothing on smaller screens
+          
                         
                         echo "<div class=\"vintage-image $class\" style=\"position:relative;\" >";
 
@@ -202,9 +201,9 @@ if($results){
                             }
 
                             echo "<div class=\"$class\" style=\"position:absolute; bottom:0px; left:0px; z-index:100;\" >";
-                                //if(is_authed()){
+                                if(is_authed()){
                                     echo "<input type=\"image\" class=\"btn_edit_image\" value=\"$vintage_id\" id=\"edit_image_$vintage_id\" name=\"btn_edit_image\" src=\"/images/plus_circle_grey_flat_32.png\" width=\"18px\" height=\"18px\" >";
-                               // }
+                                }
                             echo "</div>";
                         
                         echo "</div>";
