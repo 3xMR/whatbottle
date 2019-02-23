@@ -5,8 +5,11 @@
  * Notes:
  * 
  * 
+ * Release 4.32.2
+ * Released 23.02.2019
+ * Fixed login fields not being in a form and autocomplete settings for username and password fields
  * 
- * Release 4.32
+ * Release 4.32.1
  * Released: 04.03.2018
  * Notes:
  * Unsaved changes dialog appears on close without changes, caused by autofill on login form
@@ -1680,7 +1683,7 @@ $(document).ready(function(){
             parent_id:      vintage_id,
             child:          true
         });
-        
+
     }
     
     
