@@ -137,8 +137,8 @@ if($results){
                     echo "<div class=\"vintage_buttons hide_small_screen\" style=\"margin-left:auto; background-color:;\" >";
                         if (is_authed()){    
                             echo "<img class=\"btn_edit_vintage click \" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"edit_$vintage_id\" name=\"btn_edit_vintage\" src=\"/images/edit_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
-                            echo "<img class=\"btn_add_to_basket click \" data-vintage_id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"18\" height=\"18\" style=\"margin:10px;\" >";
-                            echo "<img class=\"btn_add_tasting_note click\" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"add_note_$vintage_id\" src=\"/images/notes_flat_grey_24.png\" width=\"18px\" height=\"18px\" style=\"margin:10px;\" >";
+                            echo "<img class=\"btn_add_to_basket click \" data-vintage_id=\"$vintage_id\" name=\"btn_add_to_basket\" src=\"/images/basket_flat_grey_24.png\" width=\"20px\" height=\"20px\" style=\"margin:10px;\" >";
+                            echo "<img class=\"btn_add_tasting_note click\" data-vintage_id=\"$vintage_id\" value=\"$vintage_id\" id=\"add_note_$vintage_id\" src=\"/images/add_tasting_flat_grey.png\" width=\"20px\" height=\"20px\" style=\"margin:10px;\" >";
                         }                        
                     echo "</div>";
                     //only show 'more' button on small screen

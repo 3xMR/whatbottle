@@ -209,7 +209,11 @@ require_once("$root/includes/script_libraries.inc.php");
 //TODO: add notes input field to grapes and provide mechanism to view
 //TODO: Add start page menu for ipad mobile devices
 //TODO: Traverse up tree to open all containing elements when refreshing tree listbox
-
+//TODO: Fix font sizes in list boxes, they are too big and vary across listboxes
+//TODO: Filter box should resize to be similar height as a row in ListBox
+//FIX: filter doesn't treat special characters as if they were the same without accents
+//TODO: Remove test button
+//TODO: Add butons to filter Grapes by colour
 
 $(document).ready(function(){
 

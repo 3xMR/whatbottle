@@ -32,9 +32,9 @@ if($root=="/Volumes/sites/whatbottle/03 whatbottle.local/www/" ||
     $environment = "dev";
 } else {
     //public
-    $link = mysql_connect("localhost",  "whatbott_admin", "Ma9nu5!") or die(mysql_error());
+    $link = mysql_connect("localhost",  "magnus_admin", "Animal2359") or die(mysql_error());
     mysql_set_charset('utf8',$link);
-    mysql_select_db("whatbott_whatbottle") or die(mysql_error());
+    mysql_select_db("magnus_whatbottle") or die(mysql_error());
     $environment = 'live';
 
 }

@@ -27,9 +27,11 @@ if($basket_count > 0){
 }
 
 if($environment == "dev"){
-    $color = 'background-color:#5292BE;';
+    $color = 'background-color:darkred;';
+    $title = 'Test';
 }else{
-    $color = 'background-color:#3B3839;';
+    $title = 'Whatbottle?';
+    $color = 'background-color:#5292BE;';
 }
 
 //Display Nav Bar
@@ -39,7 +41,7 @@ echo "<div id=\"top_nav\" class=\"vertical-centre\" style=\"$color\" >";
 
     //navigation
     echo "<div style=\"float:left; color:lightgray; font-size:1.25em; margin-left:25px;\" id=\"top_nav_nav\" >";
-        echo "<p>Whatbottle?</p>";
+        echo "<p>$title</p>";
     echo "</div>"; //div_top_nav
 
     //right side menu buttons

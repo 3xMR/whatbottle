@@ -59,38 +59,40 @@
 
 
 <div id="dialog-login" class="hidden dialog-login" title="Login">
-
+    
     <div style="margin-top:px; margin-left:px; margin-right:px;">
-        <h2>Login</h2>
-        <div style="margin-top:25px;">
-            <!--<h4 style="margin-left:0px;"> Username</h4>-->
-            <div class="input-main" style="margin-top:10px;"  >
-                <input name="username" type="email" class="input_text _ignore_dirty"  style="width:100%;" value="" placeholder="email" id="username" autocapitalize="off">
-            </div>
-        </div>
-        <div style="margin-top:25px; margin-bottom:10px;"> 
-            <!--<h4 style="margin-left:5px;">Password</h4>-->
-            <div class="input-main" style="margin-top:10px;">
-                <input type="password" name="password" autocapitalize="off" class="input_text _ignore_dirty"  style="width:100%;" value="" placeholder="password" id="password" >
-            </div>
-        </div>
-
-        <div style="margin-top:10px; margin-bottom:10px;">
-            <div style="float:left; margin-top:0px; width:100%; height:25px; background-color:white; ">
-                <div style="float:left; line-height:20px;  background-color:white;">
-                    <input style="color:gray;" type="checkbox" name="remember_me"  value="remember_me" id="remember_me" >
-                    <label style="color:gray; " for="remember_me">Stay logged in</label>
-
-                </div>
-                <div style="float:right; line-height:20px; background-color:white;">
-                    <label class="click btn_logout" style="color:gray;">Logout</label>
+        <form id=login_form">
+            <h2>Login</h2>
+            <div style="margin-top:25px;">
+                <!--<h4 style="margin-left:0px;"> Username</h4>-->
+                <div class="input-main" style="margin-top:10px;"  >
+                    <input name="username" type="email" autocomplete="username" class="input_text _ignore_dirty"  style="width:100%;" value="" placeholder="email" id="username" autocapitalize="off">
                 </div>
             </div>
-        </div>
+            <div style="margin-top:25px; margin-bottom:10px;"> 
+                <!--<h4 style="margin-left:5px;">Password</h4>-->
+                <div class="input-main" style="margin-top:10px;">
+                    <input type="password" name="password" autocapitalize="off" autocomplete="current-password" class="input_text _ignore_dirty"  style="width:100%;" value="" placeholder="password" id="password" >
+                </div>
+            </div>
 
-        <div id="con_login_msg" style="margin-top:10px; margin-bottom:5px; clear:both;" >
-            <h3  id="login_msg" style="display:none; background-color:#57B447; color:white; width:100%; padding:10px 5px 10px 10px; box-sizing:border-box; vertical-align: middle;" >Validation message</h3>
-        </div>
+            <div style="margin-top:10px; margin-bottom:10px;">
+                <div style="float:left; margin-top:0px; width:100%; height:25px; background-color:white; ">
+                    <div style="float:left; line-height:20px;  background-color:white;">
+                        <input style="color:gray;" type="checkbox" name="remember_me"  value="remember_me" id="remember_me" >
+                        <label style="color:gray; " for="remember_me">Stay logged in</label>
+
+                    </div>
+                    <div style="float:right; line-height:20px; background-color:white;">
+                        <label class="click btn_logout" style="color:gray;">Logout</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="con_login_msg" style="margin-top:10px; margin-bottom:5px; clear:both;" >
+                <h3  id="login_msg" style="display:none; background-color:#57B447; color:white; width:100%; padding:10px 5px 10px 10px; box-sizing:border-box; vertical-align: middle;" >Validation message</h3>
+            </div>
+        </form>
     </div>
 </div>
 
