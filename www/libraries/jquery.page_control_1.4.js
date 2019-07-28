@@ -110,7 +110,7 @@
 
                         }else{
                             if(o.page_url !== o.home_url){
-                                console.log('get_return_url: rpc: page_flow_return failed with error: '+data.error);
+                                console.log('get_return_url: rpc: page_flow_return failed with warning: '+data.error);
                             }
                         }
                         
@@ -166,10 +166,13 @@
                     console.log('form_data provided - save to session');
                     console.log(obj_dst.form_data);
                     
+                //TODO: Move to a saveToSession function ****
                     var save_to_session = $.post(obj_dst.form_dest, {
                                             rpc_action: obj_dst.form_action,
                                             json_values: obj_dst.form_data
                                             }, function(data){}, "json");
+                    
+                //********
                     
                     save_to_session.done(function(data){   
                         if(data.success){
@@ -186,12 +189,13 @@
                     
                 } //obj_dst.form_data
                 
+            
                 
                 //child page commit page to session but not to db
                 if(obj_dst.child){
                     
                     //set _ignore_dirty
-                    o._ignore_dirty = true;
+                    o._ignore_dirty = true; //TODO: Not sure this is a good way of handling an object variable within the class
                     
                     console.log("page_control:leave_page: dst is child page - commit to session not to db");
                     
@@ -272,6 +276,8 @@
          * dst_type determines dst_page details to be loaded in get_from_db
          * 
          */
+        
+        console.log(" > load_and_redirect");
         
         /*** LEAVE ***/
         if(obj_dst.page_action === 'leave'){
@@ -550,112 +556,113 @@
              *  dst_action: 'open, add'
              */  
             
-            if(typeof obj_dst === "object"){
+            if(typeof obj_dst !== "object"){
+                console.log("warning: fn:get_from_db: missing parameter 'obj_dst'");
+                return false;
+            }
                 
-                switch (obj_dst.dst_type) {
-                    case 'vintage':
-                        console.log("fn:get_from_db - dst_type: vintage");
+            switch (obj_dst.dst_type) {
+                
+                case 'vintage':
+                    console.log("fn:get_from_db - dst_type: vintage");
 
-                        return $.post("/admin/rpc_page_control.php", {
-                            rpc_action: 'get_vintage_from_db',
-                            vintage_id: obj_dst.object_id,
-                            wine_id: obj_dst.parent_id,
-                            dst_action: obj_dst.dst_action
-                        }, function(data){
-                                if(data){
-                                    //pass result to status tracker
-                                    //f.db_saved = data.success;
-                                    console.log('get_vintage_from_db');
-                                    console.log(data);
-                                }
-                            },"json");
-                        
-                    break;
-
-                    case "wine":
-                        console.log("fn:get_from_db - dst_type: wine");
-
-                        return $.post("/wine/rpc_wine_db.php", {
-                            rpc_action: 'get_from_db',
-                            wine_id: obj_dst.object_id,
-                            dst_action: obj_dst.dst_action
-                        }, function(data){
-                            if(!data.success){
-                                console.log("get_from_db for wine failed with error = "+data.error);
+                    return $.post("/admin/rpc_page_control.php", {
+                        rpc_action: 'get_vintage_from_db',
+                        vintage_id: obj_dst.object_id,
+                        wine_id: obj_dst.parent_id,
+                        dst_action: obj_dst.dst_action
+                    }, function(data){
+                            if(data){
+                                console.log('get_vintage_from_db returned:');
+                                console.log(data);
+                            }else{
+                                console.log('get_vintage_from_db didnt return any data');
                             }
-                            console.log(data);
                         },"json");
-                        
-                    break;
-                    
 
-                    case "acquisition":
-                        
-                        console.log("fn:get_from_db - dst_type: acquisition");
+                break;
 
-                        return $.post("/acquire/rpc_acquire_db.php", {
-                            rpc_action: 'get_from_db',
-                            acquire_id: obj_dst.object_id,
-                            dst_action: obj_dst.dst_action
-                        }, function(data){},"json");
-                        
-                    break;
-                    
-                    
-                    case "note":
-                        console.log("fn:get_from_db - dst_type: note");
+                case "wine":
+                    console.log("fn:get_from_db - dst_type: wine");
 
-                        return $.post("/vintage/rpc_notes.php", {
-                            rpc_action: 'get_from_db',
-                            note_id: obj_dst.object_id,
-                            vintage_id: obj_dst.parent_id,
-                            quality_rating: obj_dst.data.quality_rating,
-                            value_rating: obj_dst.data.value_rating,
-                            dst_action: obj_dst.dst_action
-                        }, function(data){},"json");
-                        
-                    break;
-                    
-                    case "grapes":
-                        console.log("fn:get_from_db - dst_type: grapes");
-                        //nothing to load - handled server side by page, create success object to return
-                        var data = {
-                            success: true
-                        };
-                        return data;
-                        
-                    break;
+                    return $.post("/wine/rpc_wine_db.php", {
+                        rpc_action: 'get_from_db',
+                        wine_id: obj_dst.object_id,
+                        dst_action: obj_dst.dst_action
+                    }, function(data){
+                        if(!data.success){
+                            console.log("get_from_db for wine failed with error = "+data.error);
+                        }
+                        console.log(data);
+                    },"json");
 
-                    case "awards":
-                        console.log("fn:get_from_db - dst_type: awards");
+                break;
 
-                        return $.post("/vintage/rpc_vintage.php", {
-                            rpc_action: 'put_temp_awards'
-                        }, function(data){},"json");
-                        
-                    break;
-                    
-                    case "image":
-                        console.log("fn:get_from_db - dst_type: image");
 
-                        return $.post("/vintage/rpc_vintage.php", {
-                            rpc_action: 'put_image_vintage',
-                            vintage_id: obj_dst.parent_id
-                        }, function(data){},"json");
-                        
-                    break;
-                    
-                    default:
-                    
-                    //dst_type not provided or not recognised   
-                    console.log("fn:get_from_db - dst_type not recognised ="+obj_dst.dst_type);
-                    return false;
+                case "acquisition":
+
+                    console.log("fn:get_from_db - dst_type: acquisition");
+
+                    return $.post("/acquire/rpc_acquire_db.php", {
+                        rpc_action: 'get_from_db',
+                        acquire_id: obj_dst.object_id,
+                        dst_action: obj_dst.dst_action
+                    }, function(data){},"json");
+
+                break;
+
+
+                case "note":
+                    console.log("fn:get_from_db - dst_type: note");
+
+                    return $.post("/vintage/rpc_notes.php", {
+                        rpc_action: 'get_from_db',
+                        note_id: obj_dst.object_id,
+                        vintage_id: obj_dst.parent_id,
+                        quality_rating: obj_dst.data.quality_rating,
+                        value_rating: obj_dst.data.value_rating,
+                        dst_action: obj_dst.dst_action
+                    }, function(data){},"json");
+
+                break;
+
+                case "grapes":
+                    console.log("fn:get_from_db - dst_type: grapes");
+                    //nothing to load - handled server side by page, create success object to return
+                    var data = {
+                        success: true
+                    };
+                    return data;
+
+                break;
+
+                case "awards":
+                    console.log("fn:get_from_db - dst_type: awards");
+
+                    return $.post("/vintage/rpc_vintage.php", {
+                        rpc_action: 'put_temp_awards'
+                    }, function(data){},"json");
+
+                break;
+
+                case "image":
+                    console.log("fn:get_from_db - dst_type: image");
+
+                    return $.post("/vintage/rpc_vintage.php", {
+                        rpc_action: 'put_image_vintage',
+                        vintage_id: obj_dst.parent_id
+                    }, function(data){},"json");
+
+                break;
+
+                default:
+                //dst_type not provided or not recognised   
+                console.log("fn:get_from_db - dst_type not recognised ="+obj_dst.dst_type);
+                return false;
 
                 }
        
-            }else{
-                console.log("fn:get_from_db - no obj_dst provided");
-            }
+            //};
 
         };
         
@@ -762,21 +769,26 @@
             
             console.log('before unload _ignore_dirty='+o._ignore_dirty+' no_dirty='+o.no_dirty+' page_url='+o.page_url);
             
-            if(o.no_dirty===false){
-                if(o.is_dirty && o._ignore_dirty===false){
-
-                    // For IE and Firefox prior to version 4
-                    if (e) {
-                        e.returnValue = 'You have unsaved changes! \n\nAre you sure you want to leave?';
-                    }
-
-                    // For Safari
-                    return 'You have unsaved changes! \n\nLeaving this page will result in losing these changes.';
-                } else{
-                    //reset _ignore_dirty
-                    o._ignore_dirty = false;
-                }
+            if(o.no_dirty===true){
+                //suppress all unsaved messages for this form
+                return undefined;
             }
+            
+            if(o.is_dirty && o._ignore_dirty===false){
+                //form is_dirty so show customised message in unsaved changes dialog
+
+                var message = 'You have unsaved changes! \n\nAre you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+
+            } else {
+                //reset temp _ignore_dirty flag
+                o._ignore_dirty = false;
+                //suppress unsaved changes dialog
+                return undefined;
+            }
+            
+      
         };
         
 

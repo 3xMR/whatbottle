@@ -67,8 +67,8 @@ class wine extends db {
            $this -> wine_id = $wine_id;
         }
 
-   function update($input_array){
-       return db::update($input_array);
+   function update($input_array, $where=false){
+       return db::update($input_array, $where);
    }
 
 

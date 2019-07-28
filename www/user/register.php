@@ -147,10 +147,10 @@ echo "<div class=\"page_container\">";
    
         //Button Bar
         echo "<div class=\"con_button_bar\" >";
-            if( is_authed() ){
+            //if( is_authed() ){
                 echo "<input type=\"submit\" id=\"btn_submit\" value=\"Register\" />";
 
-            }  
+            //}  
         echo "</div>";
 
       

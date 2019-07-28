@@ -200,7 +200,7 @@ class vintage extends db {
         }
         
         
-        public function get_grapes($details){
+        public function get_grapes($details=false){
 
            if($this->vintage_id>0){
                 $obj_grapes = new vintage_has_grape;

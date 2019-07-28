@@ -1,7 +1,8 @@
 <?php
 
 //include table classes
-header('Content-Type: text/html; charset=utf-8');
+
+//header('Content-Type: text/html; charset=utf-8');
 $root = $_SERVER['DOCUMENT_ROOT'];
 
 require_once("$root/classes/class.debug.php");
@@ -343,8 +344,12 @@ function get($where=false, $columns=false, $group=false, $sort=false, $limit=fal
         mysql_query("SET NAMES utf8");
  
         $result = mysql_query($query);
-
-        $this -> count = mysql_num_rows($result); //set count to number of rows
+        
+        if($result){
+            $this -> count = mysql_num_rows($result); //set count to number of rows
+        }else{
+            $this -> count = 0;
+        }
 
         if($result==false){ //differentiate between no rows returned and a fail
             //error getting results - return error (false)

@@ -113,7 +113,8 @@
             //add filter div
             if(o.showFilter){
                 var button_width = 35;
-                var filter_input_width = (o.width - button_width)+'px';
+                //var filter_input_width = (o.width - button_width)+'px';
+                var filter_input_width = '80%';
                 console.log('filter_width='+filter_input_width);
                
                 //_ignore_dirty class prevents a search from triggering the is_dirty event
@@ -529,7 +530,7 @@
             console.log('clickFilterClear');
             this._trigger('clickFilterClear', null, this.selected_data);
             this.clearSelected();
-            
+            this._refresh();
         },
         
         _refresh: function(){
@@ -974,13 +975,14 @@
             var $self = this;
             var body = $self.el_body;
             
-            console.log('filter: text: '+text);
+            console.log('filter text: '+text);
                     
-            //extend the jquery selector to make contains not case sensitive
-            jQuery.expr[':'].Contains = function(a, i, m) { 
-                return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0; 
+            //extend the jquery selector to accent-fold and remove case sensitivity
+            jQuery.expr[':'].Contains = function(a, i, m) {
+               return jQuery(a).text().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
             };
-                 
+            
+
             $(body).find('.child_con').show();
             
             if(text){

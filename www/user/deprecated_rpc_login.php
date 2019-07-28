@@ -33,7 +33,7 @@ if($_REQUEST['rpc_action'] || $_REQUEST['action']){
 }
 
 
-function rpc_login(){
+function deprecated_rpc_login(){ //use rpc_user
     //login user
     
     $username = $_REQUEST['username'];
@@ -63,7 +63,25 @@ function rpc_login(){
 }
 
 
-function rpc_logout(){
+function deprecated_rpc_logout(){ //use rpc_user
+    //login out user
+    
+    $result= user_logout(); //php function in function_user.php
+    
+    if($result){
+        //logout successful
+       $var_result['success'] = true;
+    }else{
+       //logout failed
+       $var_result['success'] = false;
+       $var_result['error'] = "logout failed";
+    }
+    
+    return $var_result;
+    
+}
+
+function deprecated_change_password(){ //use rpc_user
     //login out user
     
     $result= user_logout(); //php function in function_user.php

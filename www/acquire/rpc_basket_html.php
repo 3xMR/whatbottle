@@ -13,7 +13,8 @@ require_once("$root/classes/class.db.php");
 $var_basket = array();
 
 //create html for basket array
-if(count($_SESSION['var_basket']) > 0){
+$basket_count = isset($_SESSION['var_basket']) ? count($_SESSION['var_basket']) : 0;
+if($basket_count > 0){
     
     $var_basket = $_SESSION['var_basket'];
     
@@ -21,7 +22,8 @@ if(count($_SESSION['var_basket']) > 0){
     <table class="basket_table">
         <tbody>
     <?php
-    
+
+    echo "<input type=\"hidden\" id=\"basket_count\" value=\"$basket_count\" />"; //hidden input to tack basket_count
     foreach($var_basket as $vintage){
         $obj_vintage = new vintage($vintage);
         $vintage_label = $obj_vintage -> vintage_label();

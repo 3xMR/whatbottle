@@ -224,7 +224,6 @@ $(document).ready(function(){
 
         set_autocomplete();
         set_validation();
-        initialise_basket();
         initialise_dropdown();
         loadVintageListbox($('#status').val()); //load vintage listbox
         update_page_status(); //update control states
@@ -300,16 +299,17 @@ $(document).ready(function(){
             console.log(data);
         });
 
+
         function post_data(save_db){
             
             var def_post_data = $.Deferred();
-            
+
             $.post("/wine/rpc_wine_db.php", {
                     action: 'put_wine_session',
                     json_array: json_array,
                     save_db: save_db
                 }, function(data){
-
+                    console.log(data);
                     if(data.success){
                         console.log('put_wine_session OK');
 
@@ -328,7 +328,7 @@ $(document).ready(function(){
                                 }
                             );
 
-                            //go straigh to add new vintage for new wines
+                            //go straight to add new vintage for new wines
                             //if(data.save_type==='db insert' && $("#chk_add_vintage:checked").val() !== undefined){
                             if(data.save_type==='db insert'){
                                 //new wine - checkbox selected so create new vintage

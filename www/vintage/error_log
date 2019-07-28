@@ -1,0 +1,31 @@
+[10-Mar-2019 19:39:06 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[10-Mar-2019 19:41:49 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[10-Mar-2019 19:42:07 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 16
+[10-Mar-2019 19:42:07 Europe/London] PHP Warning:  implode(): Invalid arguments passed in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[10-Mar-2019 19:42:25 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[11-Mar-2019 04:08:46 America/Denver] PHP Catchable fatal error:  Argument 1 passed to qqFileUploader::__construct() must be of the type array, null given, called in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_image_uploader.php on line 163 and defined in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_image_uploader.php on line 70
+[11-Mar-2019 04:09:04 America/Denver] PHP Catchable fatal error:  Argument 1 passed to qqFileUploader::__construct() must be of the type array, null given, called in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_image_uploader.php on line 163 and defined in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_image_uploader.php on line 70
+[11-Mar-2019 10:26:48 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[11-Mar-2019 10:27:26 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[11-Mar-2019 10:29:12 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 16
+[11-Mar-2019 10:29:12 Europe/London] PHP Warning:  implode(): Invalid arguments passed in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[11-Mar-2019 10:29:24 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:22:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 16
+[08-Jun-2019 17:22:11 Europe/London] PHP Warning:  implode(): Invalid arguments passed in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[08-Jun-2019 17:22:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 16
+[08-Jun-2019 17:22:11 Europe/London] PHP Warning:  implode(): Invalid arguments passed in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[08-Jun-2019 17:22:45 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 19:29:52 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[09-Jun-2019 09:31:01 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 16
+[09-Jun-2019 09:31:01 Europe/London] PHP Warning:  implode(): Invalid arguments passed in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[09-Jun-2019 09:31:01 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 16
+[09-Jun-2019 09:31:01 Europe/London] PHP Warning:  implode(): Invalid arguments passed in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[09-Jun-2019 09:31:16 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[09-Jun-2019 17:27:47 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[09-Jun-2019 17:31:16 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 349
+[27-Jul-2019 19:22:16 Europe/London] PHP Warning:  implode(): Invalid arguments passed in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[27-Jul-2019 19:24:06 Europe/London] PHP Fatal error:  Cannot use [] for reading in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 21
+[27-Jul-2019 19:24:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 44
+[27-Jul-2019 19:24:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 44
+[27-Jul-2019 19:25:19 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 46
+[27-Jul-2019 19:25:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/vintage/rpc_listBox_grape_html.php on line 46

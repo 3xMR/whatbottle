@@ -46,7 +46,8 @@ public $fieldlist = array(
         }
     }
 
-    function update($input_array){
+    
+    function update($input_array, $where=false){
 
        //combine vintage_id and award_id to create WHERE clause
        $vintage_id = $input_array['vintage_id'];

@@ -17,9 +17,12 @@ if (isset($_SESSION['var_vintage_temp'])){
         $grape_id = $grape['grape_id'];
         $var_selected_grapes[] = $grape_id;       
     }
-
-    $str_selected_grapes = implode(",", $var_selected_grapes) ?: 0; //set to zero if empty
     
+    if($var_selected_grapes){
+        $str_selected_grapes = implode(",", $var_selected_grapes) ?: 0; //set to zero if empty
+    }else{
+        $str_selected_grapes = 0;
+    }
     
 }else{
     echo "No vintage details found in SESSION";

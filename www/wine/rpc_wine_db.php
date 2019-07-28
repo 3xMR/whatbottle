@@ -3,6 +3,8 @@
  * Wine RPC functions
  * 
  */
+//prevent php warnings messing up json return
+ini_set( "display_errors", 0); 
 
 $root = $_SERVER['DOCUMENT_ROOT'];
 $new_root = rtrim($root, '/\\');
@@ -191,6 +193,7 @@ return $var_return;
 
 };
 
+
 function put_wine_session(){
     //put data from wine form to session
     
@@ -203,11 +206,18 @@ function put_wine_session(){
     unset($_SESSION['var_wine_temp']); //clear session first
 
     $json_array = stripslashes($_REQUEST['json_array']);
-    $var_assoc = json_decode($json_array, true);
-
+    $var_assoc = json_decode($json_array,true);
+    
+    if(!is_array($var_assoc)){
+        $var_result['success'] = false;
+        $var_result['msg']='not an array';
+        return $var_result;
+    }
+    
     foreach($var_assoc as $field){ //put data into session
         $_SESSION['var_wine_temp'][$field['name']] = $field['value'];
     }
+    
 
     $_SESSION['var_wine_temp']['user_id'] = $_SESSION['user_id']; //update user_id
 
@@ -561,6 +571,7 @@ function add_producer_db($producer_name){
         }
     }
 }
+
 
 function vintage_count(){
     //count vintages in wine

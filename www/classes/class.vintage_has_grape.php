@@ -49,7 +49,7 @@ public $fieldlist = array(
         }
     }
 
-    function update($input_array){
+    function update($input_array, $where=false){
        //combine vintage_id and grape_id to create WHERE clause
        $vintage_id = $input_array['vintage_id'];
        $grape_id =  $input_array['grape_id'];

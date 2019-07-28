@@ -54,7 +54,7 @@ echo "<div class=\"page_container\" >";
                 echo "<div style=\"float:left; width:58px;\" >";
                     echo "<img src=\"/images/images_grey_flat_64.png\" height=\"48px\" width=\"48px\" >";
                 echo "</div>";
-                echo "<div style=\"width:auto; float:left; padding-top:5px;\" >";
+                echo "<div style=\"float:none; width:auto; padding-top:5px; \" >";
                     echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >Image Manager</h1>";
                     echo "<h4 style=\"color:darkgray;\" >".$_SESSION['var_vintage_temp']['year']." ".$_SESSION['var_vintage_temp']['wine'].", ".$_SESSION['var_vintage_temp']['producer'];
                     if($_SESSION['var_vintage_temp']['subregion']){
@@ -63,9 +63,9 @@ echo "<div class=\"page_container\" >";
                         echo "</h4>";
                     }
                 echo "</div>";
-                echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:50px;\"  >";
-                    echo "<img id=\"process_indicator\" src=\"/images/ajax_loader.gif\" height=\"24px\" width=\"24px\" />";
-                echo "</div>";
+                //echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:50px;\"  >";
+                //    echo "<img id=\"process_indicator\" src=\"/images/ajax_loader.gif\" height=\"24px\" width=\"24px\" />";
+                //echo "</div>";
                 echo "<div class=\"clear\"></div>";
             echo "</div>";
         echo "</div>"; //con_title_bar
@@ -84,15 +84,17 @@ echo "<div class=\"page_container\" >";
             
             echo "<div class=\"clear\"></div>";
             
-            echo "<div class=\"con_sub_button_bar\" style=\"clear:both; width:250px;\" id=\"con_edit_controls\" >";      
-                echo "<input type=\"button\" name=\"btn_rotate_left\" id=\"btn_rotate_left\" value=\"Left\" />";
-                echo "<input type=\"button\" name=\"btn_rotate_right\" id=\"btn_rotate_right\" value=\"Right\" />";
-                echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" value=\"Delete\" />";
-                echo "<input type=\"button\" name=\"btn_crop\" id=\"btn_crop\" value=\"Crop\" />";
+            echo "<div class=\"con_sub_button_bar \" style=\"clear:both; width:auto; margin-top:3px; margin-bottom:10px;\" id=\"con_edit_controls\" >";
+                echo "<div class=\"hide_small_screen\" style=\"width:250px;\" >";   
+                    echo "<input type=\"button\" name=\"btn_rotate_left\" id=\"btn_rotate_left\" value=\"Left\" />";
+                    echo "<input type=\"button\" name=\"btn_rotate_right\" id=\"btn_rotate_right\" value=\"Right\" />";
+                    echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" value=\"Delete\" />";
+                    echo "<input type=\"button\" name=\"btn_crop\" id=\"btn_crop\" value=\"Crop\" />";
+                echo "</div>";
             echo "</div>";
             
-            echo "<div class=\"con_sub_button_bar\" style=\"width:auto; margin-top:5px; margin-bottom:10px; clear:both;\" >";
-                echo "<input type=\"button\" name=\"btn_search\" id=\"btn_search\" value=\"Google Search\" />";
+            echo "<div class=\"con_sub_button_bar\" style=\"width:100%; margin-top:5px; margin-bottom:10px; clear:both; \" >";
+                echo "<input type=\"button\" name=\"btn_search\" id=\"btn_search\" value=\"Google Search\" style=\"width:125px;\" />";
             echo "</div>";
             
             //image uploader
@@ -886,9 +888,10 @@ $(document).ready(function(){
         // pass the dom node (ex. $(selector)[0] for jQuery users)
         element: document.getElementById('file-uploader'),
         // path to server-side upload script
-        action: '/images/labels/rpc_image_uploader.php',
+        //action: '/images/labels/rpc_image_uploader.php',
+        action: '/vintage/rpc_image_uploader.php',
         //debug
-        debug: true,
+        debug: false,
         //onsubmit
         onSubmit: function(id, fileName){
             //check filename for valid file types
@@ -904,6 +907,7 @@ $(document).ready(function(){
             
             var file_name = responseJSON.file_name;
             console.log('uploader completed file_name: '+responseJSON.file_name);
+
             
             $('#edit_image').height('').width(''); //remove dims so image is uploaded native size and can be resized by get_image()
             

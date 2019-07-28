@@ -36,7 +36,8 @@ class qqUploadedFileXhr {
         } else {
             throw new Exception('Getting content length is not supported.');
         }      
-    }   
+    }  
+    
 }
 
 /**
@@ -123,7 +124,7 @@ class qqFileUploader {
         }
         
         if ($size > $this->sizeLimit) {
-            return array('error' => 'File is too large');
+            return array('error' => 'File is too large. Size Limit is '.$this->sizeLimit);
         }
         
         $pathinfo = pathinfo($this->file->getName());
@@ -144,7 +145,7 @@ class qqFileUploader {
         }
         
         if ($this->file->save($uploadDirectory . $filename . '.' . $ext)){
-            return array('success'=>true);
+            return array('success'=>true,'file_name'=>$filename.'.'.$ext);
         } else {
             return array('error'=> 'Could not save uploaded file.' .
                 'The upload was cancelled, or server error encountered');
@@ -153,13 +154,17 @@ class qqFileUploader {
     }    
 }
 
+//**** create instance of the class to upload image ***
+
+$root = $_SERVER['DOCUMENT_ROOT'];
 // list of valid extensions, ex. array("jpeg", "xml", "bmp")
 $allowedExtensions = array();
 // max file size in bytes
-$sizeLimit = 10 * 1024 * 1024;
+//$sizeLimit = 4 * 1024 * 1024; //was 10 but changed to test live server
 
-$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
-//$result = $uploader->handleUpload("/uploads/");
-$result = $uploader->handleUpload("uploads/");
+//$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
+$uploader = new qqFileUploader($allowedExtensions);
+//$result = $uploader->handleUpload('uploads/');
+$result = $uploader->handleUpload("$root/images/labels/uploads/");
 // to pass data through iframe you will need to encode all html tags
 echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);

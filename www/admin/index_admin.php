@@ -170,8 +170,7 @@ echo "<head>";
     
 
         <div class="con_button_bar" >
-            <input type="button" id="btn_cancel" value="OK" >
-            <input type="button" id="btn_test" value="Test" >
+            <input type="button" id="btn_cancel" value="Close" >
         </div>
            
         <div class="clear" ></div>
@@ -206,14 +205,11 @@ require_once("$root/includes/script_libraries.inc.php");
 <script type="text/javascript" src="/libraries/jquery.ui.listBox.js"></script>
 <script type="text/javascript">
 
+
 //TODO: add notes input field to grapes and provide mechanism to view
-//TODO: Add start page menu for ipad mobile devices
 //TODO: Traverse up tree to open all containing elements when refreshing tree listbox
-//TODO: Fix font sizes in list boxes, they are too big and vary across listboxes
-//TODO: Filter box should resize to be similar height as a row in ListBox
-//FIX: filter doesn't treat special characters as if they were the same without accents
-//TODO: Remove test button
 //TODO: Add butons to filter Grapes by colour
+
 
 $(document).ready(function(){
 
@@ -347,8 +343,8 @@ $(document).ready(function(){
     //setup Producer listBox
     $("#con_listBox_producer").listBox({
         title: "Producer",
-        width: 400,
-        height: 700,
+        width: "auto",
+        height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_producer_html.php',
         showFilter: true,
         showTitle: false,
@@ -469,8 +465,8 @@ $(document).ready(function(){
     //setup grape listBox
     $("#con_listBox_grape").listBox({
         title: "Grape",
-        width: 400,
-        height: 700,
+        width: 'auto',
+        height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_grape_html.php',
         showFilter: true,
         showTitle: false,
@@ -910,8 +906,8 @@ $(document).ready(function(){
     //setup Location listBox
     $("#con_listBox_location").listBox({
         title: "Location",
-        width: 400,
-        height: 700,
+        width: 'auto',
+        height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_location_html.php',
         showTitle: false,
         showFilter: true,
@@ -1080,8 +1076,8 @@ $(document).ready(function(){
     //setup Merchant listBox
     $("#con_listBox_merchant").listBox({
         title: "Merchant",
-        width: 400,
-        height: 700,
+        width: 'auto',
+        height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_merchant_html.php',
         showFilter: true,
         showTitle: false,

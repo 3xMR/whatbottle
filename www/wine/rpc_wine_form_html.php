@@ -116,9 +116,9 @@ echo "<div style=\"float:left; background-color:none; \" class=\"con_form_fields
                     }
                 ?>
             </select>
-            <!-- XXX added to names to prevent Chrome autocomplete trying to guess what they are -->
+            <!--origin_c alias for country used to prevent Chrome interpreting as an address field, same for the hidden label field-->
             <label for="" style="display: none;">hidden label to mislead chrome autocomplete</label>
-            <input type="text" name="XXX"  style="width:270px; position:absolute; top:0; left:0; border-top-right-radius:0px; border-bottom-right-radius:0px;" value="<?php echo $_SESSION['var_wine_temp']['country'];?>" id="country" />
+            <input type="text" name="origin_c"  style="width:270px; position:absolute; top:0; left:0; border-top-right-radius:0px; border-bottom-right-radius:0px;" value="<?php echo $_SESSION['var_wine_temp']['country'];?>" id="country" autocomplete="new-password"/>
             <input type="hidden" name="country_id" class="debug" value="<?php echo $_SESSION['var_wine_temp']['country_id'];?>" id="country_id" />
             <img class="click control" alt="add_country" style="margin-top:3px;" id="btn_add_country" src="/images/plus_grey_flat_32.png" >
         </div>
@@ -151,8 +151,8 @@ echo "<div style=\"float:left; background-color:none; \" class=\"con_form_fields
                 }
                 ?>
             </select>
-            <!-- XXX added to names to prevent Chrome autocomplete trying to guess what they are -->
-            <input type="text" style="width:270px; position:absolute; top:0; left:0; border-top-right-radius:0px; border-bottom-right-radius:0px;" name="regionXXX" value="<?php echo $_SESSION['var_wine_temp']['region'];?>" id="region" />
+            <!--origin_r alias for region used to prevent Chrome interpreting as an address field-->
+            <input type="text" name="origin_r" style="width:270px; position:absolute; top:0; left:0; border-top-right-radius:0px; border-bottom-right-radius:0px;" value="<?php echo $_SESSION['var_wine_temp']['region'];?>" id="region" />
             <input type="hidden" value="<?php echo $_SESSION['var_wine_temp']['region_id'];?>" name="region_id" id="region_id" />
             <img class="click control" alt="add_region" style="margin-top:3px;" id="btn_add_region" src="/images/plus_grey_flat_32.png" >
         </div>
@@ -185,8 +185,8 @@ echo "<div style=\"float:left; background-color:none; \" class=\"con_form_fields
                     }
                 ?>
             </select>
-            <!-- XXX added to names to prevent Chrome autocomplete trying to guess what they are -->
-            <input type="text" style="width:270px; position:absolute; top:0; left:0; border-top-right-radius:0px; border-bottom-right-radius:0px;" name="subregionXXX" value="<?php echo $_SESSION['var_wine_temp']['subregion'];?>" id="subregion" />
+            <!--origin_sr alias for subregion used to prevent Chrome interpreting as an address field-->
+            <input type="text" name="origin_sr" style="width:270px; position:absolute; top:0; left:0; border-top-right-radius:0px; border-bottom-right-radius:0px;" value="<?php echo $_SESSION['var_wine_temp']['subregion'];?>" id="subregion" />
             <input type="hidden" value="<?php echo $_SESSION['var_wine_temp']['subregion_id'];?>" name="subregion_id" id="subregion_id" />
             <img class="click control" style="margin-top:3px;" alt="add_subregion" id="btn_add_subregion" src="/images/plus_grey_flat_32.png"  >
         </div>

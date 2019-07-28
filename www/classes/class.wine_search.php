@@ -1,6 +1,6 @@
 <?php
 
-header('Content-Type: text/html; charset=utf-8');
+//header('Content-Type: text/html; charset=utf-8');
 $root = $_SERVER['DOCUMENT_ROOT'];
 require_once("$root/includes/init.inc.php");
 

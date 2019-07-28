@@ -1,0 +1,382 @@
+[09-Mar-2019 08:03:57 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 15:03:57 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 15:03:57 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 15:03:57 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 15:03:57 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 15:03:58 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 15:03:58 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 15:03:58 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 15:03:58 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 15:03:58 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 08:11:52 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 15:11:52 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 15:11:52 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 15:11:52 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 15:11:52 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 08:16:09 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 15:16:09 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 15:16:09 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 15:16:09 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 15:16:09 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 08:16:16 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 15:16:16 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 15:16:16 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 15:16:16 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 15:16:17 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 08:16:17 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 15:16:17 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 15:16:17 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 15:16:17 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 09:52:44 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 16:52:44 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 16:52:44 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 16:52:44 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 16:52:45 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 09:54:09 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 16:54:09 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 16:54:09 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 16:54:09 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 16:54:09 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 09:56:08 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 16:56:08 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 16:56:08 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 16:56:08 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 16:56:08 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 09:56:15 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 16:56:15 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 16:56:15 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 16:56:15 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 16:56:15 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 09:56:15 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 16:56:16 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 16:56:16 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 16:56:16 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 10:05:14 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[09-Mar-2019 17:05:14 Europe/London] PHP Strict Standards:  Declaration of vintage_has_award::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_award.php on line 85
+[09-Mar-2019 17:05:14 Europe/London] PHP Strict Standards:  Declaration of vintage_has_grape::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.vintage_has_grape.php on line 90
+[09-Mar-2019 17:05:14 Europe/London] PHP Strict Standards:  Declaration of wine::update() should be compatible with db::update($input_array, $where = false) in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.wine.php on line 96
+[09-Mar-2019 17:05:14 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 17:43:12 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 17:43:12 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 17:43:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 17:45:40 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Mar-2019 19:55:33 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 12:02:02 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 12:05:39 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 12:25:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 13:27:41 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 13:42:01 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 13:43:38 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 14:59:08 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 15:09:41 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 15:09:46 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 15:10:04 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 15:11:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 15:17:56 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 15:19:07 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 15:23:54 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:28:02 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:28:13 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:28:41 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:30:27 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:38:12 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:38:25 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:38:36 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:38:51 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 16:45:05 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:21:00 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:21:02 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:21:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:39:03 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:39:17 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:39:33 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:39:46 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:40:25 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:40:46 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:41:30 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[10-Mar-2019 17:41:48 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[10-Mar-2019 17:45:57 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:45:57 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:45:57 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:46:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:46:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 17:56:47 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:37:31 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:37:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:38:27 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:38:58 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[10-Mar-2019 19:40:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:40:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:41:04 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:41:22 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:41:46 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[10-Mar-2019 19:42:38 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 19:46:48 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 20:04:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 20:08:41 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 20:22:18 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 21:47:49 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 21:54:15 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 21:55:13 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 21:55:13 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[10-Mar-2019 22:00:05 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:18:27 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:18:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:19:04 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:19:13 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:19:25 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:19:53 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:21:24 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:21:29 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 09:21:51 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:03:30 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:09:32 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:09:58 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:09:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:16:05 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:16:38 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:16:48 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:22:26 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:24:03 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:24:30 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:25:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 10:28:52 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[11-Mar-2019 16:39:31 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:39:47 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:41:14 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:41:32 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:50:26 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:51:56 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:54:30 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:55:40 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 16:58:35 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:00:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:00:29 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:00:33 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:00:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:00:51 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:01:35 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:01:38 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:01:39 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:02:03 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:04:36 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:04:52 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:05:01 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:05:16 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:06:49 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:07:47 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:08:08 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:08:17 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:09:19 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:10:02 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:10:36 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:17:41 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:19:47 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:19:48 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:46:21 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:46:22 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:47:01 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 17:47:12 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 11:52:42 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[11-Mar-2019 17:52:42 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 11:54:55 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[11-Mar-2019 17:54:55 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 11:55:05 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[11-Mar-2019 17:55:05 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 11:55:05 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[11-Mar-2019 11:56:35 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[11-Mar-2019 17:56:35 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 12:04:48 America/Denver] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /Volumes/sites/whatbottle/01 whatbottle.test/www/includes/init.inc.php on line 29
+[11-Mar-2019 18:04:48 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 18:06:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 18:10:15 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 18:21:13 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 18:21:18 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 18:35:42 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 19:04:31 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 22:21:25 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 22:21:35 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[11-Mar-2019 22:21:36 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[16-Mar-2019 11:24:14 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[16-Mar-2019 11:27:02 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 11:45:45 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 11:45:48 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 11:45:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 16:12:03 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:12:00 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:12:19 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:12:52 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:13:13 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:14:17 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:14:24 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:14:31 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:14:32 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:14:32 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:16:46 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:16:50 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:17:07 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:34 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:20:59 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:20 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:37 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:37 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:37 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:51 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:21:52 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:23:07 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:29:08 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:29:31 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:29:43 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:32:06 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:42:55 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:43:06 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:43:29 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:44:12 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:44:27 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 17:46:43 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:48:37 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:51:25 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 17:51:55 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:28:16 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:30:51 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 18:31:43 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:35:30 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 18:36:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:36:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:39:39 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:41:14 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 18:42:40 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 18:42:45 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:42:45 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:42:45 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:42:53 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:42:53 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:43:01 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:43:23 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 18:50:10 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 209
+[08-Jun-2019 18:54:21 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 18:54:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:54:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:54:28 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:54:36 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 18:54:36 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:00:05 Europe/London] PHP Warning:  Illegal string offset 'name' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 217
+[08-Jun-2019 19:00:05 Europe/London] PHP Warning:  Illegal string offset 'value' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 221
+[08-Jun-2019 19:00:05 Europe/London] PHP Warning:  Illegal string offset 'name' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 217
+[08-Jun-2019 19:00:05 Europe/London] PHP Warning:  Illegal string offset 'value' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 221
+[08-Jun-2019 19:04:30 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:07:08 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:07:17 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:12:10 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:14:54 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:15:44 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:17:56 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:20:47 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:01 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:02 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:02 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:02 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:02 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:02 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:21:02 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:29 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:32 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:22:44 Europe/London] PHP Warning:  Illegal offset type in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:25:35 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:25:56 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 19:27:11 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:27:32 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:27:44 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[08-Jun-2019 19:27:56 Europe/London] PHP Warning:  Illegal string offset 'name' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:27:56 Europe/London] PHP Warning:  Illegal string offset 'value' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:27:56 Europe/London] PHP Warning:  Illegal string offset 'name' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:27:56 Europe/London] PHP Warning:  Illegal string offset 'value' in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 216
+[08-Jun-2019 19:29:23 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:29:29 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[08-Jun-2019 19:29:44 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[09-Jun-2019 09:30:22 Europe/London] PHP Warning:  Missing argument 1 for get_country_for_region() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 860
+[09-Jun-2019 09:30:30 Europe/London] PHP Warning:  Missing argument 1 for get_country_for_region() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 860
+[09-Jun-2019 09:30:37 Europe/London] PHP Warning:  Missing argument 1 for get_country_for_region() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_db.php on line 860
+[09-Jun-2019 09:30:41 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[09-Jun-2019 12:55:55 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Jun-2019 12:55:56 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Jun-2019 12:56:19 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Jun-2019 17:27:30 Europe/London] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Volumes/sites/whatbottle/01 whatbottle.test/www/classes/class.db.php on line 348
+[09-Jun-2019 17:54:45 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Jun-2019 17:55:24 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Jun-2019 18:12:23 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115
+[09-Jun-2019 18:17:36 Europe/London] PHP Warning:  Invalid argument supplied for foreach() in /Volumes/sites/whatbottle/01 whatbottle.test/www/wine/rpc_wine_search_results_html.php on line 115

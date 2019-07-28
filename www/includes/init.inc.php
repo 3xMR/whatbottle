@@ -6,7 +6,7 @@ if(!isset($_SESSION)){
 
 header('Content-Type: text/html; charset=utf-8');
 
-//db connection
+//legacy mysql db connection
 $root = $_SERVER['DOCUMENT_ROOT'];
 $new_root = rtrim($root, '/\\');
 $real_root = rtrim($root, '/\\');
@@ -38,6 +38,7 @@ if($root=="/Volumes/sites/whatbottle/03 whatbottle.local/www/" ||
     $environment = 'live';
 
 }
+
 
 // Seed the random number generator
 srand();

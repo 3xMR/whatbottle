@@ -645,7 +645,7 @@ $(document).ready(function(){
     //edit grapes
     $(document).on('click','#edit_grapes',function(){
         //open grapes form to modify grapes
-        console.log('edit_grapes');
+        console.log('click edit_grapes');
         open_grapes();
  
     });

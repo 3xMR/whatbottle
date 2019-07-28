@@ -191,9 +191,11 @@ function is_authed()
 
 }
 
+
 function reset_password($user_id, $password)
 {
-	 // Get the salt from the database using the username
+
+    // Get the salt from the database using the username
 
     $query = "select salt, username from tblUser where user_id='$user_id' limit 1";
     $result = mysql_query($query);
@@ -210,4 +212,27 @@ function reset_password($user_id, $password)
 	$result = user_login($username, $password);
 
 }
+
+
+function change_password($user_id, $password)
+{
+
+    // Get the salt from the database using the username
+
+    $query = "select salt, username from tblUser where user_id='$user_id' limit 1";
+    $result = mysql_query($query);
+    $user = mysql_fetch_array($result);
+
+    $encrypted_pass = md5(md5($password).$user['salt']);
+
+    // And lastly, store the information in the database
+    $query = "UPDATE tblUser SET password='$encrypted_pass' WHERE user_id='$user_id'";
+    mysql_query ($query) or die ('Could not create user.');
+
+	//login user
+	$username = $user['username'];
+	$result = user_login($username, $password);
+
+}
+
 ?>

@@ -3,6 +3,17 @@
  * Release 4.4
  * Released: TBC
  * Notes:
+ * Added PDO database connection used in User class (not transitioned other classes yet)
+ * Add User class with all user related methods for login, password change
+ * Added Settings page with password change function
+ * Added Settings to main menu
+ * Fixed basket count notification so it is self initialising
+ * Increased image max upload size to 10MB and moved rpc_image_uploader.php to /vintage
+ * Added home button link to whatbottle logo
+ * Created template.php page
+ * Fixed Chrome interpreting location fields as addresses
+ * Fixed From/To on Vintage page being populated with 0 when returning from child page
+ * Fixed listBoxes on Admin page; filters have accent-folding, fixed reset, fixed widths
  * 
  * 
  * Release 4.32.2
@@ -65,12 +76,12 @@
  * 
  * Backlog:
  * TODO: Put wine and vintage count on reporting page
- * TODO: Add ability to change password
  * TODO: free text search on notes
  * TODO: Double-click on image to open image_manager page as overlay
  * TODO: Click Whatbottle text to go to /index.php
  * TODO: centre align vertically vintage year with stars and pound signs
  * 
+ * php.ini = /Applications/MAMP/bin/php/php5.6.2/conf/php.ini
  *
  */
 $root = $_SERVER['DOCUMENT_ROOT'];
@@ -514,8 +525,9 @@ require_once("$root/includes/standard_dialogs.inc.php");
     <div class="ui-menu-item-first">Show Acquisitions<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <?php echo $admin_option ?>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
 
 <div id='wine_menu' class="pop_up" style="width:200px; display:none;">
@@ -590,7 +602,7 @@ $(document).ready(function(){
     //recent acquistions listbox
     $("#con_acquisitions").listBox({
         title: "Acquisitions",
-        width: 300,
+        width: 320,
         height: $(window).height() - 65,
         showFilter: true,
         showBorder: true,
@@ -790,7 +802,7 @@ $(document).ready(function(){
             $('#con_acquisitions_btn_clear_filter').show(); //acquisition listBox
         }else{
             $('.btn_reset_search').hide();
-            $('#con_acquisitions_btn_clear_filter').hide(); //acquisition listBox
+            //$('#con_acquisitions_btn_clear_filter').hide(); //acquisition listBox
         }
         
     }
@@ -1338,6 +1350,9 @@ $(document).ready(function(){
                     case 'Wines':
                         open_wines();
                         break;
+                    case 'Settings':
+                        open_settings();
+                        break;
                     default:
                         console.log('selected_item not recognised: '+selected_item);
                 }
@@ -1396,6 +1411,16 @@ $(document).ready(function(){
             dst_action: 'open',
             page_action: 'leave'
         });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+        
     }
     
     

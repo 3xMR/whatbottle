@@ -71,7 +71,7 @@
     }
    
     //***vintage form - required for validation ***
-    echo "<form action=\"/vintage/vintage.php\" method=\"post\" id=\"frm_vintage\" name=\"frm_vintage\" autocomplete=\"off\" >";
+    echo "<form action=\"/vintage/vintage.php\" method=\"post\" id=\"frm_vintage\" name=\"frm_vintage\" autocomplete=\"false\" >";
     
     echo "<div class=\"rwd-con-50\" >";
 
@@ -85,14 +85,14 @@
         echo "</div>";
         
         echo "<div class=\"input-main bottom-spacer\" style=\"margin-left:5px;\" >";
-            echo "<input type=\"number\" step=\"0\" max=\"9999\" style=\"width:4em; \" value=\"$year\" name=\"year\" id=\"year\" $disabled />";
+            echo "<input type=\"number\" step=\"0\" max=\"9999\" style=\"width:4em; \" value=\"$year\" name=\"year\" id=\"year\" autocomplete=\"year\" $disabled />";
         echo "</div>";
  
         
         //Grapes
         echo "<div class=\"input-main-label vertical-centre clear-left click\"  id=\"edit_grapes\" >";
             echo "<p style=\"float:left;\" >Grapes</p>";
-            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:1em; height:1em;\" id=\"edit_grapes\" class=\"click ignore_dirty\" />";
+            echo "<img src=\"/images/edit_flat_grey_24.png\" style=\"width:1em; height:1em;\" id=\"edit_grapes_img\" class=\"click ignore_dirty\" />";
         echo "</div>";
 
         echo "<div class=\"input-main clear-left bottom-spacer\" >";
