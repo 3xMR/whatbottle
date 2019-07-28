@@ -31,12 +31,12 @@ if($root=="/Volumes/sites/whatbottle/03 whatbottle.local/www/" ||
     mysql_select_db("whatbottle_dev") or die(mysql_error());
     $environment = "dev";
 } else {
-    //public
-    $link = mysql_connect("localhost",  "magnus_admin", "Animal2359") or die(mysql_error());
-    mysql_set_charset('utf8',$link);
-    mysql_select_db("magnus_whatbottle") or die(mysql_error());
+    //public details are held in config file in config folder
+    include_once('/home2/magnus/config/whatbottleConfig.php');
+    $link = mysql_connect($DB_HOST, $DB_USER, $DB_PASS) or die(mysql_error());
+    mysql_set_charset($DB_CHAR,$link);
+    mysql_select_db($DB_NAME) or die(mysql_error());
     $environment = 'live';
-
 }
 
 

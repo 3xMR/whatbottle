@@ -11,12 +11,30 @@
  * 
  */
 
-//TODO create function to modify definitions based on dynamic environment detection
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'whatbottle_dev');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
-define('DB_CHAR', 'utf8');
+
+
+//modify definitions based on dynamic environment detection
+$root = $_SERVER['DOCUMENT_ROOT'];
+
+If($root=="/Volumes/sites/whatbottle/01 whatbottle.test/www/" || 
+        $root=="/Users/magnus/Documents/Sites/whatbottle.test/www/" ){
+    //development environment
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'whatbottle_dev');
+    define('DB_USER', 'root');
+    define('DB_PASS', 'root');
+    define('DB_CHAR', 'utf8');
+   
+} else {
+    //public details are held in config file in config folder
+    include_once('/home2/magnus/config/whatbottleConfig.php');
+    define('DB_HOST', $DB_HOST);
+    define('DB_NAME', $DB_NAME);
+    define('DB_USER', $DB_USER);
+    define('DB_PASS', $DB_PASS);
+    define('DB_CHAR', $DB_CHAR);
+    
+}
 
 
 class MyPDO {

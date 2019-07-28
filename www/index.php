@@ -1,10 +1,12 @@
 <?php
 /* 
+ * Branch R5_PDO_Update
  * Release 4.4
- * Released: TBC
+ * Released: 28-07-2019
  * Notes:
  * Added PDO database connection used in User class (not transitioned other classes yet)
  * Add User class with all user related methods for login, password change
+ * PDO public database credentials moved to config folder above public_html
  * Added Settings page with password change function
  * Added Settings to main menu
  * Fixed basket count notification so it is self initialising
