@@ -1,8 +1,6 @@
 <?php
 /* 
  * 
-
- * 
  * Branch R5_PDO_Update
  * Release 4.4
  * Released: 28-07-2019
@@ -85,7 +83,6 @@
  * TODO: Put wine and vintage count on reporting page
  * TODO: free text search on notes
  * TODO: Double-click on image to open image_manager page as overlay
- * TODO: Click Whatbottle text to go to /index.php
  * TODO: centre align vertically vintage year with stars and pound signs
  * 
  * php.ini = /Applications/MAMP/bin/php/php5.6.2/conf/php.ini
@@ -609,7 +606,7 @@ $(document).ready(function(){
     //recent acquistions listbox
     $("#con_acquisitions").listBox({
         title: "Acquisitions",
-        width: 320,
+        width: 330,
         height: $(window).height() - 65,
         showFilter: true,
         showBorder: true,

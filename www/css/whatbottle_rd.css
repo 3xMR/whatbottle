@@ -1819,9 +1819,7 @@ div.listBox_body{
     overflow-y: scroll;
     overflow-x: hidden;
     font-size: 1em;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+
 }
 
   
@@ -1863,7 +1861,7 @@ input.listBox_filter{
 }
             
 .listBox_row{
-    width:100%;
+    width:auto;
     clear:left;
     position:relative;
     /*background-color:lightskyblue;*/
