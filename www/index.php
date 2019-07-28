@@ -1,9 +1,14 @@
 <?php
 /* 
+ * 
+
+ * 
  * Branch R5_PDO_Update
  * Release 4.4
  * Released: 28-07-2019
  * Notes:
+ * Added show children in filtered location listBox
+ * Fixed widths of admin listboxes and removed border of tabs
  * Added PDO database connection used in User class (not transitioned other classes yet)
  * Add User class with all user related methods for login, password change
  * PDO public database credentials moved to config folder above public_html

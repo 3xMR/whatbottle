@@ -144,7 +144,7 @@ echo "<head>";
     
         <div id="tabs">
             <ul>
-              <li><a href="#tabs-1">Locations</a></li>
+              <li><a href="#tabs-1">Regions</a></li>
               <li><a href="#tabs-2">Merchants</a></li>
               <li><a href="#tabs-3">Producers</a></li>
               <li><a href="#tabs-4">Grapes</a></li>
@@ -343,7 +343,7 @@ $(document).ready(function(){
     //setup Producer listBox
     $("#con_listBox_producer").listBox({
         title: "Producer",
-        width: "auto",
+        width: "100%",
         height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_producer_html.php',
         showFilter: true,
@@ -465,7 +465,7 @@ $(document).ready(function(){
     //setup grape listBox
     $("#con_listBox_grape").listBox({
         title: "Grape",
-        width: 'auto',
+        width: '100%',
         height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_grape_html.php',
         showFilter: true,
@@ -481,6 +481,9 @@ $(document).ready(function(){
         },
         clickEdit: function(event, data){
             edit_grape(data.listBox_id, data.listBox_values[0], data.listBox_values[1]);
+        },
+        clickFilter: function(event, data){
+            
         }
        
     });
@@ -906,7 +909,7 @@ $(document).ready(function(){
     //setup Location listBox
     $("#con_listBox_location").listBox({
         title: "Location",
-        width: 'auto',
+        width: '100%',
         height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_location_html.php',
         showTitle: false,
@@ -1076,7 +1079,7 @@ $(document).ready(function(){
     //setup Merchant listBox
     $("#con_listBox_merchant").listBox({
         title: "Merchant",
-        width: 'auto',
+        width: '100%',
         height: $(window).height() - 185,
         listContent: '/admin/rpc_listBox_merchant_html.php',
         showFilter: true,

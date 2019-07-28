@@ -1819,6 +1819,9 @@ div.listBox_body{
     overflow-y: scroll;
     overflow-x: hidden;
     font-size: 1em;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
   
@@ -1860,7 +1863,7 @@ input.listBox_filter{
 }
             
 .listBox_row{
-    width:auto;
+    width:100%;
     clear:left;
     position:relative;
     /*background-color:lightskyblue;*/
@@ -2219,19 +2222,4 @@ div.static-rating-small{
 
 #ui-datepicker-div { display: none; }
 
-
-/***** Temperature ******/
-
-div.temp_readout{
-    width:100px;
-    display:block;
-    float:left;
-    text-align: center;
-    margin-left: 15px;
-    padding: 5px;
-    padding-left:10px;
-    border: solid 4px gray;
-    background-color: #E6E6E6;
-    border-radius: 6px 6px 6px 6px;
-    color: #545454;
-}
+#tabs {border: none} /* remove borders from tabs widget */

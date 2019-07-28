@@ -494,6 +494,17 @@
             });
             
         },
+        
+        _displayChildren: function(el){
+            //display children for el(ement)
+            $self = this;
+            
+            var container = $(el).next('.child_con'); //find the next container div
+            container.find('.listBox_row').show(); //show all the rows within this container
+            container.find('.child_con').hide(); //hide the sub containers to close up sections
+            container.hide(); //hide the next container
+
+        },
 
         _addClick: function(event){
             //add button click event
@@ -991,6 +1002,7 @@
                 $(body).find('.listBox_row').filter(filter).each(function(){
                     $(this).show();
                     $self._displayParents(this);
+                    $self._displayChildren(this); //show direct descendants
                 });     
             }else{
                 //show all
