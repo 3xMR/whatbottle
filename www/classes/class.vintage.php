@@ -258,6 +258,7 @@ class vintage extends db {
            
         }
         
+        
         public function get_available_bottle_count(){
             /* Calculate and return the number of bottle available to consume
              * Each tasting note against vintage will deduct from the total acquired number
@@ -266,8 +267,6 @@ class vintage extends db {
             
             $this->last_error = null;
             $var_available = null;
-            
-            
             
             $acquisition_bottle_count = $this->get_acquisition_bottle_count();
             if($acquisition_bottle_count <= 0){

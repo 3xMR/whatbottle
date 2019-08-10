@@ -29,6 +29,7 @@ require_once("$root/classes/class.vintage_has_grape.php");
 require_once("$root/classes/class.vintage.php");
 require_once("$root/classes/class.wine.php");
 require_once("$root/classes/class.winetype.php");
+require_once("$root/classes/class.winetype.php");
 
 class db {
 

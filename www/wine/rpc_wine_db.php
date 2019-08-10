@@ -11,15 +11,19 @@ $new_root = rtrim($root, '/\\');
 require_once("$root/includes/init.inc.php");
 require_once("$root/functions/function.php");
 require_once("$root/classes/class.db.php");
+require_once("$root/classes/MyPDO.php");
+require_once("$root/classes/Producer.php");
 
 
+$rpc_action = (filter_input(INPUT_POST, 'rpc_action', FILTER_SANITIZE_STRING) > "") ? filter_input(INPUT_POST, 'rpc_action', FILTER_SANITIZE_STRING) : filter_input(INPUT_GET, 'rpc_action', FILTER_SANITIZE_STRING);
+$action = (filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING) > "") ? filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING) : filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 
-if($_REQUEST['rpc_action'] || $_REQUEST['action']){
+if($rpc_action || $action){
     //convert action to function call
-    if($_REQUEST['rpc_action']){
-        $fnc = $_REQUEST['rpc_action'];
+    if($rpc_action){
+        $fnc = $rpc_action;
     }else{
-        $fnc = $_REQUEST['action'];
+        $fnc = $action;
     }
     
     if(is_callable($fnc)){
@@ -27,16 +31,13 @@ if($_REQUEST['rpc_action'] || $_REQUEST['action']){
         $var_result = call_user_func($fnc);
         echo json_encode($var_result);
     }else{
-        $var_result['error'] = "function [$fnc] not found on server page [".$_SERVER['PHP_SELF']."]";
+        $page = filter_input(INPUT_SERVER, 'PHP_SELF', FILTER_SANITIZE_STRING);
+        $var_result['error'] = "function [$fnc] not found on server page $page";
         $var_result['success'] = false;
         echo json_encode($var_result);
     }
     
-};
-
-
-
-
+}
 
 
 function debug($text){
@@ -202,8 +203,6 @@ function put_wine_session(){
         $var_result['error']='no json_array provided';   
         return $var_result;
     }
- 
-    unset($_SESSION['var_wine_temp']); //clear session first
 
     $json_array = stripslashes($_REQUEST['json_array']);
     $var_assoc = json_decode($json_array,true);
@@ -214,21 +213,25 @@ function put_wine_session(){
         return $var_result;
     }
     
+    unset($_SESSION['var_wine_temp']); //clear session before setting new values
+    
     foreach($var_assoc as $field){ //put data into session
         $_SESSION['var_wine_temp'][$field['name']] = $field['value'];
     }
     
 
     $_SESSION['var_wine_temp']['user_id'] = $_SESSION['user_id']; //update user_id
+    
+    //Session updated - now save session to db
 
-
-    if($_REQUEST['save_db']){ //continue with commit to db
+    if($_REQUEST['save_db']==true){ //continue with commit to db
         $var_wine = $_SESSION['var_wine_temp'];
         $var_result = save_to_db($var_wine); //pass details to save function
     } else {
         //save to session only
         $var_result['success'] = true; //do not return yet - as it may be a save_db
         $var_result['msg']='save to session successful';
+        $var_result['save_type'] = 'session';
     }
     
     return $var_result;
@@ -903,5 +906,31 @@ function get_country_for_region($region_id){
  
 }
 
+function get_wine_count_for_producer(){
+    //return count of wines associated with a producer
+    
+    
+    $producer_id = (filter_input(INPUT_POST, 'producer_id', FILTER_SANITIZE_STRING) > "") ? filter_input(INPUT_POST, 'producer_id', FILTER_SANITIZE_STRING) : filter_input(INPUT_GET, 'producer_id', FILTER_SANITIZE_STRING);
+    
+    if(empty($producer_id) || !is_numeric($producer_id) ){
+        $var_result['success']= false;
+        $var_result['error']= "no producer_id provided";
+        return $var_result;
+    }
+    
+    $producerObj = new wbProducer();
+    $count = $producerObj->getWineCount($producer_id);
+    if($count < 0){
+        //sql error
+        $var_result['success']= false;
+        $var_result['error']= $producerObj->lastErrorMessage;
+        return $var_result;
+    }
+    
+    $var_result['success']= true;
+    $var_result['count']= $count;
+    return $var_result;
+    
+}
 
 ?>

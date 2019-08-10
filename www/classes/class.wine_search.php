@@ -151,20 +151,35 @@ class wine_search {
         
         //Available
         if($available>0){
-            $select .= ", (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0)) available ";
-            $from .= "  LEFT JOIN (SELECT vintage_id, SUM(trelVintageHasAcquire.qty) purchased
-                        FROM trelVintageHasAcquire GROUP BY vintage_id) AS acquisitions
-                        ON acquisitions.vintage_id = tblVintage.vintage_id
-                        LEFT JOIN (SELECT vintage_id, IFNULL(COUNT(tblNotes.note_id),0) opened
-                        FROM tblNotes GROUP BY vintage_id) as notes
-                        ON notes.vintage_id = tblVintage.vintage_id
-                        LEFT JOIN (SELECT vintage_id, override
-                        FROM tblAvailableOverride) as override
-                        ON override.vintage_id = tblVintage.vintage_id ";
-            //$group = " tblVintage.vintage_id ";
-            $having = " available > 0 "; //use HAVING to filter by alias 'Available' WHERE won't work with alias
-        }else{
-            $having = null;
+        //    $select .= ", (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0)) available ";
+         //   $from .= "  LEFT JOIN (SELECT vintage_id, SUM(qty) purchased
+         //               FROM trelVintageHasAcquire GROUP BY vintage_id) AS acquisitions
+         //               ON acquisitions.vintage_id = tblVintage.vintage_id
+          //              LEFT JOIN (SELECT vintage_id, IFNULL(COUNT(tblNotes.note_id),0) opened
+         //               FROM tblNotes GROUP BY vintage_id) as notes
+        //                ON notes.vintage_id = tblVintage.vintage_id
+        //                LEFT JOIN (SELECT vintage_id, override
+        //                FROM tblAvailableOverride) as override
+        //                ON override.vintage_id = tblVintage.vintage_id ";
+        //    //$group = " tblVintage.vintage_id ";
+        //    $having = " available > 0 "; //use HAVING to filter by alias 'Available' WHERE won't work with alias
+        
+            //create temporary table
+            if( $this->_createAvailableWinesTable() === false){
+                $this->last_error = "Failed to create search query because createAvailableWinesTable() returned false";
+                return false;
+            };
+
+            //add sql to join temporary table to query
+            $select .= ", tmpAvailableWines.available ";
+            $from .= " LEFT JOIN tmpAvailableWines ON tmpAvailableWines.wine_id = tblWine.wine_id ";
+
+            if($where){
+                $where .= " AND tmpAvailableWines.available > 0 ";
+            }else{
+                $where = " tmpAvailableWines.available > 0 ";
+            }
+        
         }
         
         //Drinking Guide
@@ -312,7 +327,8 @@ class wine_search {
             //determine limits
             $start_row = ($page_num - 1) * $page_rows;
             $limit = "LIMIT $start_row, $page_rows";
-
+            
+           
             $query = $select.$from.$where.$group.$having.$order.$limit;
             
             //run query
@@ -336,6 +352,33 @@ class wine_search {
             return false;
         }//initialised
 
+    }
+    
+    private function _createAvailableWinesTable(){
+        //run query to create temporary table with a list of wines that have have one or more vintages with available bottles
+        //wine_id, available
+        
+        $query = "DROP TEMPORARY TABLE IF EXISTS tmpAvailableWines;";
+        $dropResult = mysql_query($query);
+        
+        $query = "  CREATE TEMPORARY TABLE tmpAvailableWines
+                    SELECT tblWine.wine_id, tblVintage.vintage_id,
+                        (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0) ) available
+                    FROM tblWine 
+                    LEFT JOIN tblVintage ON  tblWine.wine_id = tblVintage.wine_id 
+                    LEFT JOIN (SELECT vintage_id, SUM(qty) purchased FROM trelVintageHasAcquire GROUP BY vintage_id) AS acquisitions ON acquisitions.vintage_id = tblVintage.vintage_id
+                    LEFT JOIN (SELECT vintage_id, COUNT(tblNotes.note_id) opened FROM tblNotes GROUP BY vintage_id) as notes ON notes.vintage_id = tblVintage.vintage_id
+                    LEFT JOIN (SELECT vintage_id, override FROM tblAvailableOverride) as override ON override.vintage_id = tblVintage.vintage_id
+                    HAVING available >0";
+        
+        $result = mysql_query($query);
+        
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+                
     }
 
 

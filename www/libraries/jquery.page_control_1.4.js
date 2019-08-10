@@ -30,6 +30,7 @@
                                     form_action:    "put_to_session",
                                     form_dest:      "/vintage/rpc_vintage.php",
                                     form_data:      form_data
+                                    no_dirty:       true|false "prevents page from showing unsaved changes"
                                 });
  *
  *
@@ -155,8 +156,17 @@
                 return false;
             }
             
+            console.log('options.is_dirty:'+o.is_dirty+' #is_dirty > 0:'+($('#is_dirty').val()) +' options.no_dirty:'+o.no_dirty+' obj_dst.no_dirty:'+obj_dst.no_dirty);
+            var result = ( (o.is_dirty || $('#is_dirty').val()>0) && obj_dst.no_dirty == false && o.no_dirty == false );
+            console.log('result:'+result);
             
-            if((o.is_dirty || $('#is_dirty').val()>0) && !o.no_dirty && !o._ignore_dirty_deprec){
+            if(o.is_dirty || $('#is_dirty').val()>0){
+                console.log('page is dirty');
+            }
+            
+         
+            
+            if( (o.is_dirty || $('#is_dirty').val()>0) && (obj_dst.no_dirty == false || o.no_dirty == false) ){
                 //check for unsaved changes - does page need to be saved?
               
                 if(obj_dst.form_data){
@@ -769,7 +779,7 @@
             
             console.log('before unload _ignore_dirty='+o._ignore_dirty+' no_dirty='+o.no_dirty+' page_url='+o.page_url);
             
-            if(o.no_dirty===true){
+            if(o.no_dirty===true || obj_dst.no_dirty===true){
                 //suppress all unsaved messages for this form
                 return undefined;
             }

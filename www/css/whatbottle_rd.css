@@ -374,7 +374,7 @@ input.readonly:disabled {
 }
 
 .click{
-    cursor: pointer;
+    cursor:pointer;
 }
 
 .link{
@@ -1533,6 +1533,7 @@ table.ref_data td {
 
 }
 
+
 .ui-dialog-buttonset .ui-button-text{
     color:#fff;
     background-color:#5292BE;
@@ -1558,6 +1559,7 @@ table.ref_data td {
 .basket-dialog .ui-button-text {
     min-width:50px;
 }
+
 
 .basket_table { 
     width:100%;
