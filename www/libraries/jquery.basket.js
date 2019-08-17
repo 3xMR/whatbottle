@@ -469,9 +469,4 @@ $(document).on('click','.btn_main_menu',function(e) {
     return false;
 });
 
-$(document).on('click','#top_nav_nav',function(e) {
-    console.log('home clicked');
-    
-    window.location = "/index.php";
-    
-});
+

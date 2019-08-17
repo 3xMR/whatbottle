@@ -179,7 +179,7 @@ echo "<div class=\"con_single_form\" >";
         echo "</div>"; //form_input_title
 
         //echo "<div style=\"clear:both;\" >";
-            echo "<div style=\"clear:both;\" id=\"acquistion_content\" >";
+            echo "<div style=\"clear:both; overflow-y:auto; height:100px;\" id=\"acquistion_content\" >";
                 //filled with jquery load method - /acquire/rpc_acquisition_html.php
             echo "</div>";
         //echo "</div>"; 

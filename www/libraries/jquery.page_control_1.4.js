@@ -764,6 +764,23 @@
         });
         
         
+        $(document).on('click','#top_nav_nav',function(e) {
+            //standard event for home button
+            console.log('home button clicked');
+
+            //window.location = "/index.php";
+            self.leave_page({
+                dst_url:        "/index.php",
+                rtn_url:        null,
+                page_action:    'close',
+                dst_type:       null,
+                object_id:      null,
+                dst_action:     null
+            });
+
+        });
+        
+        
         window.onbeforeunload = function (e) {
             var e = e || window.event;
             
