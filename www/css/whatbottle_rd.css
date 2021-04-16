@@ -373,6 +373,7 @@ input.readonly:disabled {
     -webkit-opacity:1;
 }
 
+
 .click{
     cursor:pointer;
 }
@@ -721,6 +722,14 @@ div.wine_results{
     /*background-color:lightgreen;*/
 }
 
+
+/*wine_add_css*/
+
+#con_wines_from_producer {
+    margin-left:20px;
+    margin-bottom:10px;
+
+}
 
 
 .other_vintage_image{
@@ -1078,7 +1087,12 @@ div.selected{
     background-color:white;
 }
 
+.input-main select:disabled{
+    color:#545454;
+}
+
 .input-main.bottom-spacer{
+    /* prevent dropdown/select text being greyed out when diabled */
     margin-bottom:1.2em;
 }
 
@@ -1524,6 +1538,7 @@ table.ref_data td {
 	color: black;
 }
 
+
 /*** jqueryui dialog ***/
 
 .ui-dialog {
@@ -1541,6 +1556,7 @@ table.ref_data td {
     font-weight: bold;
     border:0px;
 }
+
 
 .ui-button-text{
     min-width:60px;
@@ -1626,6 +1642,11 @@ table.ref_data td {
     padding-right:5px;
     padding-left:5px;
 }
+
+.clean-dialog .ui-dialog-content {
+    /*padding-bottom:0px;*/
+}
+
 
 
 
@@ -2045,7 +2066,10 @@ table.listBox_table td {
     color:#5292BE;
 }
 
-
+.listBox_large_theme.listBox_footer{
+    color:#545454;
+    border-top:solid lightgray 1px;
+}
 
 
 

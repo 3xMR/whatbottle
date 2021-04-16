@@ -19,7 +19,8 @@ public $fieldlist = array(
         ),
     'flag_image' => array(
         'map' => 'flag_image',
-        'required' => false
+        'override' => true,
+        'default' => 'n/a'
         ),
     'created' => array(
         'map' => 'created',

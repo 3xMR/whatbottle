@@ -48,7 +48,7 @@ public $fieldlist = array(
     );
 
 
-    public function award($award_id=false){
+    function __construct($award_id=false){
         $this -> award_id = $award_id;
         log_write("award_id: $award_id",1,'class.award: award');
     }

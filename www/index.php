@@ -1,10 +1,25 @@
 <?php
 /* 
- * Branch R5_Producer_Wine_Add
+ * Branch R5
  * Release 5.0
  * Released: TBC
- * Notes:
+ * Release Notes:
+ * Major Upgrade
+ * MySQL DB upgraded to 5.7.32 - will require my.cnf file to permanently disable ONLY_FULL_GROUP_BY
+ * PHP v7.4.12 compatible release
  * FIXED available wine search
+ * FIXED opening vintages details unless it is just one vintage
+ * FIXED persist home page views when moving away from page
+ * FIXED beforeunload behaviour
+ * FIXED vintage child page and not saving to session issue especially with images
+ * Upgraded to PDO database connectivity - major sql changes throughout
+ * Upgraded Basket to a db solution rather than session based so that is persists across sessions and devices
+ * Changed Add Wine page signicantly to make it easier and faster to add new wines
+ * Changed home page to add new acquisition button and new show acquisition button
+ * 
+ * 
+ * 
+ * 
  * 
  * Branch R5_PDO_Update
  * Release 4.4
@@ -90,7 +105,11 @@
  * TODO: Double-click on image to open image_manager page as overlay
  * TODO: centre align vertically vintage year with stars and pound signs
  * 
- * php.ini = /Applications/MAMP/bin/php/php5.6.2/conf/php.ini
+ * //Configuration Management
+ * mysql version 5.7.32
+ * sql_mode: disable: ONLY_FULL_GROUP_BY
+ * php 7.4.12
+ * php.ini = /Applications/MAMP/bin/php/php7.4.12/conf/php.ini
  *
  */
 $root = $_SERVER['DOCUMENT_ROOT'];
@@ -280,11 +299,13 @@ echo "<div class=\"page_container\">";
                     echo "<img id=\"btn_toggle_search_adv\" class=\"search_button toggle_search_adv click\" src=\"/images/show_grey_flat_24.png\" height=\"21px\" width=\"21px\"/>";
                 echo "</div>"; //con_search_buttons
                 
-                echo "<div class=\"hide_small_screen\" style=\"float:right; margin-right:15px;\">";
+                echo "<div class=\"hide_small_screen\" style=\"float:right;\">";
+                    echo "<img class=\"click\" style=\"display:block; float:right; margin-top:0px;\" id=\"btn_show_acquire\" name=\"btn_show_acquire\" src=\"/images/slide_out_arrow_grey.png\" height=\"30px\" >";
                     if(is_authed()){
-                        echo "<img class=\"click\" style=\"margin-right:30px;\" id=\"btn_add_wine\" name=\"btn_add_wine\" src=\"/images/add_wine_flat_grey_64.png\" height=\"30px\" >";
-                    }
-                    echo "<img class=\"click\" id=\"btn_show_acquire\" name=\"btn_show_acquire\" src=\"/images/shopping_cart_flat_grey_32.png\" height=\"30px\" >";
+                        echo "<img class=\"click\" style=\"display:block; float:right; margin-right:30px; margin-top:0px;\" id=\"btn_add_acquisition\" name=\"btn_add_acquisition\" src=\"/images/add_acquisition_flat_512.png\" height=\"30px\" >";
+                        echo "<img class=\"click\" style=\"display:block; float:right; margin-right:30px; margin-top:0px;\" id=\"btn_add_wine\" name=\"btn_add_wine\" src=\"/images/add_wine_flat_grey_64.png\" height=\"30px\" >";
+                    }   
+                    
                 echo "</div>";
 
         echo "</div>"; //search_container
@@ -370,7 +391,7 @@ echo "<div class=\"page_container\">";
             
             echo "<div class=\"input-main\">";
                 echo "<h3>Drinking Guide:</h3>";
-                $guide_selected = $_SESSION['var_wine_search_criteria']['guide_selected'] ? "selected" : null; //persist search selection
+                $guide_selected = isset($_SESSION['var_wine_search_criteria']['guide_selected']) ? "selected" : null; //persist search selection
                 $this_year = date("Y");
                 $next_year = $this_year + 1;
                 $two_years = $next_year + 1;
@@ -515,14 +536,6 @@ echo "<div class=\"page_container\">";
 echo "</div>"; //page_container
 
 
-if(is_authed()){
-    if($_SESSION['username'] == "magnus@mcdonaldruden.co.uk"){
-        //disabled
-        //$admin_option = "<div>Admin<img style=\"float:right; margin-top:2px;\" src=\"/images/arrow_next_black.svg\" height=\"21px\" /></div>";
-    }else{
-        $admin_option = "";
-    }
-}
 
 //common dialogs
 require_once("$root/includes/standard_dialogs.inc.php");
@@ -535,7 +548,6 @@ require_once("$root/includes/standard_dialogs.inc.php");
     <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <?php echo $admin_option ?>
     <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
 
@@ -565,6 +577,9 @@ require_once("$root/includes/standard_dialogs.inc.php");
 
 $(document).ready(function(){
     
+    //FIX: Clear search 'X' not showing when page refreshed but still filtered
+    //FIX: Available search only shows Wines if all Vintages are available
+    
     var this_page = "/index.php";
     var bln_expand_all_vintages = false;
 
@@ -577,6 +592,7 @@ $(document).ready(function(){
         no_dirty: true
     });
 
+
     $(document).mouseup(function (e)
     { //closes right panel when clicking outside of panel
         var container = $("#panel_right");
@@ -588,8 +604,15 @@ $(document).ready(function(){
         }
     });
     
+    
+    $(window).bind('orientationchange', function(event) {
+        console.log("The window orientation has changed!");
+        //not used yet but may be incorporated with window.resize to help with window resize on soft keyboard on Android issue
+    });
+    
     var resizeTimer;
     var windowHeight = $(window).height();
+    
     $(window).resize(function(){
         //reload wines so that height is adjusted to window size
         if($(window).height() != windowHeight){ //prevents IOS random scroll resize
@@ -597,7 +620,7 @@ $(document).ready(function(){
             resizeTimer = setTimeout(function() { //wait until window stops resizing
                 // Run code here, resizing has "stopped"
                 var height = $(window).height();
-                console.log("height = "+height);
+                console.log("window has been resized height = "+height);
                 load_wines_html();
                 //Change height of acquisitions listbox
                 var acquireHeight = height - 65;
@@ -607,6 +630,32 @@ $(document).ready(function(){
         }
     });
     
+    
+    $(window).bind('orientationchange', function(event) {
+        console.log("The window orientation has changed!");
+    });
+    
+    
+    //set onload behaviour
+    $('#search').hide(); //hide advanced search features
+    $('.vintages_panel').hide();
+    $('.vintage_details').hide();
+    load_wines_html(); //load html
+    
+
+    //set focus on search box
+    var isiPad = navigator.userAgent.match(/iPad/i) != null;
+    if(!isiPad){
+        //setting focus on ipad causes keyboard to show, even if selecting item in listbox
+        $('#search_text').focus();
+    }
+
+    //initialise basket
+    initialise_basket();
+
+
+    //_______FUNCTIONS_______
+
 
     //recent acquistions listbox
     $("#con_acquisitions").listBox({
@@ -625,16 +674,21 @@ $(document).ready(function(){
         clickSelected: function(event, data){
             console.log('acquisition selected data:');
             console.log(data);
-            $('#acquire_id').val(data.listBox_id); //set acquire dropdown value
+            //FIX: Setting Acquire dropdown to Any gives value of 0, triggers listBox reset which then triggers a clickRow and sets the acquire dropdown to the first row in listBox
+//            console.log('set acquire dropdown value to: ' +data.listBox_id);
+//            $('#acquire_id').val(data.listBox_id); //set acquire dropdown value
         },
         clickEdit: function(event, data){         
             open_acquisition(data.listBox_id);
         },
         clickFilter: function(event, data){
+            console.log('set acquire dropdown value to: ' +data.listBox_id);
+            $('#acquire_id').val(data.listBox_id); //set acquire dropdown value
             search_wines();
         },
         clickFilterClear: function(event, data){
             $('#acquire_id').val(0); //set acquire dropdown value
+            $('#merchant_id').val(0); //set merchant dropdown value
             $("#con_acquisitions").listBox("clearSelected");//clear selected item from listBox
             $("#con_acquisitions").listBox("refresh",true); //refresh acquisition listBox
             //reset_search();
@@ -645,26 +699,7 @@ $(document).ready(function(){
         }
 
     });
-    
-    //set onload behaviour
-    $('#search').hide(); //hide advanced search features
-    $('.vintages_panel').hide();
-    $('.vintage_details').hide();
-    load_wines_html();
-    
 
-    //set focus on search box
-    var isiPad = navigator.userAgent.match(/iPad/i) != null;
-    if(!isiPad){
-        //setting focus on ipad causes keyboard to show, even if selecting item in listbox
-        $('#search_text').focus();
-    }
-
-    //initialise basket
-    initialise_basket();
-
-
-    //_______FUNCTIONS_______
 
     function spinner(){
         //display process spinner
@@ -692,7 +727,8 @@ $(document).ready(function(){
 
     function refresh(){ //refresh html elements
         //refresh page
-        store_open_panels();
+        //store_open_panels();
+        persistViewSave(); //save open panel ids to local storage, to persist view after refresh
         load_wines_html();//load wine list
         $("#con_acquisitions").listBox("refresh"); //refresh acquisition listBox
     }
@@ -770,6 +806,7 @@ $(document).ready(function(){
                 }
             }
     });
+    
 
 
     function load_wines_html(){ //load wines
@@ -778,16 +815,18 @@ $(document).ready(function(){
         $('#con_rpc_wine_search_results_html').load('/wine/rpc_wine_search_results_html.php', {viewportHeight: viewportHeight},function(){ //load results
            //toggle_vintages(); //run following code once refreshed
            //set_open_panels();
+           persistViewLoad();
            set_reset_button(); //show or hide reset button based on search results
            //TODO:if only one result is returned expand it fully
-    
-            if($('.wine_accordian').size()==1){
-                //only one wine result returned - expand it
-                console.log('only one wine - so expand it');
+
+            if($('.wine_accordian').size()==1){ //only one wine result returned - expand it
                 $('.vintages_panel').each(function(index) {
                     var wine_id = ($(this).attr('id').replace("vintages_panel_", ""))*1;
                     toggle_vintage_panel(wine_id, 'medium', function(){
-                        show_all_vintage_details(wine_id); //call back to open all vintage details as well
+                        var vintage_count = $('.vintage_accordian').length; //get number of vintages
+                        if(vintage_count== 1){ //expand details if only one
+                            show_all_vintage_details(wine_id); //call back to open all vintage details as well
+                        }
                     });
                     
                 });
@@ -805,6 +844,7 @@ $(document).ready(function(){
          */
         
         var filtered = $('#search_filter_status').val();
+        console.log('search_filter_status: '+filtered);
         
         if (filtered === 'true') {
             $('.btn_reset_search').show();
@@ -831,6 +871,8 @@ $(document).ready(function(){
              }else{
                  console.log($panel + ' :hidden');
              }
+             
+             persistViewSave(); //keep view status updated in realtime
         });
         
         //swivel open close arrow
@@ -847,9 +889,12 @@ $(document).ready(function(){
         //toggle vintage details panel - open or close
         console.log('toggle_vintage_details_panel');
         $panel = "#vintage_details_"+vintage_id;
-        $($panel).slideToggle(duration);
-        arrow_id = '#arrow_indicator_vintage_'+vintage_id;
-        $(arrow_id).toggleClass('arrow_down');
+        $($panel).slideToggle(duration, function(){
+            arrow_id = '#arrow_indicator_vintage_'+vintage_id;
+            $(arrow_id).toggleClass('arrow_down');
+            persistViewSave(); //keep view status updated in realtime
+        });
+        
     }
     
     
@@ -862,6 +907,7 @@ $(document).ready(function(){
             var vintage_id = id.replace("vintage_accordian_", "");
             console.log('call toggle_vintage_details_panel : '+vintage_id);
             toggle_vintage_details_panel(vintage_id);
+            persistViewSave(); //keep view status updated in realtime
         });
 
     }
@@ -956,11 +1002,11 @@ $(document).ready(function(){
                     }, function(data){
                         if(data.success){
                             //save was successful
-                            //console.log('quick_note save was successful');
                             jQuery.noticeAdd({
                                 text: 'Quick Note saved successfully.',
                                 stay: false
                             });
+
                             //reload html
                             refresh();
 
@@ -1059,7 +1105,7 @@ $(document).ready(function(){
         //updated
         
         //FIX: class.wine_search is filtered on details stored in session, because text box is cleared after search but session 
-        //isnt then the subsequent serach is an AND serach based on saved session.
+        //isnt then the subsequent search is an AND search based on saved session.
         // If the session is cleared after the page refreshes and loads results then navigating away from the page would result in the
         // filtered list being lost, and the serach being repeated
         // 
@@ -1107,22 +1153,23 @@ $(document).ready(function(){
         $(".search_input").removeClass('highlight_input');
         
         //clear acquisition listBox selected items
+        $('#aqcuire_id').val(''); //reset before refreshing lisbox
         $("#con_acquisitions").listBox("refresh", true); //refresh acquisition listBox - true clears selected item
 
         $(".search_input").each(function(index){
-            if($(this).attr('id')=="search_text" || $(this).attr('id')=="wine_id"){
+            if($(this).attr('id')=="search_text" || $(this).attr('id')=="wine_id"){ //reset string fields
                 if(ignore_search_text){
                     //do not clear search text
                 } else {
                     $(this).val("");
                 }
             }else{
-                $(this).val("0");
+                $(this).val(0);
             }
 
             if(index==count-1){
                 //run code - iterations complete
-                search_wines(); //update search html
+                search_wines(); //update search when done with html
             }
         });
 
@@ -1133,6 +1180,7 @@ $(document).ready(function(){
     $('.toggle_search_adv').click(function(){
        //search panel slide
         $('#search').slideToggle("medium");
+        persistViewSave();
     });
 
 
@@ -1154,21 +1202,28 @@ $(document).ready(function(){
     function close_all_panels(){
         //close all panels - effective reset
         console.log('close_all_panels...');
-        $(".vintages_panel").slideUp('fast'); //close vintages_panel - hide list of vintages
-        $(".vintage_details").slideUp('fast'); //close vintage_details panels - hide vintage details
+        $(".vintages_panel").slideUp('fast',function(){ //close all wine panels
+            $(".vintage_details").slideUp('fast', function(){
+                persistViewSave(); //save view
+            }); //close all vintage panels  
+        }); //close vintages_panel - hide list of vintages
+        
         $("#btn_expand_vintages").attr("src", "/images/next_grey_flat_24.png"); 
         $(".wine_panel_toggle").removeClass('arrow_down'); //reset
         $(".vintage_expanded_indicator").removeClass('arrow_down'); //reset vintage details indicator
     }
     
+    
     function toggle_vintages(){
         //show or hide all vintages for wines
 
         console.log('function toggle_vintages');
-        if(bln_expand_all_vintages){
+        if(bln_expand_all_vintages){ //show all vintages
             console.log('expand all vintages');
             $(".vintage_details").hide();
-            $(".vintages_panel").slideDown('medium');
+            $(".vintages_panel").slideDown('medium',function(){
+                persistViewSave(); //once opended save view
+            });
             $("#btn_expand_vintages").attr("src", "/images/down_flat_grey_24.png");
             $(".wine_panel_toggle").removeClass('arrow_down').addClass('arrow_down');
             $(".vintage_expanded_indicator").removeClass('arrow_down');
@@ -1412,6 +1467,11 @@ $(document).ready(function(){
         $('#panel_right').toggle("slide", { direction: "right" }, 500);
     });
     
+    $('#btn_add_acquisition').on('click', function(){
+        //add new acquisition
+        add_acquisition();
+    });
+    
     
     function open_reference_data(){
         obj_page.leave_page({
@@ -1554,7 +1614,7 @@ $(document).ready(function(){
             buttons: {
                 OK: function() {
                     put_available_override_data();
-                    store_open_panels(); //test
+                    //store_open_panels(); //test
                     $(this).dialog('close'); //close dialog
 
                 },
@@ -1571,6 +1631,60 @@ $(document).ready(function(){
             position: { my: positionMy, at: positionAt, of: positionOf }
         });
   
+    }
+    
+    
+    function persistViewSave(){
+        //persist open/closed state of panels so that view can be persisted
+        console.log('persistViewSave');
+        
+        //create object with id of all open wines and vintages
+        $arrOpenWinePanel = $("#con_rpc_wine_search_results_html" ).find( ".vintages_panel:visible" )
+                .map(function(){
+                    $wineId = this.id.replace("vintages_panel_", "");
+                    return $wineId;
+                }).get();
+        console.log($arrOpenWinePanel);
+        jsonOpenWine = JSON.stringify($arrOpenWinePanel);
+        localStorage.setItem('openWinePanel',jsonOpenWine);
+        
+        
+        $arrOpenVintagePanel = $("#con_rpc_wine_search_results_html" ).find( ".vintage_details:visible" )
+                .map(function(){
+                    $VintageId = this.id.replace("vintage_details_", "");
+                    return $VintageId;
+                }).get();
+        console.log($arrOpenVintagePanel);
+        jsonOpenVintage = JSON.stringify($arrOpenVintagePanel);
+        localStorage.setItem('openVintagePanel',jsonOpenVintage);
+        
+        console.log(JSON.parse(localStorage.getItem('openWinePanel')));
+        console.log(JSON.parse(localStorage.getItem('openVintagePanel')));
+    }
+    
+    
+    function persistViewLoad(){
+        //get persisted view and load it
+        console.log('persistViewLoad');
+        var $arrWinePanel;
+        var $arrVintagePanel;
+        
+        $arrWinePanel = JSON.parse(localStorage.getItem('openWinePanel'));
+        if($arrWinePanel){
+            $.each( $arrWinePanel, function(index, value){
+                console.log('index'+index+'value'+value);
+                toggle_vintage_panel(value,'fast');
+            });
+        }
+        
+        $arrVintagePanel = JSON.parse(localStorage.getItem('openVintagePanel'));
+        if($arrVintagePanel){
+            $.each( $arrVintagePanel, function(index, value){
+                console.log('index'+index+'value'+value);
+                toggle_vintage_details_panel(value,'fast');
+            });
+        }
+        
     }
     
     
@@ -1893,7 +2007,7 @@ $(document).ready(function(){
         //Add new wine
         
         obj_page.leave_page({
-            dst_url:        "/wine/wine.php",
+            dst_url:        "/wine/wine.php?action=add",
             rtn_url:        this_page,
             page_action:    'leave',
             dst_type:       "wine",
@@ -1909,7 +2023,7 @@ $(document).ready(function(){
 
         if(wine_id){
             obj_page.leave_page({
-                dst_url:        "/wine/wine.php",
+                dst_url:        "/wine/wine.php?action=edit&id="+wine_id,
                 rtn_url:        this_page,
                 page_action:    'leave',
                 dst_type:       "wine",

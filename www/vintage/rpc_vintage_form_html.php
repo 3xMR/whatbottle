@@ -17,9 +17,10 @@
     }
     
     //determine if results are filtered
-    if($_SESSION['var_vintage_temp']['filtered']==true){
-        echo "results are filtered";
-    }
+    
+//    if($_SESSION['var_vintage_temp']['filtered']==true){
+//        echo "results are filtered";
+//    }
     
 
     if($_SESSION['var_vintage_temp']['status']>0){

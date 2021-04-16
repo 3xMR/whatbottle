@@ -15,11 +15,6 @@ require_once("$root/functions/function.php");
 require_once("$root/classes/class.db.php");
 
 
-//$wine_id = $_REQUEST['wine_id'];
-//$vintage_id = $_REQUEST['vintage_id'];
-//$year = $_REQUEST['year'];
-//$status = $_REQUEST['status'];
-//$action = $_REQUEST['action'];
 
 if(isset($_REQUEST['src_page'])){
     $src_page = $_REQUEST['src_page'];
@@ -33,7 +28,9 @@ if(isset($_REQUEST['this_page'])){
     $this_page  = $_REQUEST['this_page'];
 }
 
-if($_REQUEST['rpc_action']){
+//echo $_REQUEST['rpc_action'];
+
+if(isset($_REQUEST['rpc_action'])){
     //convert action to function call
     $fnc = $_REQUEST['rpc_action'];
     if(is_callable($fnc)){
@@ -44,64 +41,12 @@ if($_REQUEST['rpc_action']){
         echo null;
     }
 
-}
-
-function test_deferred(){
-    //function to test deferred jquery capability
-    
-    $test_id = $_REQUEST['test_id'];
-    sleep($test_id);
+}else{
     $var_result['success'] = false;
-    $var_result['fnc'] = $_REQUEST['fnc'];
-    $var_result['my_name'] = "Magnus";
-    $var_result['value'] = $test_id*10;
-    return $var_result;
-    
+    $var_result['error'] = "invalid function name provided";
+    echo json_encode($var_result);
 }
 
-function debug($text){
-    //debug output
-
-    global $new_root, $log_path;
-    $debug = false;
-    $write_to_file = true;
-    $file_name = "log_rpc_vintage.txt";
-
-    if($debug){
-        if($write_to_file){
-            //debug output to file
-
-            $log_file = $new_root.$log_path.$file_name;
-
-            if(file_exists($log_file)){
-                //open new file in w rite mode
-                $mode = "a";
-            } else {
-                $mode = "w";
-            }
-
-            $fh = fopen($log_file, $mode) or die("can't open log file");
-
-            $stringData = "> $text \n";
-            fwrite($fh, $stringData);
-            fclose($fh);
-
-        }else{
-            //write to screen
-            echo "> $text<br/>";
-        }
-    }
-
-}
-
-
-function test_function(){
-    
-
-    $var_result['success'] = true;
-    $var_result['value'] = 23456;
-    return $var_result;
-}
 
 
 function page_flow_set(){
@@ -125,7 +70,7 @@ function page_flow_set(){
         $var_result['dst_page'] = $dst_page;
         
         //get src_page for this_page
-        $return_page = $_SESSION['var_page_flow'][$this_page];
+        $return_page = isset($_SESSION['var_page_flow'][$this_page]) ? $_SESSION['var_page_flow'][$this_page] : null;
         
         if ($return_page){
             $var_result['return_page'] = $return_page;
@@ -175,42 +120,42 @@ function page_flow_return(){
 function get_vintage_from_db(){
     //get vintage details from db and load to session
     
-    $vintage_id = $_REQUEST['vintage_id'];
-    if(isset($_REQUEST['wine_id'])){
-        $wine_id = $_REQUEST['wine_id']; 
-    }
+    $var_result = array();
     
-    $action = $_REQUEST['action'];
-    $status = $_REQUEST['status'];
-    
-    //check if page_action is 'add'
-    if($_REQUEST['dst_action']='add'){
+    $vintage_id = isset($_REQUEST['vintage_id']) ? $_REQUEST['vintage_id'] : null;
+    $wine_id = isset($_REQUEST['wine_id']) ? $_REQUEST['wine_id'] : null;
+    $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
+    $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
+
+    if($_REQUEST['dst_action']=='add'){ //check if page_action is 'add'
         //set staus to 1 (add)
         $status = 1;
         $action = 'add';
     }   
     
-    $var_result = array();
-
+    if(!$vintage_id && !$wine_id){
+        $var_result['success']=false;
+        $var_result['error']="get_vintage_from_db(): no wine_id or vintage_id provided, cannot continue";
+        return $var_result;
+    }
+    
     if($vintage_id){
 
-        //clear existing session
+        //clear existing vintage session
         unset($_SESSION['var_vintage_temp']);
 
         //load vintage details and put to session
         $vintage = new vintage($vintage_id);
         $vintage_details = $vintage -> get_all();
         
-        if($vintage_details){
-            $_SESSION['var_vintage_temp'] = $vintage_details;
-        }else{
-            //error getting vintage details
+        if(!$vintage_details){//error getting vintage details
             $sql_error = $vintage -> get_sql_error();
             $var_result['success']=false;
             $var_result['error']="error getting vintage details from db. sql_error = $sql_error";
             return $var_result;
         }
         
+        $_SESSION['var_vintage_temp'] = $vintage_details; //put vintage details to session
 
         //create image array
         if ($_SESSION['var_vintage_temp']['image1']>""){
@@ -230,11 +175,11 @@ function get_vintage_from_db(){
             unset($_SESSION['var_vintage_temp']['var_images']);
         }
 
-         //set status
+        //set status
         if(empty($_REQUEST['status'])){
             $_SESSION['var_vintage_temp']['status'] = 3; //read-only
         } else {
-            $_SESSION['var_vintage_temp']['status'] = $_REQUEST['status'];
+            $_SESSION['var_vintage_temp']['status'] = $status;
         }
 
         //set is_dirty to false
@@ -243,7 +188,9 @@ function get_vintage_from_db(){
         $var_result['success']=true;
         $var_result['name']="get_vintage_from_db";
 
-    } else if($wine_id && $action == 'add'){
+    }
+    
+    if($wine_id && $action == 'add'){
         //new vintage on existing wine
 
         //clear old session data
@@ -254,9 +201,10 @@ function get_vintage_from_db(){
         $var_wine = $obj_wine -> get_extended();
         
         $_SESSION['var_vintage_temp'] = $var_wine[0];
+        //$_SESSION['var_vintage_temp'] = $var_wine;
         $_SESSION['var_vintage_temp']['status'] = 1; //add new
 
-        //get previous vintage details if they exist and populate new vintage
+        //get previous vintage details if they exist and use to populate new vintage
         $obj_vintage = new vintage();
         $where = "wine_id = $wine_id";
         $group = null;
@@ -297,7 +245,6 @@ function get_vintage_from_db(){
             }
 
         } else {
-
              $_SESSION['var_vintage_temp']['vintage_clone_id'] = 'none found';
              $var_result['success']=true;
              $var_result['msg']='no vintage_id found to clone';
@@ -308,12 +255,8 @@ function get_vintage_from_db(){
 
         $var_result['success']=true;
 
-    } else {
-        //no details provided
-        $var_result['success']=false;
-        $var_result['error']='no wine_id or vintage_id provided';
     }
-
+    
     return $var_result;
 
 }
@@ -485,7 +428,6 @@ function commit_vintage_to_db(){
         $obj_vintage = new vintage();
         $vintage_id = $var['vintage_id'];
         $where = "vintage_id = ".$vintage_id;
-        log_write('save_vintage',1,"update record");
         $result = $obj_vintage -> update($var,$where);
 
         if($result==false){
@@ -535,7 +477,6 @@ function commit_vintage_to_db(){
     $var_grapes = $_SESSION['var_vintage_temp']['var_grapes'];
 
     if(is_array($var_grapes)){
-        log_write('save_vintage',1,"var_grapes array identified");
         //delete existing grapes from vintage_has_grapes table
         $obj_grapes = new vintage_has_grape();
         $where = "vintage_id = $vintage_id";
@@ -592,12 +533,9 @@ function commit_vintage_to_db(){
 function save_selected_grapes(){
     //put grapes array to session
 
-    log_write("save_grapes",1,"save_selected_grape");
     $var = $_REQUEST['json_field'];
     $var = stripslashes($var);
-    log_write($var,1,"save_selected_grape");
     $var_grapes = json_decode($var,true);
-    log_write($var_grapes,1,"save_selected_grape");
 
     if(empty($var)){
         //no input data provided
@@ -620,7 +558,6 @@ function save_selected_grapes(){
                 $var_grape_db[0]['percent'] =  $var_grape['value'];
                 $_SESSION['var_vintage_temp']['var_grapes'][]= $var_grape_db[0];
                 $n = $n + 1;
-                log_write('grape_id = '.$var_grape['name'].' percentage = '.$var_grape['value'],1,"rpc_vintage.php");
             }
 
             //set is_dirty
@@ -671,93 +608,93 @@ function save_selected_awards(){
 //_____IMAGE______
 //
 
-function ImageCreateFromBMP($filename){
-
-
-   if (! $f1 = fopen($filename,"rb")) return FALSE;
-
-
-   $FILE = unpack("vfile_type/Vfile_size/Vreserved/Vbitmap_offset", fread($f1,14));
-   if ($FILE['file_type'] != 19778) return FALSE;
-
- //2 : Chargement des ent�tes BMP
-   $BMP = unpack('Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel'.
-                 '/Vcompression/Vsize_bitmap/Vhoriz_resolution'.
-                 '/Vvert_resolution/Vcolors_used/Vcolors_important', fread($f1,40));
-   $BMP['colors'] = pow(2,$BMP['bits_per_pixel']);
-   if ($BMP['size_bitmap'] == 0) $BMP['size_bitmap'] = $FILE['file_size'] - $FILE['bitmap_offset'];
-   $BMP['bytes_per_pixel'] = $BMP['bits_per_pixel']/8;
-   $BMP['bytes_per_pixel2'] = ceil($BMP['bytes_per_pixel']);
-   $BMP['decal'] = ($BMP['width']*$BMP['bytes_per_pixel']/4);
-   $BMP['decal'] -= floor($BMP['width']*$BMP['bytes_per_pixel']/4);
-   $BMP['decal'] = 4-(4*$BMP['decal']);
-   if ($BMP['decal'] == 4) $BMP['decal'] = 0;
-
- //3 : Chargement des couleurs de la palette
-   $PALETTE = array();
-   if ($BMP['colors'] < 16777216)
-   {
-    $PALETTE = unpack('V'.$BMP['colors'], fread($f1,$BMP['colors']*4));
-   }
-
- //4 : Cr�ation de l'image
-   $IMG = fread($f1,$BMP['size_bitmap']);
-   $VIDE = chr(0);
-
-   $res = imagecreatetruecolor($BMP['width'],$BMP['height']);
-   $P = 0;
-   $Y = $BMP['height']-1;
-   while ($Y >= 0)
-   {
-    $X=0;
-    while ($X < $BMP['width'])
-    {
-     if ($BMP['bits_per_pixel'] == 24)
-        $COLOR = unpack("V",substr($IMG,$P,3).$VIDE);
-     elseif ($BMP['bits_per_pixel'] == 16)
-     {
-        $COLOR = unpack("n",substr($IMG,$P,2));
-        $COLOR[1] = $PALETTE[$COLOR[1]+1];
-     }
-     elseif ($BMP['bits_per_pixel'] == 8)
-     {
-        $COLOR = unpack("n",$VIDE.substr($IMG,$P,1));
-        $COLOR[1] = $PALETTE[$COLOR[1]+1];
-     }
-     elseif ($BMP['bits_per_pixel'] == 4)
-     {
-        $COLOR = unpack("n",$VIDE.substr($IMG,floor($P),1));
-        if (($P*2)%2 == 0) $COLOR[1] = ($COLOR[1] >> 4) ; else $COLOR[1] = ($COLOR[1] & 0x0F);
-        $COLOR[1] = $PALETTE[$COLOR[1]+1];
-     }
-     elseif ($BMP['bits_per_pixel'] == 1)
-     {
-        $COLOR = unpack("n",$VIDE.substr($IMG,floor($P),1));
-        if     (($P*8)%8 == 0) $COLOR[1] =  $COLOR[1]        >>7;
-        elseif (($P*8)%8 == 1) $COLOR[1] = ($COLOR[1] & 0x40)>>6;
-        elseif (($P*8)%8 == 2) $COLOR[1] = ($COLOR[1] & 0x20)>>5;
-        elseif (($P*8)%8 == 3) $COLOR[1] = ($COLOR[1] & 0x10)>>4;
-        elseif (($P*8)%8 == 4) $COLOR[1] = ($COLOR[1] & 0x8)>>3;
-        elseif (($P*8)%8 == 5) $COLOR[1] = ($COLOR[1] & 0x4)>>2;
-        elseif (($P*8)%8 == 6) $COLOR[1] = ($COLOR[1] & 0x2)>>1;
-        elseif (($P*8)%8 == 7) $COLOR[1] = ($COLOR[1] & 0x1);
-        $COLOR[1] = $PALETTE[$COLOR[1]+1];
-     }
-     else
-        return FALSE;
-     imagesetpixel($res,$X,$Y,$COLOR[1]);
-     $X++;
-     $P += $BMP['bytes_per_pixel'];
-    }
-    $Y--;
-    $P+=$BMP['decal'];
-   }
-
- //Fermeture du fichier
-   fclose($f1);
-
- return $res;
-}
+//function ImageCreateFromBMP($filename){
+//
+//
+//   if (! $f1 = fopen($filename,"rb")) return FALSE;
+//
+//
+//   $FILE = unpack("vfile_type/Vfile_size/Vreserved/Vbitmap_offset", fread($f1,14));
+//   if ($FILE['file_type'] != 19778) return FALSE;
+//
+// //2 : Chargement des ent�tes BMP
+//   $BMP = unpack('Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel'.
+//                 '/Vcompression/Vsize_bitmap/Vhoriz_resolution'.
+//                 '/Vvert_resolution/Vcolors_used/Vcolors_important', fread($f1,40));
+//   $BMP['colors'] = pow(2,$BMP['bits_per_pixel']);
+//   if ($BMP['size_bitmap'] == 0) $BMP['size_bitmap'] = $FILE['file_size'] - $FILE['bitmap_offset'];
+//   $BMP['bytes_per_pixel'] = $BMP['bits_per_pixel']/8;
+//   $BMP['bytes_per_pixel2'] = ceil($BMP['bytes_per_pixel']);
+//   $BMP['decal'] = ($BMP['width']*$BMP['bytes_per_pixel']/4);
+//   $BMP['decal'] -= floor($BMP['width']*$BMP['bytes_per_pixel']/4);
+//   $BMP['decal'] = 4-(4*$BMP['decal']);
+//   if ($BMP['decal'] == 4) $BMP['decal'] = 0;
+//
+// //3 : Chargement des couleurs de la palette
+//   $PALETTE = array();
+//   if ($BMP['colors'] < 16777216)
+//   {
+//    $PALETTE = unpack('V'.$BMP['colors'], fread($f1,$BMP['colors']*4));
+//   }
+//
+// //4 : Cr�ation de l'image
+//   $IMG = fread($f1,$BMP['size_bitmap']);
+//   $VIDE = chr(0);
+//
+//   $res = imagecreatetruecolor($BMP['width'],$BMP['height']);
+//   $P = 0;
+//   $Y = $BMP['height']-1;
+//   while ($Y >= 0)
+//   {
+//    $X=0;
+//    while ($X < $BMP['width'])
+//    {
+//     if ($BMP['bits_per_pixel'] == 24)
+//        $COLOR = unpack("V",substr($IMG,$P,3).$VIDE);
+//     elseif ($BMP['bits_per_pixel'] == 16)
+//     {
+//        $COLOR = unpack("n",substr($IMG,$P,2));
+//        $COLOR[1] = $PALETTE[$COLOR[1]+1];
+//     }
+//     elseif ($BMP['bits_per_pixel'] == 8)
+//     {
+//        $COLOR = unpack("n",$VIDE.substr($IMG,$P,1));
+//        $COLOR[1] = $PALETTE[$COLOR[1]+1];
+//     }
+//     elseif ($BMP['bits_per_pixel'] == 4)
+//     {
+//        $COLOR = unpack("n",$VIDE.substr($IMG,floor($P),1));
+//        if (($P*2)%2 == 0) $COLOR[1] = ($COLOR[1] >> 4) ; else $COLOR[1] = ($COLOR[1] & 0x0F);
+//        $COLOR[1] = $PALETTE[$COLOR[1]+1];
+//     }
+//     elseif ($BMP['bits_per_pixel'] == 1)
+//     {
+//        $COLOR = unpack("n",$VIDE.substr($IMG,floor($P),1));
+//        if     (($P*8)%8 == 0) $COLOR[1] =  $COLOR[1]        >>7;
+//        elseif (($P*8)%8 == 1) $COLOR[1] = ($COLOR[1] & 0x40)>>6;
+//        elseif (($P*8)%8 == 2) $COLOR[1] = ($COLOR[1] & 0x20)>>5;
+//        elseif (($P*8)%8 == 3) $COLOR[1] = ($COLOR[1] & 0x10)>>4;
+//        elseif (($P*8)%8 == 4) $COLOR[1] = ($COLOR[1] & 0x8)>>3;
+//        elseif (($P*8)%8 == 5) $COLOR[1] = ($COLOR[1] & 0x4)>>2;
+//        elseif (($P*8)%8 == 6) $COLOR[1] = ($COLOR[1] & 0x2)>>1;
+//        elseif (($P*8)%8 == 7) $COLOR[1] = ($COLOR[1] & 0x1);
+//        $COLOR[1] = $PALETTE[$COLOR[1]+1];
+//     }
+//     else
+//        return FALSE;
+//     imagesetpixel($res,$X,$Y,$COLOR[1]);
+//     $X++;
+//     $P += $BMP['bytes_per_pixel'];
+//    }
+//    $Y--;
+//    $P+=$BMP['decal'];
+//   }
+//
+// //Fermeture du fichier
+//   fclose($f1);
+//
+// return $res;
+//}
 
 
 function reduce_image($img, $quality){

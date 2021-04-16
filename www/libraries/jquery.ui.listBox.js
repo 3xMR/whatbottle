@@ -415,7 +415,7 @@
             $self.selected = object; 
             $self.selected_data = data;
             
-            console.log("*** _rowClick function ***");
+            console.log("_rowClick: function");
             console.log($self);
             console.log($self.selected);
             console.log($self.selected_data);
@@ -456,7 +456,7 @@
             };
             
             //call clickSelected event
-            this._trigger('clickSelected', null, data);
+            this._trigger('clickSelected',null, data);
             
             //call rowClick function if set
             o = $self.options;
@@ -513,11 +513,8 @@
 
         _removeClick: function(event){
             //remove button click event
-            if(this.selected){
-               this._trigger('clickRemove', null, this.selected_data);
-                console.log('_removeClick');
-                //clear selected data use - clearSelected function
-            }
+            console.log('_removeClick');
+            this._trigger('clickRemove', null, this.selected_data);
         },
 
         _editClick: function(){
@@ -539,9 +536,15 @@
         _filterClearClick: function(){
             //click filter clear button in filter input to remove search filter
             console.log('clickFilterClear');
-            this._trigger('clickFilterClear', null, this.selected_data);
-            this.clearSelected();
-            this._refresh();
+            $self = this;
+            
+            var def = this.clearSelected(); //clear filter and data objects
+            
+            def.then(function(){ //once cleared then call trigger and other actions
+                $self._trigger('clickFilterClear', null, this.selected_data);
+                $self._refresh();
+            });
+            
         },
         
         _refresh: function(){
@@ -551,7 +554,7 @@
             var $self = this;
             var addedRow = new Array();
             
-            console.log("*** listbox _refresh:");
+            console.log("jquery.ui.listBox.js:_refresh");
             $self.el_body.addClass("listBox_spinner"); //start activity spinner
             
             $self.new_arr_rows = new Array();
@@ -567,26 +570,31 @@
                 return diff;
             }         
             
-            //record current position of listbox items
-            console.log('element at top of listbox');
-            $self.topRow = undefined;
-            var $top = $('#'+$self.body_id).offset().top; //determine poistion of top of listbox_body
-            $("#"+$self.body_id+ " .listBox_row").each(function() { //identify which row is at the top of the listbox
-                if($(this).offset().top >= $top) {
-                    var data = $(this).data(); //get embedded data from object
-                    if(data.listBox_id >= 1){
-                        var top_row_id = data.listBox_id;
-                    }
-                    console.log('top row id = '+top_row_id);
-                    console.log(this);
-                    $self.topRow = this;
-                    return false;
-                }
-            });
+//            //get id of top row in listbox
+//            console.log('jquery.ui.listBox.js: identify element at top of listbox');
+//            $self.topRow = undefined; //unset value
+//            var $top = $('#'+$self.body_id).offset().top; //determine position of top of listbox_body
+//            $("#"+$self.body_id+ " .listBox_row").each(function() { //identify which row is at the top of the listbox
+//                if($(this).offset().top >= $top) {
+//                    var data = $(this).data(); //get embedded data from object
+//                    if(data.listBox_id >= 1){
+//                        var top_row_id = data.listBox_id;
+//                    }
+//                    console.log('_refresh: top row id = '+top_row_id);
+//                    $self.topRow = this;
+//                    return false;
+//                }
+//            });
            
+            var topRowId = this._getTopRowId();
+            topRowId.promise().done(function(data){
+                console.log('_refresh: topRowId returned promise data ='+data);
+            });
             
             //load content and then process rows
             $self.el_body.load($self.options.listContent, function(){
+                console.log('_refresh: walk rows to add id');
+                
                 
                 //walk row to set id and level in .data
                 $(this).children('.listBox_row').each(function(){
@@ -594,10 +602,8 @@
                     var level = 1; //first level
                     var id = $(this).attr('id');
                     var row_id = $self.listBox_id+"_row_"+id;
-                    //set new id
-                    $(this).attr('id', row_id );
-                    //add custom style class
-                    $(this).addClass(o.addClass);
+                    $(this).attr('id', row_id ); //set new id
+                    $(this).addClass(o.addClass); //add custom style class
                     
                     var arr_values = new Array();
                     $(this).find(".listBox_value").each(function(){
@@ -609,7 +615,8 @@
                         listBox_id: id,
                         listBox_level: level,
                         listBox_parent_id: 0, //set to 0 as this is the top level
-                        listBox_values: arr_values
+                        listBox_values: arr_values,
+                        listBox_row_id: row_id
                     });
                     
                     //add row_id to array
@@ -638,22 +645,18 @@
                 $("#"+$self.body_id).find(".child_con").hide();
                     
                 //set child_con to visible based on persisted array arrOpenCons
-                //console.log('arrOpenCons.length='+$self.arrOpenCons.length);
                 if($self.arrOpenCons.length > 0){
+                    console.log('_refresh: open containers persisted array processing');
                     $($self.arrOpenCons).each(function(){
-                        //console.log("open persisted objects")
                         var child_con_id = $(this).attr('id');
-                        //console.log(child_con_id);
-                        //$("#con_listBox_location_child_con_1_7").show();
-                       $("#"+child_con_id).show().prev().find(".listBox_status").removeClass('listBox_expand listBox_collapse').addClass('listBox_collapse');
+                        $("#"+child_con_id).show().prev().find(".listBox_status").removeClass('listBox_expand listBox_collapse').addClass('listBox_collapse');
                     });
                 }
-                
-              
+                    
                 if($self.arr_rows.length > 0){ //only run diff if existing row array exists
                    //determine if a new row has been added
                     addedRow = diffArray($self.new_arr_rows, $self.arr_rows);
-                    console.log("added = "+ addedRow);
+                    console.log("_refresh: new row has been added = "+ addedRow);
                     $self.newRow = addedRow; 
                 }
                 
@@ -663,7 +666,7 @@
                 }
                
                 //re-select the currently selected row
-                console.log("selected row data:");
+                console.log("_refresh: selected row data:");
                 console.log($self.selected_data);
                 
                 //run callback if present
@@ -673,7 +676,7 @@
                 
                 //stop activity spinner
                 $self.el_body.removeClass("listBox_spinner");
-                console.log("*** listbox load completed");
+                console.log("_refresh: complete");
                 
                 deferred.resolve();
                 
@@ -690,7 +693,7 @@
             var listbox_name = $self.listBox_id;
             
             if(clear_selected === true){ //clear selected item before refreshing - complete refresh
-                console.log('clear selected item for a complete refresh');
+                console.log('refresh: clear selected item for a complete refresh');
                 $self.selected = undefined;
                 $self.selected_data = undefined;
             }
@@ -698,7 +701,7 @@
             var response = $self._refresh(); //call refresh function and return promise
             
             response.promise().done(function(){
-                console.log("_refresh done for "+listbox_name);
+                console.log("refresh: _refresh done for "+listbox_name);
                 deferred.resolve();
                 $self.scrollTo(); //call scrollTo function
             });
@@ -710,13 +713,19 @@
         }, //refresh
         
         clearSelected: function(){
-            //clear selected item
+            //clear selected item and associated
+            
+            var deferred = $.Deferred();
             $self = this;
 
-            console.log('clearSelected item');
+            console.log('clearSelected item data');
             $self.selected = undefined;
             $self.selected_data = undefined;
             $("#"+$self.body_id).find('.listBox_row').removeClass('row_selected'); //remove selected highlight class
+            console.log('clearSelected item data completed');
+            
+            deferred.resolve();
+            return deferred.promise();
  
         }, //clear_selected
         
@@ -805,8 +814,9 @@
                     listBox_id: id,
                     listBox_level: level,
                     listBox_parent_id: parent_id,
-                    listBox_values: arr_values
-                });;
+                    listBox_values: arr_values,
+                    listBox_row_id: row_id
+                });
                 
                 //add row_id to array
                 self.new_arr_rows.push(row_id);
@@ -1015,6 +1025,38 @@
         _isFunction: function(functionToCheck){
             var getType = {};
             return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+        },
+        
+        
+        _getTopRowId: function(){
+            //locate row/container closest to top of listbox and return ID
+            
+            var $self = this;
+            var deferred = $.Deferred();
+            $self.topRow = undefined; //unset value
+            
+            console.log('_getTopRowId: identify element at top of listbox v3');
+                     
+            var $top = $('#'+$self.body_id).offset().top; //determine position of top of listbox_body
+            console.log('_getTopRowId: top of box = '+$top);
+            $("#"+$self.body_id+ " .listBox_row").each(function() { //identify which row is at the top of the listbox
+                console.log('_getTopRowId: offset from top = '+$(this).offset().top);
+                if($(this).offset().top === $top) {
+                    var data = $(this).data(); //get embedded data from object
+                    if(data.listBox_id >= 1){
+                        var top_row_id = data.listBox_id;
+                        console.log('_getTopRowId: top row id = '+top_row_id);
+                        $self.topRow = this; //set topRow object to current object
+                        console.log('_getTopRowId: resolve promise');
+                        deferred.resolve(top_row_id);
+                        return false;
+                    }
+                }
+            });
+            
+            deferred.reject();//no id found
+     
+            return deferred.promise();
         }
         
         
@@ -1022,3 +1064,4 @@
 
 
 })(jQuery); //end plugin
+           

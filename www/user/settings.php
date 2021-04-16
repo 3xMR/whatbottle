@@ -25,6 +25,8 @@ require_once("$root/classes/User.php"); //include standard db class
             $user = new UserObj();
             if($user ->isAuthed()){
                 $array_name = $user->getUserName();
+                $firstName = $array_name['firstName'];
+                $lastName = $array_name['lastName'];
             }
             
             //Title bar
@@ -38,7 +40,7 @@ require_once("$root/classes/User.php"); //include standard db class
                     //title bar text
                     echo "<div class=\"title_heading\" >";
                         echo "<h1>Settings & Account Details</h1>";
-                        echo "<h3 style=\"color:darkgray;\" >$array_name[0] $array_name[1]</h3>";
+                        echo "<h3 style=\"color:darkgray;\" >$firstName $lastName</h3>";
                     echo "</div>";
                     //process indicator
                     echo "<div class=\"process_indicator\" >";
@@ -59,7 +61,7 @@ require_once("$root/classes/User.php"); //include standard db class
                     </ul>
                     <div id="tabs-1">
                         <div>
-                            <? echo "<h3 style=\"color:darkgray;\" >$array_name[0] $array_name[1]</h3>"; ?>
+                            <?php echo "<h3 style=\"color:darkgray;\" >$firstName $lastName</h3>"; ?>
                             <div class="input-button" >
                                     <?php
                                     if(is_authed()){ //buttons that require login within here
@@ -93,7 +95,6 @@ require_once("$root/classes/User.php"); //include standard db class
                             <form action="\user\template.php" method="post" id="frm_change_password" name="frm_change_password" autocomplete="off">
 
                                 <div class="hidden">
-                                    <input type="hidden" value="<?php echo $_SESSION['var_wine_temp']['wine_id']; ?>" name="wine_id" id="wine_id"><br/>
                                     <input type="hidden" value="<?php echo $_SESSION['var_wine_temp']['is_dirty'];?>" name="is_dirty" id="is_dirty"><br/>
                                     <input type="hidden" value="<?php echo $_SESSION['var_wine_temp']['status'];?>" name="status" id="status"><br/>
                                 </div>    
@@ -416,6 +417,7 @@ $(document).ready(function(){
         return deferred.promise();
         
     }
+    
     
     function reloadPage(){
         //reload page

@@ -39,7 +39,7 @@ public $fieldlist = array(
     );
 
 
-    public function vintage_has_award($vintage_has_award_id=false){
+    function __construct($vintage_has_award_id=false){
         //constructor
         if($vintage_has_award_id > 0){
             $this -> vintage_has_award_id = $vintage_has_award_id;

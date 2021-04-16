@@ -4,16 +4,15 @@
  * 
  */
 //prevent php warnings messing up json return
-ini_set( "display_errors", 0); 
+//ini_set( "display_errors", 0); 
 
 $root = $_SERVER['DOCUMENT_ROOT'];
 $new_root = rtrim($root, '/\\');
 require_once("$root/includes/init.inc.php");
 require_once("$root/functions/function.php");
 require_once("$root/classes/class.db.php");
-require_once("$root/classes/MyPDO.php");
-require_once("$root/classes/Producer.php");
-
+//require_once("$root/classes/MyPDO.php");
+//require_once("$root/classes/Producer.php");
 
 $rpc_action = (filter_input(INPUT_POST, 'rpc_action', FILTER_SANITIZE_STRING) > "") ? filter_input(INPUT_POST, 'rpc_action', FILTER_SANITIZE_STRING) : filter_input(INPUT_GET, 'rpc_action', FILTER_SANITIZE_STRING);
 $action = (filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING) > "") ? filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING) : filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
@@ -35,42 +34,6 @@ if($rpc_action || $action){
         $var_result['error'] = "function [$fnc] not found on server page $page";
         $var_result['success'] = false;
         echo json_encode($var_result);
-    }
-    
-}
-
-
-function debug($text){
-    //debug output
-    
-    global $new_root, $log_path;
-    $debug = false;
-    $write_to_file = true;
-    $file_name = "log_rpc_wine_db.txt";
-    
-    if($debug){
-        if($write_to_file){
-            //debug output to file
-
-            $log_file = $new_root.$log_path.$file_name;
-
-            if(file_exists($log_file)){
-                //open new file in w rite mode
-                $mode = "a";
-            } else {
-                $mode = "w";
-            }
-
-            $fh = fopen($log_file, $mode) or die("can't open log file");
-
-            $stringData = "> $text \n";
-            fwrite($fh, $stringData);
-            fclose($fh);
-            
-        }else{
-            //write to screen
-            echo "> $text<br/>";
-        }   
     }
     
 }
@@ -134,36 +97,36 @@ function get_from_db(){
     //get wine from db and put to session
     $wine_id = $_REQUEST['wine_id'];
     
-    if($_REQUEST['dst_action']=='add'){
-        //clear session variables - ready for new wine
+    if($_REQUEST['dst_action']=='add'){//clear session variables - ready to add new wine
         unset($_SESSION['var_wine_temp']);
-        //create new session with status of 1 (add)
-        $_SESSION['var_wine_temp']['status'] = 1;
+        $_SESSION['var_wine_temp']['status'] = 1;//create new session with status of 1 (add)
         $var_result['success']=true;
         return $var_result;
     }
     
-    if($wine_id){
-        $obj_wine = new wine();
-        $where = "wine_id = $wine_id";
-        $result = $obj_wine -> get_extended($where);
-        if($result){
-            //put record in session
-            $_SESSION['var_wine_temp'] = $result[0];
-            $_SESSION['var_wine_temp']['status'] = 3; //read
-            $_SESSION['var_wine_temp']['is_dirty'] = false;
-            $var_result['success']=true;
-            return $var_result;
-        } else {
-            $var_result['success']=false;
-            $var_result['error']="no record found in wine_id=$wine_id";
-            return $var_result;
-        }
-    }else{
+    if(!isset($wine_id)){
         $var_result['success']=false;
         $var_result['error']="no wine_id provided";
         return $var_result;  
     }
+    
+    $obj_wine = new wine();
+    $where = "wine_id = $wine_id";
+    $rst = $obj_wine -> get_extended($where);
+
+    if(isset($rst)){
+        //put record in session
+        $_SESSION['var_wine_temp'] = $rst[0]; 
+        $_SESSION['var_wine_temp']['status'] = 3; //read only status
+        $_SESSION['var_wine_temp']['is_dirty'] = false;
+        $var_result['success']=true;
+        return $var_result;
+    } else {
+        $var_result['success']=false;
+        $var_result['error']="no record found in wine_id=$wine_id";
+        return $var_result;
+    }
+    
 
 };
 
@@ -249,6 +212,12 @@ function save_to_db($var_wine){
     }    
     
     $valid = true;
+      
+    if(!isset($var_wine)){
+        $var_result['success']=false;
+        $var_result['error']='save_to_db: aborted because no wine input array provided';
+        return $var_result;
+    }
     
     if(!$var_wine['wine']>""){
         $error_msg = "wine_name not provided";
@@ -285,20 +254,25 @@ function save_to_db($var_wine){
     //start db update
     
     $wine_id = $var_wine['wine_id'];
+    $wine_name = $var_wine['wine'];
+    $winetype_id = $var_wine['winetype_id'];
+    $producer_id = $var_wine['producer_id'];
+    
     
     if($wine_id>0){ //has wine_id so is existing and should be updated
+        
+        $where = "wine_id = $wine_id";
+        $wine_obj = new wine();
+        $count = $wine_obj->row_count($where);
  
-        if(exists_wine($wine_id)==false){ //check wine does actually exists to prevent updating a deleted wine - stale session
-            
-            //trying to update a deleted wine - abort
+        if($count<1){ //check wine_id does exist in db, to prevent updating a deleted wine - stale session
             $var_result['success']=false;
-            $var_result['error']='trying to update a deleted wine - stale session data?';
+            $var_result['error']='Update failed as wine_id cannot be found';
             return $var_result;
         }
 
         //existing wine - perform SQL update
-        $wine_obj = new wine();
-        $where = "wine_id = $wine_id";
+        
         $result = $wine_obj -> update($var_wine, $where);
 
         if($result){
@@ -318,262 +292,99 @@ function save_to_db($var_wine){
             return $var_result;
         }
         
-    } else {
+    }
         
-        //new wine - perform SQL insert
-        
-        //double check these details do not already exists
-        //note: have removed ability to add a duplicate - close the below with if statement $bln_allow_duplicate
-        $where = "wine = \"".$wine_name."\" AND winetype_id = $winetype_id AND producer_id = $producer_id ";
-        $wine_exists_obj = new wine();
-        $var_wine_result = $wine_exists_obj -> get($where);
+    //new wine - perform SQL insert
 
-        if($var_wine_result){
-            //match found - wine with these values already exists
-            $var_result['success']=false;
-            $var_result['error']='db save aborted - a wine with this name, producer and winetype already exists!';
-            return $var_result;
-        }
+    //double check these details do not already exists
+    //note: have removed ability to add a duplicate - close the below with if statement $bln_allow_duplicate
+    $where = "wine = \"".$wine_name."\" AND winetype_id = $winetype_id AND producer_id = $producer_id ";
+    $wine_exists_obj = new wine();
+    $var_wine_result = $wine_exists_obj -> get($where);
 
-
-        //insert wine
-        $wine_obj = new wine();
-        $result = $wine_obj -> insert($var_wine);
-
-        if($result){
-            $_SESSION['var_wine_temp']['status'] = 'saved';
-            $_SESSION['var_wine_temp']['wine_id'] = $result;
-            $_SESSION['var_wine_temp']['is_dirty'] = false;
-            $var_result['success']=true;
-            $var_result['wine_id']=$result;
-            $var_result['save_type']='db insert';
-            return $var_result;
-        } else {
-            $sql_error = $wine_obj ->get_sql_error();
-            $var_result['success']=false;
-            $var_result['error']="db insert failed sql_error=$sql_error";
-            $var_result['save_type']='db insert';
-            return $var_result;
-        }
-    }
-    
-}
-
-
-function save_to_db_old(){
-    //save wine to database
-
-    //error codes
-    //10 - duplicate wine
-    //20 - mandatory fields missing
-    //30 - database save error
-    //40 - invalid wine_id - update cannot continue
-
-    log_write("start",1,"save_to_db");
-    log_write("field values to follow:",1,"save_to_db");
-    $wine_id = $_REQUEST['wine_id'];
-    $wine_name = $_REQUEST['wine_name'];
-    //$year = $_REQUEST['year'];
-    $winetype_id = $_REQUEST['winetype_id'];
-    $producer = $_REQUEST['producer'];
-    $producer_id = $_REQUEST['producer_id'];
-    $country = $_REQUEST['country'];
-    $country_id = $_REQUEST['country_id'];
-    $region = $_REQUEST['region_id'];
-    $region_id = $_REQUEST['region_id'];
-    $subregion = $_REQUEST['subregion'];
-    $subregion_id = $_REQUEST['subregion_id'];
-    $override_duplicate = $_REQUEST['override_duplicate'];
-
-    //validate mandatory fields
-    $valid = true;
-    
-    if(!$wine_name>""){
-        $error_msg = "wine_name not provided <br/>";
-        $valid = false;
-    }
-
-    if(!$producer_id>0){
-        $error_msg = $error_msg."producer_id not provided <br/>";
-        $valid = false;
-    }
-
-    if(!$winetype_id>0){
-        $error_msg = $error_msg."winetype_id not provided <br/>";
-        $valid = false;
-    }
-
-    if(!$country_id>0){
-        $error_msg = $error_msg."country_id not provided <br/>";
-        $valid = false;
-    }
-
-    if(!$region_id>0 ){
-        $error_msg = $error_msg."region_id not provided <br/>";
-        $valid = false;
-    }
-
-    if($valid==false){
-        //one or more mandatory fields missing - cannot continue with save
-        log_write("FAILED mandatory fields missing",3,"save_to_db");
+    if($var_wine_result){ //match found - wine with these values already exists
         $var_result['success']=false;
-        $var_result['error']='20';
-        $var_result['error_msg']=$error_msg;
+        $var_result['error']='A wine with this name, producer and type already exists';
         return $var_result;
     }
 
-    //create save array
-    $var_wine['wine_id'] = $_REQUEST['wine_id'];
-    $var_wine['wine'] = $_REQUEST['wine_name'];
-    $var_wine['year'] = $_REQUEST['year'];
-    $var_wine['winetype_id'] = $_REQUEST['winetype_id'];
-    $var_wine['producer'] = $_REQUEST['producer'];
-    $var_wine['producer_id'] = $_REQUEST['producer_id'];
-    $var_wine['country'] = $_REQUEST['country'];
-    $var_wine['country_id'] = $_REQUEST['country_id'];
-    $var_wine['region'] = $_REQUEST['region'];
-    $var_wine['region_id'] = $_REQUEST['region_id'];
-    $var_wine['subregion'] = $_REQUEST['subregion'];
-    $var_wine['subregion_id'] = $_REQUEST['subregion_id'];
-    $var_wine['user_id'] = $_SESSION['user_id'];
-
-
-    //save wine
-    log_write("save wine to db",1,"save_to_db");
-
+    //insert wine
     $wine_obj = new wine();
+    $result = $wine_obj -> insert($var_wine);
 
-    if($wine_id>0){
-        //confirm wine_id exists in db (protect against clicking back in browser
-        //after wine has been deleted
-        if (exists_wine($_REQUEST['wine_id'])==false){
-            //trying to update a delete wine - abort
-            $var_result['success']=false;
-            $var_result['error']=40;
-            return $var_result;
-        }
-
-        //existing wine - perform SQL update
-        log_write("perform UPDATE",1,"save_to_db");
-        $where = "wine_id = $wine_id";
-        $result = $wine_obj -> update($var_wine, $where);
-        log_write("UPDATE result: $result",1,"save_to_db");
-
-        if($result){
-            log_write("UPDATE successful",1,"save_to_db");
-            $var_result['success']=true;
-            $var_result['save_type']='db update';
-            $var_result['wine_id']=$wine_id;
-            return $var_result;
-        } else {
-            //update failed
-            log_write("UPDATE failed",3,"save_to_db");
-            $var_result['success']=false;
-            $var_result['error']=30;
-            $var_result['save_type']='db update';
-            return $var_result;
-        }
-        
+    if($result){
+        $_SESSION['var_wine_temp']['status'] = 'saved';
+        $_SESSION['var_wine_temp']['wine_id'] = $result;
+        $_SESSION['var_wine_temp']['is_dirty'] = false;
+        $var_result['success']=true;
+        $var_result['wine_id']=$result;
+        $var_result['save_type']='db insert';
+        return $var_result;
     } else {
-        //new wine - perform SQL insert
-        log_write("perform insert",1,"save_to_db");
-        log_write("override_duplicate=$override_duplicate",1,"save_to_db");
-        //check if wine is unique
-        if($override_duplicate == 'false'){
-            log_write("check for duplicate",1,"save_to_db");
-            $where = "wine = \"".$wine_name."\" AND winetype_id = $winetype_id AND producer_id = $producer_id";
-            log_write("where statement: $where",1,"save_to_db");
-            $obj = new wine();
-            $var_wine_result = $obj -> get($where);
-            log_write("query returned: $var_wine_result",1,"save_to_db");
-
-            if($var_wine_result){
-                //match found - wine with these values already exists
-                log_write("match found - return error code 10",1,"save_to_db");
-                $var_result['success']=false;
-                $var_result['error']=10;
-                $var_result['error_msg']='A wine with this name, producer and winetype already exists!';
-                return $var_result;
-            }
-
-            log_write("no match found - continue with save",1,"save_to_db");
-
-        }
-
-        //insert wine
-        $result = $wine_obj -> insert($var_wine);
-        log_write("save result: $result",1,"save_to_db");
-
-        //save successful?
-        if($result>0){
-            log_write("wine saved successfully",1,"save_to_db");
-            $var_result['success']=true;
-            $var_result['wine_id']=$result;
-            $var_result['save_type']='db insert';
-        } else {
-            log_write("ERROR: wine save unsuccessfull",3,"save_to_db");
-            $var_result['success']=false;
-            $var_result['error']=30;
-        }
+        $sql_error = $wine_obj ->get_sql_error();
+        $var_result['success']=false;
+        $var_result['error']="db insert failed sql_error = $sql_error";
+        $var_result['save_type']='db insert';
+        return $var_result;
     }
     
-    return $var_result;
+    
 }
 
 
-function add_producer_db($producer_name){
-    //Add new producer to db
-    
-    if(!is_authed()){ //check if user is authorised
-        $var_result['success'] = false;
-        $var_result['error'] = "You must login to use this application";
-        return $var_result;
-    }
-
-    
-    if(!$producer_name){
-        $producer_name = $_REQUEST['value']; //retrieve producer_name from POST
-    }
-    
-    if(!$producer_name){ //producer_name empty
-        $var_result['success']=false;
-        $var_result['error']="Producer name cannot be blank.";
-        return $var_result;
-    }
-    
-    //check if producer already exists
-    $producer_obj = new producer();
-    $var_producer = $producer_obj -> get("producer='$producer_name'");
-
-    if($var_producer[0]['producer_id']>0){
-        //producer already exists
-
-        $var_result['success']=false;
-        $var_result['error']="Producer name '$producer_name' already exists";
-        return $var_result;
-    } else {
-        //producer does not exist - add producer
-  
-        //create array
-        $var_producer['producer'] = $producer_name;
-        $var_producer['user_id'] = $_SESSION['user_id'];
-        
-        //insert new producer to db
-        $producer_obj = new producer();
-        $key = $producer_obj -> insert($var_producer);
-
-        if($key>0){
-            $var_result['success']=true;
-            $var_result['producer_id']=$key;
-            return $var_result;
-        }else{
-            $mysql_error = mysql_error();
-            $var_result['success']=false;
-            $var_result['error']= "Problem inserting producer '$producer_name' into db. mysql error = $mysql_error";
-            return $var_result;
-        }
-    }
-}
+//function add_producer_db($producer_name){
+//    //Add new producer to db
+//    
+//    if(!is_authed()){ //check if user is authorised
+//        $var_result['success'] = false;
+//        $var_result['error'] = "You must login to use this application";
+//        return $var_result;
+//    }
+//
+//    
+//    if(!$producer_name){
+//        $producer_name = $_REQUEST['value']; //retrieve producer_name from POST
+//    }
+//    
+//    if(!$producer_name){ //producer_name empty
+//        $var_result['success']=false;
+//        $var_result['error']="Producer name cannot be blank.";
+//        return $var_result;
+//    }
+//    
+//    //check if producer already exists
+//    $producer_obj = new producer();
+//    $var_producer = $producer_obj -> get("producer='$producer_name'");
+//
+//    if($var_producer[0]['producer_id']>0){
+//        //producer already exists
+//
+//        $var_result['success']=false;
+//        $var_result['error']="Producer name '$producer_name' already exists";
+//        return $var_result;
+//    } else {
+//        //producer does not exist - add producer
+//  
+//        //create array
+//        $var_producer['producer'] = $producer_name;
+//        $var_producer['user_id'] = $_SESSION['user_id'];
+//        
+//        //insert new producer to db
+//        $producer_obj = new producer();
+//        $key = $producer_obj -> insert($var_producer);
+//
+//        if($key>0){
+//            $var_result['success']=true;
+//            $var_result['producer_id']=$key;
+//            return $var_result;
+//        }else{
+//            $mysql_error = mysql_error();
+//            $var_result['success']=false;
+//            $var_result['error']= "Problem inserting producer '$producer_name' into db. mysql error = $mysql_error";
+//            return $var_result;
+//        }
+//    }
+//}
 
 
 function vintage_count(){
@@ -587,7 +398,6 @@ function vintage_count(){
         $columns = "Count(*)";
         $result = $obj -> get($where, $columns);
         $count = $result[0]['Count(*)'];
-        log_write("result = $count",1,"action='vintage_has'");
         $var_result['success'] = true;
         $var_result['vintage_count'] = $count;
         return $var_result;
@@ -918,12 +728,12 @@ function get_wine_count_for_producer(){
         return $var_result;
     }
     
-    $producerObj = new wbProducer();
+    $producerObj = new Producer();
     $count = $producerObj->getWineCount($producer_id);
     if($count < 0){
         //sql error
         $var_result['success']= false;
-        $var_result['error']= $producerObj->lastErrorMessage;
+        $var_result['error']= $producerObj->last_error;
         return $var_result;
     }
     

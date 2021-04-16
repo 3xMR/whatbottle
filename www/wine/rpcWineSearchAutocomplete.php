@@ -20,7 +20,9 @@ if (!$q) {
 
 $var_result = array();
 
-$term = mysql_escape_string(trim($q));
+//$term = mysql_escape_string(trim($q));
+
+$term=trim($q);
 
 $search_obj = new wine_search();
 
@@ -36,6 +38,8 @@ $varSearchParam['group'] = "tblWine.wine_id";
 $varSearchParam['order'] = "tblWine.wine ASC";
 
 $results = $search_obj -> search($varSearchParam); //search
+
+
 
 
 if(sizeof($results)>0){

@@ -41,13 +41,17 @@ public $fieldlist = array(
         'required' => true
        )
     );
+    
 
-    public function vintage_has_grape($vintage_has_grape_id=false){
-        //constructor
+    function __construct($vintage_has_grape_id=false){
+
+        parent::__construct(); //call class.db __construct to set db connection
+
         if($vintage_has_grape_id > 0){
             $this -> vintage_has_grape_id = $vintage_has_grape_id;
         }
     }
+
 
     function update($input_array, $where=false){
        //combine vintage_id and grape_id to create WHERE clause

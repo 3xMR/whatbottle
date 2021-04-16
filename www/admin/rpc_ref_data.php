@@ -34,24 +34,28 @@ if($_REQUEST['rpc_action'] || $_REQUEST['action']){ //convert action to function
 }
 
 
-function country_not_duplicate($country){
-    //check for duplicate country
-    $obj_country = new country();
-    $country_name =  mysql_real_escape_string($country);
-    $where = "country = '$country_name'";
-    $count = $obj_country -> row_count($where);
-    if($count > 0){ //duplicate
-        $var_result['success'] = false;
-        $var_result['error'] = "duplicate - data already added - count=$count";
-        return $var_result;
-    } else { 
-        $var_result['success'] = true;
-        return $var_result;
-    }
-}
+//function country_not_duplicate($country){
+//    //check for duplicate country
+//    $obj_country = new country();
+//    $country_name =  mysql_real_escape_string($country);
+//    $where = "country = '$country_name'";
+//    $count = $obj_country -> row_count($where);
+//    if($count > 0){ //duplicate
+//        $var_result['success'] = false;
+//        $var_result['error'] = "duplicate - data already added - count=$count";
+//        return $var_result;
+//    } else { 
+//        $var_result['success'] = true;
+//        return $var_result;
+//    }
+//}
 
 
 function save_country_db(){
+    
+    $country_text = $_REQUEST['country_text'] ?? null;
+    $country_id = $_REQUEST['country_id'] ?? null;
+    $flag_image = $_REQUEST['country_flag'] ?? null;
     
     if(!is_authed()){ //check if user is authorised
         $var_result['success'] = false;
@@ -59,71 +63,67 @@ function save_country_db(){
         return $var_result;
     }    
     
-    $country_text = $_REQUEST['country_text'];
-    $country_id = $_REQUEST['country_id'];
-    $flag_image = $_REQUEST['country_flag'];
-    
-    if(empty($_REQUEST['country_text'])){ //no data to add
+    if(!isset($country_text)){ //no data to add
         $var_result['success'] = false;
-        $var_result['error'] = 'Country name is empty nothing to save';
+        $var_result['error'] = 'Country name not provided, cannot continue';
         return $var_result;
     }
     
     if($country_id>0){
-        $sql_id = " AND country_id <> $country_id ";
+        $where = " country = :country AND country_id <> :country_id ";
+        $input_array = [':country' => $country_text, ':country_id' => $country_id];
     } else {
-        $sql_id = null;
+        $where = " country = :country ";
+        $input_array = [':country' => $country_text];
     }
     
     $obj = new country();
-    $where = sprintf("country = '%s' $sql_id ",mysql_real_escape_string($country_text));
-    $count = $obj -> row_count($where);
-    if($count > 0){
-        //duplicate
+    $result = $obj ->get($where,null,null,null,null,$input_array);
+    
+    if($result){ //duplicate
         $var_result['success'] = false;
         $var_result['error'] = "Country name already exists";
         return $var_result;
-    } else {
+    }
+    
+    //complete input_array 
+    $input_array['country'] = $country_text;   
+    $input_array['user_id'] = $_SESSION['user_id'];
+    if(isset($flag_image)){
+       $input_array['flag_image'] = $flag_image; //if not set omit so that override in class.db operates
+    }
 
-        $var_input['country'] = $country_text;
-        $var_input['flag_image'] = $flag_image;
-        $var_input['user_id'] = $_SESSION['user_id'];
-
-        if($country_id>0){
-            //update
-            $where = "country_id = $country_id";
-            $result = $obj -> update($var_input,$where);
-
-            if($result){
-                $var_result['success'] = true;
-                $var_result['db_action'] = 'update';
-                $var_result['country_id'] = $country_id;
-                return $var_result;
-            }else{
-                $sql_error = $obj ->get_sql_error();
-                $var_result['success'] = false;
-                $var_result['error'] = 'Save Country DB UPDATE failed with error: '+$sql_error;
-                $var_result['db_action'] = 'update';
-                return $var_result;
-            }
-
-        }else{ //insert
-            $country_id = $obj -> insert($var_input);
-            if ($country_id > 0){
-                $var_result['success'] = true;
-                $var_result['country_id'] = $country_id;
-                $var_result['db_action'] = 'insert';
-                return $var_result;
-            } else {
-                $sql_error = $obj -> get_sql_error();
-                $var_result['success'] = false;
-                $var_result['error'] = 'Save Country DB INSERT failed with error: '+$sql_error;
-                $var_result['db_action'] = 'insert';
-                return $var_result;
-            }
-        }//country_id
+    if($country_id>0){ //update db
         
-    } //count
+        $where = "country_id = $country_id";
+        $result = $obj -> update($input_array,$where);
+
+        if($result){
+            $var_result['success'] = true;
+            $var_result['db_action'] = 'update';
+            $var_result['country_id'] = $country_id;
+            return $var_result;
+        }else{
+            $var_result['success'] = false;
+            $var_result['error'] = 'Save Country DB UPDATE failed with error: '.$obj ->get_sql_error();
+            $var_result['db_action'] = 'update';
+            return $var_result;
+        }
+    }
+
+    $new_country_id = $obj -> insert($input_array);
+    
+    if ($new_country_id > 0){
+        $var_result['success'] = true;
+        $var_result['country_id'] = $new_country_id;
+        $var_result['db_action'] = 'insert';
+        return $var_result;
+    } else {
+        $var_result['success'] = false;
+        $var_result['error'] = 'Save Country DB INSERT failed with error: '.$obj -> get_sql_error();
+        $var_result['db_action'] = 'insert';
+        return $var_result;
+    }
 
 }
 
@@ -131,164 +131,142 @@ function save_country_db(){
 
 function save_region_db(){
     
-    $region_text = $_REQUEST['region_text'];
-    $region_id = $_REQUEST['region_id'];
-    $country_id = $_REQUEST['country_id'];
+    $region_text = $_REQUEST['region_text'] ?? null;
+    $region_id = $_REQUEST['region_id'] ?? null;
+    $country_id = $_REQUEST['country_id'] ?? null;
     
     $_SESSION['var_vintage_temp']['region_text'] = $region_text;
     
-    if(!empty($_REQUEST['region_text'])){
-        
-        if($region_id > 0){
-            $sql_id = " AND region_id <> $region_id ";
-        } else {
-            $sql_id = null;
-        }
-
-        //check for duplicate
-        $obj_region = new region();
-        $where = sprintf("region = '%s' AND country_id = $country_id $sql_id ",mysql_real_escape_string($region_text));
-        $count = $obj_region -> row_count($where);
-
-        if($count > 0){
-            //duplicate
-            $var_result['success'] = false;
-            $var_result['error'] = "Region already exists";
-            return $var_result;
-        } else {
-            //create input array
-            $var_input['region'] = $region_text;
-            $var_input['country_id'] = $country_id;
-            $var_input['user_id'] = $_SESSION['user_id'];
-
-            if($region_id>0){
-                //update
-                $where = "region_id = $region_id";
-                $result = $obj_region -> update($var_input,$where);
-                if($result){
-                    $var_result['success'] = true;
-                    $var_result['region_id'] = $region_id;
-                    $var_result['db_action'] = 'update';
-                    return $var_result;
-                }else{
-                    $var_result['success'] = false;
-                    $var_result['error'] = 'DB update failed';
-                    $var_result['db_action'] = 'update';
-                    return $var_result;
-                }
-                
-            }else{
-                //insert
-                if($country_id >0){ //requires valid country_id to add region
-                    $region_id = $obj_region -> insert($var_input);
-                    if ($region_id > 0){
-                        $var_result['success'] = true;
-                        $var_result['region_id'] = $region_id;
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    } else {
-                        $var_result['success'] = false;
-                        $var_result['error'] = 'db insert failed';
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    }
-                } else {
-                    //insert with no country_id
-                    $var_result['success'] = false;
-                    $var_result['error'] = 'db INSERT failed because no country_id provided';
-                    return $var_result;
-                }
-            }
-            
-        }
- 
-    } else {
-        //no data to add
+    if(!isset($region_text)){
         $var_result['success'] = false;
-        $var_result['error'] = 'Insufficient data to proceed with save Region';
+        $var_result['error'] = 'no Region name provided, cannot continue';
         return $var_result;
     }
     
+    if(!isset($country_id)){
+        $var_result['success'] = false;
+        $var_result['error'] = 'no parent Country id provided, cannot continue';
+        return $var_result;
+    }
+        
+    if($region_id > 0){
+        $where = " region = :region AND country_id = :country_id AND region_id <> :region_id ";
+        $input_array = ['region' => $region_text, 'region_id' => $region_id, 'country_id' => $country_id];
+    } else {
+        $where = " region = :region AND country_id = :country_id ";
+        $input_array = ['region' => $region_text, 'country_id' => $country_id];
+    }
+
+    //check for duplicate
+    $obj = new region();
+    $result = $obj ->get($where,null,null,null,null,$input_array);
+    
+    if($result){ //duplicate
+        $var_result['success'] = false;
+        $var_result['error'] = "Region name already exists";
+        return $var_result;
+    }
+            
+    $input_array['user_id'] = $_SESSION['user_id'];//add user_id to input array
+
+    if($region_id>0){ //db update     
+        $where = "region_id = $region_id";
+        $result = $obj -> update($input_array,$where);
+        if($result){
+            $var_result['success'] = true;
+            $var_result['region_id'] = $region_id;
+            $var_result['db_action'] = 'update';
+            return $var_result;
+        }else{
+            $var_result['success'] = false;
+            $var_result['error'] = 'DB update failed with error: '.$obj->get_sql_error();
+            $var_result['db_action'] = 'update';
+            return $var_result;
+        }
+    }
+        
+    $new_region_id = $obj -> insert($input_array); //db insert
+    if ($new_region_id > 0){
+        $var_result['success'] = true;
+        $var_result['region_id'] = $new_region_id;
+        $var_result['db_action'] = 'insert';
+        return $var_result;
+    } else {
+        $var_result['success'] = false;
+        $var_result['error'] = 'db insert failed with error: '.$obj->get_sql_error();
+        $var_result['db_action'] = 'insert';
+        return $var_result;
+    }
+          
 }
 
 
 function save_subregion_db(){
 
-    $subregion_text = $_REQUEST['subregion_text'];
-    $subregion_id = $_REQUEST['subregion_id'];
-    $region_id = $_REQUEST['region_id'];
-
-    if(!empty($_REQUEST['subregion_text'])){
-        
-        if($subregion_id > 0){
-            $sql_id = " AND subregion_id <> $subregion_id ";
-        } else {
-            $sql_id = null;
-        }
-
-        //check for duplicate
-        $obj_subregion = new subregion();
-        $where = sprintf("subregion = '%s' AND region_id = $region_id $sql_id ",mysql_real_escape_string($subregion_text));
-        $count = $obj_subregion -> row_count($where);
-        
-        if($count > 0){
-            //duplicate
-            $var_result['success'] = false;
-            $var_result['error'] = "Subregion already exists";
-            return $var_result;
-        } else {
-            
-            $var_input['subregion'] = $subregion_text;
-            $var_input['region_id'] = $region_id;
-            $var_input['user_id'] = $_SESSION['user_id'];
-
-            if($subregion_id>0){ //update db
-                
-                $where = "subregion_id = $subregion_id";
-                $result = $obj_subregion -> update($var_input,$where);
-                if($result){
-                    $var_result['success'] = true;
-                    $var_result['subregion_id'] = $subregion_id;
-                    $var_result['db_action'] = 'update';
-                    return $var_result;
-                }else{
-                    $sql_error = $obj_subregion ->get_sql_error();
-                    $var_result['success'] = false;
-                    $var_result['error'] = "Save Subregion db update failed with sql_error: $sql_error";
-                    $var_result['db_action'] = 'update';
-                    return $var_result;
-                }
-
-            }else{ //insert db
-                
-                if($region_id >0){
-                    $subregion_id = $obj_subregion -> insert($var_input);
-                    if ($subregion_id > 0){
-                        $var_result['success'] = true;
-                        $var_result['subregion_id'] = $subregion_id;
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    } else {
-                        $sql_error = $obj_subregion ->get_sql_error();
-                        $var_result['success'] = false;
-                        $var_result['error'] = "Save Subregion db insert failed with sql_error: $sql_error";
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    }
-                } else {
-                    //insert with no country_id
-                    $var_result['success'] = false;
-                    $var_result['error'] = 'db insert failed because no region_id provided';
-                    return $var_result;
-                }
-            }
-
-        }
- 
+    $subregion_text = $_REQUEST['subregion_text'] ?? null;
+    $subregion_id = $_REQUEST['subregion_id'] ?? null;
+    $region_id = $_REQUEST['region_id'] ?? null;
+    
+    if(!isset($subregion_text)){
+         $var_result['success'] = false;
+         $var_result['error'] = "Subregion name not provided, cannot continue";
+         return $var_result;
+    }
+    
+    if(!isset($region_id) || empty($region_id)){
+         $var_result['success'] = false;
+         $var_result['error'] = "Parent region id not provided, cannot continue";
+         return $var_result;
+    }
+           
+    if($subregion_id > 0){
+        $where = " subregion = :subregion AND region_id = :region_id AND subregion_id <> :subregion_id ";
+        $input_array = ['subregion' => $subregion_text, 'region_id' => $region_id, 'subregion_id' => $subregion_id];
     } else {
-        //no data to add
+        $where = " subregion = :subregion AND region_id = :region_id ";
+        $input_array = ['subregion' => $subregion_text, 'region_id' => $region_id];
+    }
+
+    //check for duplicate
+    $obj = new subregion();
+    $result = $obj ->get($where,null,null,null,null,$input_array);
+    
+    if($result){ //duplicate
         $var_result['success'] = false;
-        $var_result['error'] = 'Subregion name cannot be blank';
+        $var_result['error'] = "Subregion name already exists";
+        return $var_result;
+    }
+ 
+    $input_array['user_id'] = $_SESSION['user_id'];
+
+    if($subregion_id>0){ //update db
+        $where = "subregion_id = $subregion_id";
+        $result = $obj-> update($input_array,$where);
+        if($result){
+            $var_result['success'] = true;
+            $var_result['subregion_id'] = $subregion_id;
+            $var_result['db_action'] = 'update';
+            return $var_result;
+        }else{
+            $sql_error = $obj->get_sql_error();
+            $var_result['success'] = false;
+            $var_result['error'] = "save_subregion_db(): Subregion db update failed with sql_error: $sql_error";
+            $var_result['db_action'] = 'update';
+            return $var_result;
+        }
+    }
+
+    $new_subregion_id = $obj -> insert($input_array); //db Insert
+    if ($new_subregion_id > 0){
+        $var_result['success'] = true;
+        $var_result['subregion_id'] = $new_subregion_id;
+        $var_result['db_action'] = 'insert';
+        return $var_result;
+    } else {
+        $sql_error = $obj ->get_sql_error();
+        $var_result['success'] = false;
+        $var_result['error'] = "Save Subregion db insert failed with sql_error: $sql_error";
+        $var_result['db_action'] = 'insert';
         return $var_result;
     }
 
@@ -372,95 +350,93 @@ function delete_region(){
 }
 
 
-function add_region(){
-    
-    $country_id = $_REQUEST['country_id'];
-    $region = $_REQUEST['region'];
-    $_SESSION['var_vintage_temp']['region_text'] = $region;
+//function add_region(){
+//    
+//    $country_id = $_REQUEST['country_id'];
+//    $region = $_REQUEST['region'];
+//    $_SESSION['var_vintage_temp']['region_text'] = $region;
+//
+//    if($country_id > 0 && $region){
+//   
+//        //check for duplicate
+//        $obj_region = new region();
+//        $where = sprintf("country_id = $country_id AND region = '%s' ",mysql_real_escape_string($region));
+//        $count = $obj_region -> row_count($where);
+//        if($count>0){
+//            //duplicate
+//            $var_result['success'] = false;
+//            $var_result['error'] = 'Region name already exists';
+//            return $var_result;
+//        } else {
+//            //add to db
+//            $var_input['country_id'] = $country_id;
+//            $var_input['region'] = $region;
+//            $var_input['user_id'] = $_SESSION['user_id'];
+//            
+//            $region_id = $obj_region -> insert($var_input);
+//            
+//            if ($region_id > 0){
+//                $var_result['success'] = true;
+//                $var_result['region_id'] = $region_id;
+//                return $var_result;
+//            } else {
+//                $var_result['success'] = false;
+//                $var_result['error'] = 'db insert failed';
+//                return $var_result;
+//            }
+//            
+//        }
+// 
+//    } else {
+//        //no data to add
+//        $var_result['success'] = false;
+//        $var_result['error'] = 'no data to add';
+//        return $var_result;
+//    }
+//}
 
-    if($country_id > 0 && $region){
-   
-        //check for duplicate
-        $obj_region = new region();
-        $where = sprintf("country_id = $country_id AND region = '%s' ",mysql_real_escape_string($region));
-        $count = $obj_region -> row_count($where);
-        if($count>0){
-            //duplicate
-            $var_result['success'] = false;
-            $var_result['error'] = 'Region name already exists';
-            return $var_result;
-        } else {
-            //add to db
-            $var_input['country_id'] = $country_id;
-            $var_input['region'] = $region;
-            $var_input['user_id'] = $_SESSION['user_id'];
-            
-            $region_id = $obj_region -> insert($var_input);
-            
-            if ($region_id > 0){
-                $var_result['success'] = true;
-                $var_result['region_id'] = $region_id;
-                return $var_result;
-            } else {
-                $var_result['success'] = false;
-                $var_result['error'] = 'db insert failed';
-                return $var_result;
-            }
-            
-        }
- 
-    } else {
-        //no data to add
-        $var_result['success'] = false;
-        $var_result['error'] = 'no data to add';
-        return $var_result;
-    }
-}
 
-
-function add_subregion(){
-
-    $region_id = $_REQUEST['region_id'];
-    $subregion = $_REQUEST['subregion'];
-
-    if($region_id > 0 && $subregion){
-        //check for duplicate
-        $obj_subregion = new subregion();
-        $where = sprintf("region_id = $region_id AND subregion = '%s' ",mysql_real_escape_string($subregion));
-        $count = $obj_subregion -> row_count($where);
-
-        if($count>0){
-            //duplicate
-            $var_result['success'] = false;
-            $var_result['error'] = 'Subregion name already exists';
-            return $var_result;
-        } else {
-
-            //add to db
-            $var_input['region_id'] = $region_id;
-            $var_input['subregion'] = $subregion;
-            $var_input['user_id'] = $_SESSION['user_id'];
-            $subregion_id = $obj_subregion -> insert($var_input);
-
-            if ($subregion_id > 0){
-                $var_result['success'] = true;
-                $var_result['subregion_id'] = $subregion_id;
-                return $var_result;
-            } else {
-                $var_result['success'] = false;
-                $var_result['error'] = 'db insert failed';
-                return $var_result;
-            }
-
-        }
-
-    } else {
-        //no data to add
-        $var_result['success'] = false;
-        $var_result['error'] = 'no data to add';
-        return $var_result;
-    }
-}
+//function add_subregion(){
+//
+//    $region_id = $_REQUEST['region_id'] ?? null;
+//    $subregion = $_REQUEST['subregion'] ?? null;
+//
+//    if(!isset($region_id) || !isset($subregion)){ //need both region and subregion to continue
+//        $var_result['success'] = false;
+//        $var_result['error'] = 'Parameters incomplete, cannot continue';
+//        return $var_result;
+//    }
+//    
+//    //check for duplicate
+//    $obj = new subregion();
+//    $where = " region_id = :region_id AND subregion = :subregion";
+//    $input_array = [':region_id' => $region_id, ':subregion' => $subregion];
+// 
+//    $result = $obj ->get($where,null,null,null,null,$input_array);
+//    
+//    if($result){ //duplicate
+//        $var_result['success'] = false;
+//        $var_result['error'] = "Subregion name already exists";
+//        return $var_result;
+//    }
+//    
+//    //add to db
+//    $var_input['region_id'] = $region_id;
+//    $var_input['subregion'] = $subregion;
+//    $var_input['user_id'] = $_SESSION['user_id'];
+//    $subregion_id = $obj -> insert($var_input);
+//
+//    if ($subregion_id > 0){
+//        $var_result['success'] = true;
+//        $var_result['subregion_id'] = $subregion_id;
+//        return $var_result;
+//    } else {
+//        $var_result['success'] = false;
+//        $var_result['error'] = 'db insert failed';
+//        return $var_result;
+//    }   
+//
+//}
 
 
 
@@ -542,17 +518,26 @@ function delete_merchant(){
 }
 
 
-function merchant_exists($merchant, $merchant_id = false){
+function merchant_exists($merchant, $merchant_id = null){
     //check for duplicate merchant
     
-    if($merchant_id > 0){ //include merchant_id in query if provided
-        $sql_merchant_id = " AND merchant_id <> $merchant_id ";
-    } else {
-        $sql_merchant_id = null;
+    if(!isset($merchant)){
+        $var_result['success'] = false;
+        $var_result['error'] = 'merchant_exists(): Merchant name not provided, cannot continue';
+        return $var_result;
     }
+
+    if(isset($merchant_id)){ //include merchant_id in query if provided
+        $where = " merchant = :merchant AND merchant_id <> :merchant_id ";
+        $input_array = ['merchant' => $merchant, 'merchant_id' => $merchant_id];
+    } else {
+        $where = " merchant = :merchant ";
+        $input_array = ['merchant' => $merchant];
+    }
+    
     $obj = new merchant();
-    $where = sprintf("merchant = '%s' $sql_merchant_id ",mysql_real_escape_string($merchant));
-    $result = $obj ->get($where);
+    $result = $obj ->get($where,null,null,null,null,$input_array);
+    
     if($result){ //exists
         $var_result['success'] = true;
         $var_result['msg'] = "Merchant name already exists";
@@ -563,6 +548,7 @@ function merchant_exists($merchant, $merchant_id = false){
         $var_result['error'] = 'Merchant name does not already exist';
         return $var_result;
     }
+    
 }
 
 
@@ -643,76 +629,78 @@ function save_grape_db(){
         $sql_id = null;
     }
 
-    if(!empty($_REQUEST['value'])){
+    if(empty($_REQUEST['value'])){//no data to add    
+        $var_result['success'] = false;
+        $var_result['error'] = 'save_grape_db(): no grape name provided, cannot continue';
+        return $var_result;
+    }
 
         //check for duplicate
         $obj = new grape();
-        $where = sprintf("grape = '%s' AND colour = '$colour' $sql_id ",mysql_real_escape_string($value));
+        $where = "grape = '$value' AND colour = '$colour' $sql_id ";
         $count = $obj -> row_count($where);
+        
         if($count > 0){
             //duplicate
             $var_result['success'] = false;
             $var_result['error'] = "Grape name and colour already exists";
             return $var_result;
-        } else {
-            //determine if insert or update
-            $var_input['grape'] = $value;
-            $var_input['colour'] = $colour;
-            $var_input['user_id'] = $_SESSION['user_id'];
+        }
+        
+        //determine if insert or update
+        $var_input['grape'] = $value;
+        $var_input['colour'] = $colour;
+        $var_input['user_id'] = $_SESSION['user_id'];
 
-            if($id>0){
-                //update
-                $where = "grape_id = $id";
-                $result = $obj -> update($var_input,$where);
-                if($result){
-                    $var_result['success'] = true;
-                    $var_result['db_action'] = 'update';
-                    $var_result['id'] = $id;
-                    return $var_result;
-                }else{
-                    //update failed - get sql error
-                    $sql_error = $obj -> get_sql_error();
-                    $var_result['success'] = false;
-                    $var_result['error'] = "db update failed - sql_error=$sql_error";
-                    $var_result['db_action'] = 'update';
-                    return $var_result;
-                }
-
-            }else{ //db insert
-                if($value){
-                    $id = $obj -> insert($var_input);
-                    if ($id > 0){
-                        $var_result['success'] = true;
-                        $var_result['id'] = $id;
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    } else {
-                        //insert failed - get sql error
-                        $sql_error = $obj -> get_sql_error();
-                        $var_result['success'] = false;
-                        $var_result['error'] = "db insert failed - sql_error=$sql_error";
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    }
-                } else {
-                    //insert with no text
-                    $var_result['success'] = false;
-                    $var_result['error'] = 'db insert failed because no text provided';
-                    $var_result['db_action'] = 'insert';
-                    return $var_result;
-                }
+        if($id>0){
+            //update
+            $where = "grape_id = $id";
+            $result = $obj -> update($var_input,$where);
+            if($result){
+                $var_result['success'] = true;
+                $var_result['db_action'] = 'update';
+                $var_result['id'] = $id;
+                return $var_result;
+            }else{
+                //update failed - get sql error
+                $sql_error = $obj -> get_sql_error();
+                $var_result['success'] = false;
+                $var_result['error'] = "db update failed - sql_error=$sql_error";
+                $var_result['db_action'] = 'update';
+                return $var_result;
             }
 
         }
- 
-    } else {
-        //no data to add
-        $var_result['success'] = false;
-        $var_result['error'] = 'no Grape name provided';
-        return $var_result;
-    }
 
-}
+        if($value){ //db insert
+            $id = $obj -> insert($var_input);
+            if ($id > 0){
+                $var_result['success'] = true;
+                $var_result['id'] = $id;
+                $var_result['db_action'] = 'insert';
+                return $var_result;
+            } else {
+                //insert failed - get sql error
+                $sql_error = $obj -> get_sql_error();
+                $var_result['success'] = false;
+                $var_result['error'] = "db insert failed - sql_error=$sql_error";
+                $var_result['db_action'] = 'insert';
+                return $var_result;
+            }
+        } else {
+            //insert with no text
+            $var_result['success'] = false;
+            $var_result['error'] = 'db insert failed because no text provided';
+            $var_result['db_action'] = 'insert';
+            return $var_result;
+        }
+        
+
+        
+ 
+} 
+
+
 
 
 function delete_grape(){
@@ -755,76 +743,71 @@ function delete_grape(){
 
 function save_producer_db(){
 
-    $value = $_REQUEST['value'];
-    $id = $_REQUEST['id'];
-
-    if(!empty($_REQUEST['value'])){
-
-        //check for duplicate
-        $obj = new producer();
-        if($id>0){
-            $sql_id = " AND producer_id <> $id ";
-        } else {
-            $sql_id = null;
-        }
-        $where = sprintf("producer = '%s' $sql_id ",mysql_real_escape_string($value));
-        //$where = "producer = '".mysql_real_escape_string($value)."'";
-        $result = $obj -> get($where);
-        if($result){
-            //duplicate
-            $var_result['success'] = false;
-            $var_result['error'] = "Producer name already exists";
-            return $var_result;
-        } else {
-            //determine if insert or update
-            $var_input['producer'] = $value;
-            $var_input['user_id'] = $_SESSION['user_id'];
-
-            if($id>0){
-                //update
-                $where = "producer_id = $id";
-                $result = $obj -> update($var_input,$where);
-                if($result){
-                    $var_result['success'] = true;
-                    $var_result['db_action'] = 'update';
-                    $var_result['id'] = $id;
-                    return $var_result;
-                }else{
-                    $var_result['success'] = false;
-                    $var_result['error'] = 'db update failed';
-                    $var_result['db_action'] = 'update';
-                    return $var_result;
-                }
-
-            }else{
-                //insert
-                if($value){
-                    $id = $obj -> insert($var_input);
-                    if ($id > 0){
-                        $var_result['success'] = true;
-                        $var_result['id'] = $id;
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    } else {
-                        $var_result['success'] = false;
-                        $var_result['error'] = "db insert failed id=$id value=$value";
-                        $var_result['db_action'] = 'insert';
-                        return $var_result;
-                    }
-                } else {
-                    //insert with no text
-                    $var_result['success'] = false;
-                    $var_result['error'] = 'db insert failed because no text provided';
-                    return $var_result;
-                }
-            }
-
-        }
- 
-    } else {
-        //no data to add
+    $id = $_REQUEST['id'] ?? null;
+    $value = $_REQUEST['value'] ?? null;
+    
+    if(!is_authed()){ //check if user is authorised
         $var_result['success'] = false;
-        $var_result['error'] = 'no data to add';
+        $var_result['error'] = "You must login to use this application";
+        return $var_result;
+    }
+    
+    if(!isset($_REQUEST['value'])){//no data to add
+        $var_result['success'] = false;
+        $var_result['error'] = 'save_producer_db(): no producer value provided, cannot continue';
+        return $var_result;
+    }
+    
+    //check for duplicate
+    $obj = new producer();
+    if($id){
+        $where = " producer = :producer AND producer_id <> :producer_id ";
+        $inputArray = ['producer'=>$value, 'producer_id' => $id];
+    } else {
+        $where = " producer = :producer ";
+        $inputArray = ['producer'=>$value];
+    }
+
+    $result = $obj ->get($where,null,null,null,null,$inputArray);
+    
+    if($result){
+        //duplicate
+        $var_result['success'] = false;
+        $var_result['error'] = "Producer name already exists";
+        return $var_result;
+    }
+    
+    //determine if insert or update
+    $var_input['producer'] = $value;
+    $var_input['user_id'] = $_SESSION['user_id'];
+
+    if($id>0){ //db update
+        $where = "producer_id = $id";
+        $result = $obj -> update($var_input,$where);
+        if($result){
+            $var_result['success'] = true;
+            $var_result['db_action'] = 'update';
+            $var_result['id'] = $id;
+            return $var_result;
+        }else{
+            $var_result['success'] = false;
+            $var_result['error'] = 'db update failed';
+            $var_result['db_action'] = 'update';
+            return $var_result;
+        }
+    }
+        
+    //insert
+    $newId = $obj -> insert($var_input);
+    if ($newId > 0){
+        $var_result['success'] = true;
+        $var_result['id'] = $newId;
+        $var_result['db_action'] = 'insert';
+        return $var_result;
+    } else {
+        $var_result['success'] = false;
+        $var_result['error'] = "db insert failed id=$newId value=$value";
+        $var_result['db_action'] = 'insert';
         return $var_result;
     }
 

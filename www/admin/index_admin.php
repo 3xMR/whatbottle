@@ -31,17 +31,17 @@ echo "<head>";
 
 
     
-    <div id="dialog_country" class="hidden" title="Add Country">
+    <div id="dialog_country" class="hidden" title="Add Edit Country">
         <h2 style="margin-bottom:15px;" id="country_dialog_title" > Add Country</h2>
         <div class="input-main-label">
-            <p>Country</p>
+            <p>Country Name</p>
         </div>
         <div class="input-main">
             <input type="text" name="country_text" id="country_text" autocomplete="off"/>
             <input type="hidden" id="country_id" />
         </div>
         <div class="input-main-label">
-            <p>Flag Image</p>
+            <p>Flag Image File Name</p>
         </div>
         <div class="input-main">
             <input type="text" name="flag_file" id="flag_file" autocomplete="off"/>
@@ -219,7 +219,6 @@ $(document).ready(function(){
         page_url: this_page, //set page url
         no_dirty: true
     });
-    
     
     
     
@@ -589,7 +588,153 @@ $(document).ready(function(){
         }, "json");
     }
     
+    //*** Location Functions & Events ***
     
+     //Location Listbox
+    
+    
+    $("#con_listBox_location").listBox({  //setup Location listBox
+        title: "Location",
+        width: '100%',
+        height: $(window).height() - 185,
+        listContent: '/admin/rpc_listBox_location_html.php',
+        showTitle: false,
+        showFilter: true,
+        showBorder: true,
+        showShadow: false,
+        showRoundedCorners: false,
+        addClass: 'listBox_large_theme',
+        clickAdd: function(event, data){
+            add_location(data);
+        },
+        clickRemove: function(event, data){
+            delete_location(data);
+        },
+        clickEdit: function(event, data){
+            edit_location(data);
+        }
+       
+    });
+    
+    
+    function add_location(data){
+        //add_location type selector function
+        //determine what type of record is being added then call specific function
+        
+        var id = data.listBox_id;
+        var parent_id = data.listBox_parent_id;
+        var level = data.listBox_level;
+        
+        console.log("add_location data: data.id="+id+" parent_id="+parent_id+" parent_type="+level);
+              
+        if(typeof parent_type == 'undefined'){
+            //add country
+            parent_type = 0;
+        } 
+            
+        //determine 'what to add
+        switch(level){
+            case 1:
+                console.log('add Region');
+                add_region(id);
+                break;
+            case 2:
+                console.log('add Subregion');
+                add_subregion(id);
+                break;
+            case 3:
+                console.log('Cannot add child to subregion');
+                break;
+            default:
+                console.log('add Country');
+                add_country();
+        }
+    
+    };
+
+
+    
+   
+    function edit_location(data){
+        //listbox edit
+        var id = data.listBox_id;
+        var parent_id = data.listBox_parent_id;
+        var level = data.listBox_level;
+        var value = data.listBox_values[0];
+        
+        if(typeof level == 'undefined'){
+            //nothing selected
+            level = 0;
+        }
+        
+        switch(level){  //determine what to edit
+            case 1:
+                console.log('edit Country');
+                edit_country(id, data);
+                break;
+            case 2:
+                console.log('edit Region');
+                edit_region(id, value, parent_id);
+                break;
+            case 3:
+                console.log('edit subRegion');
+                edit_subregion(id, value, parent_id);
+                break;
+            default:
+                //code to be executed if n is different from case 1 and 2
+                console.log('nothing selected');
+        }
+        
+    };
+    
+    
+    function delete_location(data){
+        //listbox delete location
+        
+        var level = data.listBox_level;
+        var id = data.listBox_id;
+        var value = data.listBox_values[0];
+        
+        if(typeof level == 'undefined'){
+            level = 0;//nothing selected
+        }
+        
+        //check if row has children
+        if($("#con_listBox_location").listBox("hasChildren")){
+            msg = "Location cannot be Deleted whilst is has child locations";
+            console.log(msg);
+            $(".con_button_bar").notify(msg,{
+                position: "top left",
+                style: "msg",
+                className: "warning",
+                arrowShow: false,
+                autoHideDelay: 3000
+                }
+            );              
+            
+            return false;
+            
+        }
+        
+        //determine 'what to edit
+        switch(level){
+            case 1:
+            console.log('delete Country');
+            delete_country(id, value);
+            break;
+            case 2:
+            console.log('delete Region');
+            delete_region(id, value);
+            break;
+            case 3:
+            console.log('delete subRegion');
+            delete_subregion(id, value);
+            break;
+            default:
+            console.log('nothing selected');
+        }
+        
+    }
     
     function add_country_db(){
         //add or update country to db
@@ -718,7 +863,6 @@ $(document).ready(function(){
     }
     
     
-    
     function add_subregion_db(){
         //add or update subregion to db
 
@@ -780,7 +924,7 @@ $(document).ready(function(){
             }
         }, "json");
     }
-    
+   
     
     function add_producer_db(){
         //add or update pproducer to db
@@ -904,32 +1048,7 @@ $(document).ready(function(){
     
 
 
-    //Location Listbox
-    
-    //setup Location listBox
-    $("#con_listBox_location").listBox({
-        title: "Location",
-        width: '100%',
-        height: $(window).height() - 185,
-        listContent: '/admin/rpc_listBox_location_html.php',
-        showTitle: false,
-        showFilter: true,
-        showBorder: true,
-        showShadow: false,
-        showRoundedCorners: false,
-        addClass: 'listBox_large_theme',
-        clickAdd: function(event, data){
-            add_location(data);
-        },
-        clickRemove: function(event, data){
-            delete_location(data);
-        },
-        clickEdit: function(event, data){
-            edit_location(data);
-        }
-       
-    });
-    
+   
     
     $(document).on('click','#btn_cancel',function(){
         //close form
@@ -951,124 +1070,7 @@ $(document).ready(function(){
     }
     
     
-    function add_location(data){
-        //determine what type of record is being added
-        var id = data.listBox_id;
-        var parent_id = data.listBox_parent_id;
-        var level = data.listBox_level;
-        
-        console.log("add_location data: data.id="+id+" parent_id="+parent_id+" parent_type="+level);
-        
-        
-        if(typeof parent_type == 'undefined'){
-            //add country
-            parent_type = 0;
-        } 
-            
-        //determine 'what to add
-        switch(level){
-            case 1:
-                console.log('add Region');
-                add_region(id);
-                break;
-            case 2:
-                console.log('add Subregion');
-                add_subregion(id);
-                break;
-            case 3:
-                console.log('Cannot add child to subregion');
-                break;
-            default:
-            console.log('add Country');
-            add_country();
-        }
-    };
 
-
-    
-   
-    function edit_location(data){
-        //listbox edit
-        var id = data.listBox_id;
-        var parent_id = data.listBox_parent_id;
-        var level = data.listBox_level;
-        var value = data.listBox_values[0];
-        
-        if(typeof level == 'undefined'){
-            //nothing selected
-            level = 0;
-        }
-        
-        
-        //determine 'what to edit
-        switch(level){
-            case 1:
-            console.log('edit Country');
-            edit_country(id, data);
-            break;
-            case 2:
-            console.log('edit Region');
-            edit_region(id, value, parent_id);
-            break;
-            case 3:
-            console.log('edit subRegion');
-            edit_subregion(id, value, parent_id);
-            break;
-            default:
-            //code to be executed if n is different from case 1 and 2
-            console.log('nothing selected');
-        }
-    };
-    
-    
-       
-    function delete_location(data){
-        //listbox delete location
-        
-        var level = data.listBox_level;
-        var id = data.listBox_id;
-        var value = data.listBox_values[0];
-        
-        if(typeof level == 'undefined'){
-            level = 0;//nothing selected
-        }
-        
-        //check if row has children
-        if($("#con_listBox_location").listBox("hasChildren")){
-            msg = "Location cannot be Deleted whilst is has child locations";
-            console.log(msg);
-            $(".con_button_bar").notify(msg,{
-                position: "top left",
-                style: "msg",
-                className: "warning",
-                arrowShow: false,
-                autoHideDelay: 3000
-                }
-            );              
-            
-            return false;
-            
-        }
-        
-        //determine 'what to edit
-        switch(level){
-            case 1:
-            console.log('delete Country');
-            delete_country(id, value);
-            break;
-            case 2:
-            console.log('delete Region');
-            delete_region(id, value);
-            break;
-            case 3:
-            console.log('delete subRegion');
-            delete_subregion(id, value);
-            break;
-            default:
-            console.log('nothing selected');
-        }
-        
-    }
     
     
   
@@ -1288,9 +1290,8 @@ $(document).ready(function(){
         $('#flag_file').val(null);
         //open dialog
         $("#country_dialog_title" ).text( "Add Country" ); //update dialog title
-        $("#dialog_country" ).dialog( "open" );
+        show_dialog_country();
         $('#country_text').focus();
-        
     };
     
     
@@ -1306,13 +1307,12 @@ $(document).ready(function(){
             $('#flag_file').val(flag_file);
             
             $("#country_dialog_title" ).text( "Edit Country" ); //update dialog title
-            $("#dialog_country" ).dialog( "open" );
+            show_dialog_country();
             $('#country_text').focus();
             
         } else {
             console.log('edit_county - incomplete parameters');
         }
-        
     };
     
     
@@ -1321,61 +1321,60 @@ $(document).ready(function(){
         //delete country with provided index
         console.log('delete_country ='+index);
         
-        if(index > 0){
-            
-            $.post("/admin/rpc_ref_data.php", {
-                    action: 'delete_country',
-                    country_id: index
-                }, function(data){
-                    if(data.success){
-                        var msg = "Delete Country successful";
-                        console.log(msg);
-                        
-                        //refresh listBox
-                        $("#con_listBox_location").listBox("refresh");
-                        $("#con_listBox_location").listBox("clearSelected");
-                        
-                        $(".con_button_bar").notify(msg,{
-                            position: "top left",
-                            style: "msg",
-                            className: "success",
-                            arrowShow: false,
-                            autoHideDelay: 3000
-                            }
-                        );
-                
-                    }else if(data.error === 'has_children'){
-                        var msg = "Country cannot be deleted whilst it contains Regions";
-                        console.log(msg);
-                        $(".con_button_bar").notify(msg,{
-                            position: "top left",
-                            style: "msg",
-                            className: "warning",
-                            arrowShow: false,
-                            autoHideDelay: 3000
-                            }
-                        );
-                        
-                    } else {
-                        var msg = "Delete Country failed with error: "+data.error;
-                        console.log(msg);
-                        $(".con_button_bar").notify(msg,{
-                            position: "top left",
-                            style: "msg",
-                            className: "error",
-                            arrowShow: false,
-                            autoHideDelay: 3000
-                            }
-                        );
-                        
-                    }
-               }, "json");
-            
-        } else {
+        if(index < 1){
+            return false;
             console.log('nothing selected');
         }
+            
+        $.post("/admin/rpc_ref_data.php", {
+                action: 'delete_country',
+                country_id: index
+            }, function(data){
+                if(data.success){
+                    var msg = "Delete Country successful";
+                    console.log(msg);
+
+                    //refresh listBox
+                    $("#con_listBox_location").listBox("refresh");
+                    $("#con_listBox_location").listBox("clearSelected");
+
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "success",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }else if(data.error === 'has_children'){
+                    var msg = "Country cannot be deleted whilst it contains Regions";
+                    console.log(msg);
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "warning",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                } else {
+                    var msg = "Delete Country failed with error: "+data.error;
+                    console.log(msg);
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "error",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }
+           }, "json");
         
-    };
+    }
     
     
      //add region
@@ -1571,32 +1570,51 @@ $(document).ready(function(){
     
     //_____FORMS and DIALOGS_____
     
-  
-    $( "#dialog_country" ).dialog({
-        autoOpen: false,
-        height: 275,
-        width: 400,
-        modal: true,
-        buttons: {
-            OK: function(){
-                add_country_db();
+    function show_dialog_country(object){
+        
+        var windowWidth = $(window).width();
+        if(windowWidth > 500){
+            dialogWidth = 350;
+            positionMy = "left bottom";
+            positionAt = "left top";
+            positionOf = "#con_listBox_location_footer_buttons";
+        } else {
+            dialogWidth = 350;
+            positionMy = "centre top+20px";
+            positionAt = "center bottom";
+            positionOf = "#top_nav";
+        }
+        
+        $("#dialog_country").dialog({
+            //autoOpen: false,
+            //height: 600,
+            width: dialogWidth,
+            modal: true,
+            buttons: {
+                OK: function(){
+                    add_country_db();
+                },
+                Cancel: function() {
+                    $(this).dialog( "close" );
+                }
             },
-            Cancel: function() {
-                $(this).dialog( "close" );
-            }
-        },
-        close: function() {
-               $('#country_text').val(null);
-        },
-        dialogClass: "clean-dialog",
-        position: { my: "left bottom", at: "left top", of: '#con_listBox_location_footer_buttons' }  
-    });
+            close: function() {
+                   $('#country_text').val(null);
+            },
+            dialogClass: "clean-dialog",
+            //position: { my: "left bottom", at: "left top", of: '#con_listBox_location_footer_buttons' }  
+            position: { my: positionMy, at: positionAt, of: positionOf }  
+        });
+ 
+    }
+  
+
 
     
     
     $("#dialog_region").dialog({
         autoOpen: false,
-        height: 205,
+        //height: 205,
         width: 400,
         modal: true,
         buttons: {

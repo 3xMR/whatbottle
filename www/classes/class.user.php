@@ -51,5 +51,29 @@ public $fieldlist = array(
        )
     );
 
+
+    public function userNameExists($userName){
+        //returns user_id | false if userId exists
+
+        if(!isset($userName)){
+            $this->lastError = 'userExists(): no username provided, cannot continue';
+            return false;
+        }
+
+        $query = "Select user_id FROM tblUser WHERE username = ?";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($userName);
+        $rst = $stmt->fetch(PDO::FETCH_ASSOC); //fetch all records in recordset as assoc. array
+        $this->count = count($rst); //count results in array
+
+        if($this->count < 1){
+            return false; //no records to return
+        }
+
+        return $rst['user_id']; //return dataset
+
+    }
+
+
 }
-?>

@@ -246,108 +246,86 @@ function save_to_db(){
 
 
     //SAVE VINTAGES
-    if($result){ //acquire saved OK
-        //determine which vintages have been added or deleted and mark accordingly
 
-        $var_vintages = $_SESSION['var_acquire']['var_acquire_vintages'];
+    $var_vintages = $_SESSION['var_acquire']['var_acquire_vintages'];
 
-        if(!empty($var_vintages)){
-            foreach($var_vintages as $vintage_has_acquire_id => $vintage){
-               //reset error
-               $error = null;
+    if(!isset($var_vintages)){
+        $var_result['success'] = true;
+        $var_result['msg'] = 'rpc_acquire_db.php:save_to_db(): acquisition saved, but no vintage array to update';
+        return $var_result;
+    }
 
-               $vintage_id = $vintage['vintage_id'];
-               //add acquire_id to array
-               $vintage['acquire_id'] = $acquire_id;
-               //save to db
-               $vintage_obj = new vintage_has_acquire;
-               //determine action
-               $db_action = $vintage['db_action'];
+    foreach($var_vintages as $vintage_has_acquire_id => $vintage){ //for each vintage in array determine db action
+       //reset error
+        $error = null;
+        $result = false;
 
-               if ($db_action=='update'){
-                   //update existing record
-                   log_write("UPDATE vintage record $vintage_id $acquire_id",1,'save_to_db');
-                   $where = " vintage_has_acquire_id = $vintage_has_acquire_id ";
-                   $result = $vintage_obj -> update($vintage, $where);
+        $vintage_id = $vintage['vintage_id'];
+        $vintage['acquire_id'] = $acquire_id; //add acquire_id to array
+        $vintage_obj = new vintage_has_acquire;
 
-                   if($result==false){
-                       //error
-                       $var_result['success'] = false;
-                       $var_result['error'] = $vintage_obj -> get_sql_error();
-                       return $var_result;
-                   }
+        $db_action = $vintage['db_action'];
 
-               } else if ($db_action=='insert') {
-                   //insert new record
-                   log_write("INSERT vintage record vintage_id=$vintage_id acquire_id=$acquire_id vintage_has_acquire_id=$vintage_has_acquire_id",1,'save_to_db');
- 
-                   $result = $vintage_obj -> insert($vintage);
-                   //change action
-                   if($result){
-                        $vintage['db_action'] = 'update';
-                        //remove temp array first
-                        unset($_SESSION['var_acquire']['var_acquire_vintages'][$vintage_has_acquire_id]);
-                        //insert new array object
-                        $_SESSION['var_acquire']['var_acquire_vintages'][$result] = $vintage;
+        if ($db_action=='update'){ //update existing record
+           $where = " vintage_has_acquire_id = $vintage_has_acquire_id ";
+           $result = $vintage_obj -> update($vintage, $where);
 
-                   } else {
-                       //insert failed
-                        $error = $vintage_obj -> get_sql_error();
-                        $vintages_error = $vintages_error." vintage_id:$vintage_id error:$error \n";
-                        $var_result['success'] = false;
-                        $var_result['error'] = $vintages_error;
-                        return $var_result;
-                   }
+           if($result==false){
+               //error
+               $var_result['success'] = false;
+               $var_result['error'] = $vintage_obj -> get_sql_error();
+               return $var_result;
+           }
 
-               } else if ($db_action=='delete') {
-                   //delete record
-                   log_write("DELETE vintage record $vintage_id $acquire_id",1,'save_to_db');
-                   $where = "vintage_has_acquire_id = $vintage_has_acquire_id ";
-                   $result = $vintage_obj -> delete($where);
-                   //remove from array
-                   unset($_SESSION['var_acquire']['var_acquire_vintages'][$vintage_has_acquire_id]);
-               } else {
-                   //no action provided
-                   $result = false;
-               }
-
-               log_write("SQL action result = $result",1,'save_to_db');
-
-
-               if ($result>0){
-                   $saved_ok = $saved_ok + 1;
-               } else {
-                   $failed = $failed + 1;
-               }
-
-
-            } //end foreach
-
-            //upload modified array to session
-            log_write("upload modified array to session",1,'save_to_db');
-            //$_SESSION['var_acquire']['var_acquire_vintages'] = $var_vintages;
-
-
-            if($failed>0){
-                log_write("saved acquire - failed to save $failed vintages",1,'save_to_db');
-                $var_result['success'] = false;
-                $var_result['error'] = "failed to save $failed vintage records to db \n $vintages_error";
-            } else {
-                log_write("success - saved acquire & vintages",1,'save_to_db');
-                $var_result['success'] = true;
-                $var_result['msg'] = "Saved acquire & vintages successfully to DB";
-            }
-
-        } else {
-            //no vintage records to save
-            $var_result['success'] = true;
-            $var_result['msg'] = "Saved Acquire successfully to DB - but no vintages to save";
         }
-        
+
+        if ($db_action=='insert') {
+           //insert new record
+
+           $result = $vintage_obj -> insert($vintage);
+
+           if($result){ //change action to update so it isn't inserted again and creates a duplicate
+                $vintage['db_action'] = 'update';
+                //remove temp array first
+                unset($_SESSION['var_acquire']['var_acquire_vintages'][$vintage_has_acquire_id]);
+                //insert new array object
+                $_SESSION['var_acquire']['var_acquire_vintages'][$result] = $vintage;
+
+           } else {
+               //insert failed
+                $error = $vintage_obj -> get_sql_error();
+                $vintages_error = $vintages_error." vintage_id:$vintage_id error:$error \n";
+                $var_result['success'] = false;
+                $var_result['error'] = $vintages_error;
+                return $var_result;
+           }
+
+        }
+
+        if ($db_action=='delete') {
+           //delete record
+           $where = "vintage_has_acquire_id = $vintage_has_acquire_id ";
+           $result = $vintage_obj -> delete($where);
+           //remove from array
+           unset($_SESSION['var_acquire']['var_acquire_vintages'][$vintage_has_acquire_id]);
+        }
+
+        if ($result){
+           $saved_ok = $saved_ok + 1;
+        } else {
+           $failed = $failed + 1;
+        }
+
+
+    } //end foreach
+
+    //upload modified array to session
+    if($failed>0){
+        $var_result['success'] = false;
+        $var_result['error'] = "failed to save $failed vintage records to db $vintages_error";
     } else {
-       //failed to save acquire record
-       $var_result['success'] = false;
-       $var_result['error'] = "Failed to save acquire record \n error = $error";
+        $var_result['success'] = true;
+        $var_result['msg'] = "Saved acquire & vintages successfully to db";
     }
 
     return $var_result;
@@ -379,45 +357,6 @@ function remove_vintage_from_session($acquire_has_vintage_id){
 
     } else {
         //no vintage_id provided
-        $result = false;
-    }
-
-    return $result;
-}
-
-
-function add_vintage_from_basket($vintage_id){
-    //determine whether to add vintage
-
-    if($vintage_id>0){
-
-        //add vintage to array
-        $vintage_obj = new vintage($vintage_id);
-        $vintage_label = $vintage_obj -> vintage_label();
-        //determine whether to set discount to 100%
-        if($_REQUEST['acquire_type_id']>1){
-
-            $discount_percentage = 100;
-        } else {
-            $discount_percentage = 0;
-        }
-
-        $var_vintage = array(
-            'vintage_id' => $vintage_id,
-            'vintage_label' => $vintage_label,
-            'discount_percentage' => $discount_percentage,
-            'db_action' => 'insert'
-            );
-
-        //note: no vintage_has_acquire_id available as it has not been added to db yet - will increment from previous array object
-        $_SESSION['var_acquire']['var_acquire_vintages'][] = $var_vintage;
-
-        //clear basket
-        unset($_SESSION['var_basket']);
-
-        $result = true;
-    } else {
-        //add failed - no key provided
         $result = false;
     }
 
@@ -475,40 +414,11 @@ if($_REQUEST['action']=='unset_session'){
 }
 
 
-function add_basket(){
-    //add all vintages from basket
-    $var_basket = $_SESSION['var_basket'];
-
-    if(empty($var_basket)){
-        //no vintages in basket
-        $var_result['success']=true;
-        $var_result['records']=0;
-        $var_result['msg'] = "basket is empty";
-        return $var_result;
-    }
-
-    foreach($var_basket as $key => $value){
-        //add vintage to acquistion
-        if(add_vintage_from_basket($value)){
-            $var_result['success']=true;
-            $var_result['records']=$var_result['records']+1;
-        } else {
-            $var_result['success']=false;
-            $var_result['error'] = "failed to add vintage_id = $key from basket";
-        }
-    }
-    
-    return $var_result;
-
-}
-
 function remove_vintage(){
     //remove vintage / mark for deletion from session
     
     if($_REQUEST['key']>=0){
-        //log_write("key provided",1,"action='remove_vintage'");
         $result = remove_vintage_from_session($_REQUEST['key']);
-        //log_write("remove_vintage_from_session result = $result",1,"action='remove_vintage'");
         if($result){
             $var_result['success']=true;
             $var_result['records']=1;
@@ -520,6 +430,7 @@ function remove_vintage(){
         }
     }
 }
+
 
 function delete_from_db(){
     //delete acquisition from db
@@ -567,4 +478,46 @@ function get_acquisition_details(){
     
 }
 
-?>
+function add_basket(){
+    //add all vintages from basket
+    
+    $obj = new list_has_vintage();
+    $rst = $obj -> get_list_contents();
+    $count = $obj -> count_in_list();
+
+    if($count <= 0){ //no vintages in basket
+        $var_result['success']=true;
+        $var_result['records']=0;
+        $var_result['msg'] = "basket is empty";
+        return $var_result;
+    }
+
+    foreach($rst as $vintage){
+        //add vintage to acquistion
+        $vintage_label = $vintage['producer'].", ".$vintage['wine']." ".$vintage['year'];
+        $vintage_id = $vintage['vintage_id'];
+        if($_REQUEST['acquire_type_id']>1){ //determine whether to set discount to 100%
+            $discount_percentage = 100;
+        } else {
+            $discount_percentage = 0;
+        }
+
+        $var_vintage = array(
+            'vintage_id' => $vintage_id,
+            'vintage_label' => $vintage_label,
+            'discount_percentage' => $discount_percentage,
+            'db_action' => 'insert'
+            );
+
+        //note: no vintage_has_acquire_id available as it has not been added to db yet - will increment from previous array object
+        $_SESSION['var_acquire']['var_acquire_vintages'][] = $var_vintage;
+        
+        $obj -> remove_vintage_from_list(null, $vintage_id); //remove vintage from basket
+        $var_result['success']=true;
+        $var_result['records']=$var_result['records']+1;
+        
+    }
+    
+    return $var_result;
+
+}

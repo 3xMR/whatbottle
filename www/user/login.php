@@ -104,9 +104,7 @@ require_once("$root/includes/nav/topheader.php");
     
    if(!empty($_POST['btn_submit'])){
     //if ($_POST['btn_submit']=='Login'){
-       
-
-       
+        
         if(empty($_POST['username'])){
             echo "Missing parameter 'username'<br/>";
         }else{
@@ -209,9 +207,6 @@ require_once("$root/includes/nav/topheader.php");
                  return $userExists; //return error message
              }
          }
-         
-         
-        
         
         //validate and post registration request
         if (isset($_POST['btn_submit'])){

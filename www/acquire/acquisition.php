@@ -316,7 +316,6 @@ $(document).ready(function(){
             var total_price_paid = price_paid*qty;
 
             //update cells
-            //if(isNaN(qty)){ qty=0; }
             $row.find('#qty_'+row_id).val((qty).toFixed(0));
             $row.find('#full_price_'+row_id).val((full_price).toFixed(2));
             $row.find('#discount_percent_'+row_id).val((discount_percent).toFixed(1));
@@ -705,6 +704,7 @@ $(document).ready(function(){
         console.log('add_merchant_to_db');
         
         var merchant = $('#new_merchant').val();
+        console.log('merchant name: '+merchant);
         
         if(!$.trim(merchant)){
             msg = "Merchant name cannot be blank";

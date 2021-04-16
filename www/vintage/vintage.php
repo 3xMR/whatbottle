@@ -180,7 +180,8 @@ $(document).ready(function(){
 
     var form_status = 0;
     var vintage_id = 0;
-    var this_page = "/vintage/vintage.php"; //self identification for page.control
+    var this_page = "/vintage/vintage.php";
+
  
     //page control object
     var obj_page = new page_control({
@@ -295,6 +296,7 @@ $(document).ready(function(){
     function save_to_session(url){
         //save to session before opening url if provided
         console.log('save_to_session');
+        var def = $.Deferred();
         var wine_id = $("#wine_id").val();
         var vintage_id = $("#vintage_id").val();
         var url = url;
@@ -320,9 +322,11 @@ $(document).ready(function(){
                         //var parent_url = this_page;
                         //page_flow_set(open_url, parent_url, true);
                         //open_grapes(vintage_id);
+                        def.resolve(data);
                     }else{
                         console.log('save to session failed');
                         console.log(data);
+                        def.reject(data);
                     }
 
             }, "json");
@@ -331,7 +335,7 @@ $(document).ready(function(){
             console.log('cannot save_to_session no wine_id provided');
         }
         
-        
+        return def;
     }
 
     
@@ -408,26 +412,26 @@ $(document).ready(function(){
     };
 
 
-    function edit_image(url){
-        //edit image
-        console.log('fnc: edit_image');
-
-        $.post("/vintage/rpc_vintage.php", {
-                action: 'put_image_vintage'
-                },
-                function(data){
-                    if(data.success){
-                        console.log('put_image_edit OK');
-                        console.log(url);
-                        obj_page.set_is_dirty(true);
-                        save_to_session(url);//save to temp and then redirect to provided url
-                    } else {
-                        console.log('put_image_edit FAILED');
-                    }
-
-         }, "json");
-
-    }
+//    function edit_image(url){
+//        //edit image
+//        console.log('fnc: edit_image');
+//
+//        $.post("/vintage/rpc_vintage.php", {
+//                action: 'put_image_vintage'
+//                },
+//                function(data){
+//                    if(data.success){
+//                        console.log('put_image_edit OK');
+//                        console.log(url);
+//                        obj_page.set_is_dirty(true);
+//                        save_to_session(url);//save to temp and then redirect to provided url
+//                    } else {
+//                        console.log('put_image_edit FAILED');
+//                    }
+//
+//         }, "json");
+//
+//    }
     
     
     function open_image_manager(){
@@ -440,7 +444,7 @@ $(document).ready(function(){
             dst_url:        "/vintage/select_image.php",
             rtn_url:        this_page,
             page_action:    'leave',
-            dst_type:       "image",
+            dst_type:       'image', 
             dst_action:     "open",
             parent_id:      vintage_id,
             child:          true,
@@ -698,7 +702,7 @@ $(document).ready(function(){
     });
     
     
-    $(document).on('click', "input", function(e){    
+    $(document).not('.button').on('click', "input", function(e){    
         //highlight input when it has focus
         console.log('input has focus = '+ $(this).attr('id'));
         
