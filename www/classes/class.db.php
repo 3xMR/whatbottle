@@ -1,32 +1,36 @@
 <?php
 
+
+define('__ROOT__', dirname(dirname(__FILE__)));
+
 $root = $_SERVER['DOCUMENT_ROOT'];
-require_once("$root/classes/MyPDO.php"); //database connection class
+
+require_once(__ROOT__.'/classes/MyPDO.php'); //database connection class
 
 //include table classes
-require_once("$root/classes/class.acquire.php");
-require_once("$root/classes/class.acquire_type.php");
-require_once("$root/classes/class.available_override.php");
-require_once("$root/classes/class.award.php");
-require_once("$root/classes/class.award_org.php");
-require_once("$root/classes/class.country.php");
-require_once("$root/classes/class.fullness.php");
-require_once("$root/classes/class.grape.php");
-require_once("$root/classes/class.merchant.php");
-require_once("$root/classes/class.producer.php");
-require_once("$root/classes/class.region.php");
-require_once("$root/classes/class.subregion.php");
-require_once("$root/classes/class.sweetness.php");
-require_once("$root/classes/class.tasting_note.php");
-require_once("$root/classes/class.user.php");
-require_once("$root/classes/User.php");
-require_once("$root/classes/class.vintage_has_acquire.php");
-require_once("$root/classes/class.vintage_has_award.php");
-require_once("$root/classes/class.vintage_has_grape.php");
-require_once("$root/classes/class.vintage.php");
-require_once("$root/classes/class.wine.php");
-require_once("$root/classes/class.winetype.php");
-require_once("$root/classes/class.list_has_vintage.php");
+require_once(__ROOT__.'/classes/class.acquire_type.php');
+require_once(__ROOT__.'/classes/class.available_override.php');
+require_once(__ROOT__.'/classes/class.acquire.php');
+require_once(__ROOT__.'/classes/class.award.php');
+require_once(__ROOT__.'/classes/class.award_org.php');
+require_once(__ROOT__.'/classes/class.country.php');
+require_once(__ROOT__.'/classes/class.fullness.php');
+require_once(__ROOT__.'/classes/class.grape.php');
+require_once(__ROOT__.'/classes/class.merchant.php');
+require_once(__ROOT__.'/classes/class.producer.php');
+require_once(__ROOT__.'/classes/class.region.php');
+require_once(__ROOT__.'/classes/class.subregion.php');
+require_once(__ROOT__.'/classes/class.sweetness.php');
+require_once(__ROOT__.'/classes/class.tasting_note.php');
+require_once(__ROOT__.'/classes/class.user.php');
+require_once(__ROOT__.'/classes/User.php');
+require_once(__ROOT__.'/classes/class.vintage_has_acquire.php');
+require_once(__ROOT__.'/classes/class.vintage_has_award.php');
+require_once(__ROOT__.'/classes/class.vintage_has_grape.php');
+require_once(__ROOT__.'/classes/class.vintage.php');
+require_once(__ROOT__.'/classes/class.wine.php');
+require_once(__ROOT__.'/classes/class.winetype.php');
+require_once(__ROOT__.'/classes/class.list_has_vintage.php');
 
 
 

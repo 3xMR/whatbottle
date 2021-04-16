@@ -7,7 +7,7 @@
  */
 
 
-
+$root = $_SERVER['DOCUMENT_ROOT'];
 require_once("$root/classes/MyPDO.php"); //include PDO db class
 
 class UserObj{
