@@ -11,8 +11,7 @@ $new_root = rtrim($root, '/\\');
 require_once("$root/includes/init.inc.php");
 require_once("$root/functions/function.php");
 require_once("$root/classes/class.db.php");
-//require_once("$root/classes/MyPDO.php");
-//require_once("$root/classes/Producer.php");
+
 
 $rpc_action = (filter_input(INPUT_POST, 'rpc_action', FILTER_SANITIZE_STRING) > "") ? filter_input(INPUT_POST, 'rpc_action', FILTER_SANITIZE_STRING) : filter_input(INPUT_GET, 'rpc_action', FILTER_SANITIZE_STRING);
 $action = (filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING) > "") ? filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING) : filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
@@ -212,7 +211,7 @@ function save_to_db($var_wine){
     }    
     
     $valid = true;
-      
+ 
     if(!isset($var_wine)){
         $var_result['success']=false;
         $var_result['error']='save_to_db: aborted because no wine input array provided';
@@ -252,7 +251,6 @@ function save_to_db($var_wine){
     }
     
     //start db update
-    
     $wine_id = $var_wine['wine_id'];
     $wine_name = $var_wine['wine'];
     $winetype_id = $var_wine['winetype_id'];

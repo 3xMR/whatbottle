@@ -46,7 +46,6 @@ class MyPDO {
             PDO::ATTR_EMULATE_PREPARES   => FALSE,
         );
         $dsn = 'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset='.DB_CHAR;
-        //$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8';
         $this->pdo = new PDO($dsn,DB_USER,DB_PASS,$opt);
 
     }

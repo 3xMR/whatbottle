@@ -1,8 +1,15 @@
 <?php
 /* 
- * Branch R5
+ * Release 5.1
+ * Released: 19-04-2021
+ * Release Notes:
+ * Fixed Null/0 issue on Vintage drink_from_dates - change to PDO Bind approach in UPDATE function
+ * Minor bug fixes after R5 release
+ * 
+ * 
+ * 
  * Release 5.0
- * Released: TBC
+ * Released: 16-04-2021
  * Release Notes:
  * Major Upgrade
  * MySQL DB upgraded to 5.7.32 - will require my.cnf file to permanently disable ONLY_FULL_GROUP_BY
@@ -300,10 +307,10 @@ echo "<div class=\"page_container\">";
                 echo "</div>"; //con_search_buttons
                 
                 echo "<div class=\"hide_small_screen\" style=\"float:right;\">";
-                    echo "<img class=\"click\" style=\"display:block; float:right; margin-top:0px;\" id=\"btn_show_acquire\" name=\"btn_show_acquire\" src=\"/images/slide_out_arrow_grey.png\" height=\"30px\" >";
+                    echo "<img class=\"click\" style=\"display:block; float:right; margin-top:0px;\" id=\"btn_show_acquire\" name=\"btn_show_acquire\" src=\"/images/slide_out_arrow_grey.png\" height=\"27px\" >";
                     if(is_authed()){
-                        echo "<img class=\"click\" style=\"display:block; float:right; margin-right:30px; margin-top:0px;\" id=\"btn_add_acquisition\" name=\"btn_add_acquisition\" src=\"/images/add_acquisition_flat_512.png\" height=\"30px\" >";
-                        echo "<img class=\"click\" style=\"display:block; float:right; margin-right:30px; margin-top:0px;\" id=\"btn_add_wine\" name=\"btn_add_wine\" src=\"/images/add_wine_flat_grey_64.png\" height=\"30px\" >";
+                        echo "<img class=\"click\" style=\"display:block; float:right; margin-right:30px; margin-top:0px;\" id=\"btn_add_acquisition\" name=\"btn_add_acquisition\" src=\"/images/add_acquisition_flat_512.png\" height=\"27px\" >";
+                        echo "<img class=\"click\" style=\"display:block; float:right; margin-right:30px; margin-top:0px;\" id=\"btn_add_wine\" name=\"btn_add_wine\" src=\"/images/add_wine_flat_grey_64.png\" height=\"27px\" >";
                     }   
                     
                 echo "</div>";
@@ -578,7 +585,7 @@ require_once("$root/includes/standard_dialogs.inc.php");
 $(document).ready(function(){
     
     //FIX: Clear search 'X' not showing when page refreshed but still filtered
-    //FIX: Available search only shows Wines if all Vintages are available
+    //FIX: 'Available' search only shows Wines if all Vintages are available
     
     var this_page = "/index.php";
     var bln_expand_all_vintages = false;
@@ -602,6 +609,7 @@ $(document).ready(function(){
         {
             container.hide("slide", { direction: "right" }, 400);
         }
+        
     });
     
     
@@ -660,7 +668,7 @@ $(document).ready(function(){
     //recent acquistions listbox
     $("#con_acquisitions").listBox({
         title: "Acquisitions",
-        width: 330,
+        width: 360,
         height: $(window).height() - 65,
         showFilter: true,
         showBorder: true,
@@ -674,9 +682,6 @@ $(document).ready(function(){
         clickSelected: function(event, data){
             console.log('acquisition selected data:');
             console.log(data);
-            //FIX: Setting Acquire dropdown to Any gives value of 0, triggers listBox reset which then triggers a clickRow and sets the acquire dropdown to the first row in listBox
-//            console.log('set acquire dropdown value to: ' +data.listBox_id);
-//            $('#acquire_id').val(data.listBox_id); //set acquire dropdown value
         },
         clickEdit: function(event, data){         
             open_acquisition(data.listBox_id);
@@ -698,6 +703,15 @@ $(document).ready(function(){
             $("#panel_right").hide("slide", { direction: "right" }, 300);
         }
 
+    });
+    
+    
+    $("#con_acquisitions").on('click', '.acquire_filter', function(e){
+        console.log('acquire_filter click');
+        acquire_id = $(this).data('acquire_id');
+        $('#acquire_id').val(acquire_id); //set acquire dropdown value
+        search_wines();
+        e.stopPropagation();
     });
 
 
@@ -813,12 +827,6 @@ $(document).ready(function(){
         var viewportHeight = $(window).height(); //pass height to php view Load POST to set number of rows
         $('#con_rpc_wine_search_results_html').activity(); //show spinner    
         $('#con_rpc_wine_search_results_html').load('/wine/rpc_wine_search_results_html.php', {viewportHeight: viewportHeight},function(){ //load results
-           //toggle_vintages(); //run following code once refreshed
-           //set_open_panels();
-           persistViewLoad();
-           set_reset_button(); //show or hide reset button based on search results
-           //TODO:if only one result is returned expand it fully
-
             if($('.wine_accordian').size()==1){ //only one wine result returned - expand it
                 $('.vintages_panel').each(function(index) {
                     var wine_id = ($(this).attr('id').replace("vintages_panel_", ""))*1;
@@ -830,8 +838,10 @@ $(document).ready(function(){
                     });
                     
                 });
+            }else{
+                 persistViewLoad(); //persist view if more than one wine returned in search
             }
-            
+            set_reset_button(); //reset button on serach dialog
         });
         
     };

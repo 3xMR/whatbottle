@@ -4,11 +4,12 @@
 //inludes results from multiple categories and returns
 // value, label, category
 
-$root = $_SERVER['DOCUMENT_ROOT'];
-require_once("$root/includes/init.inc.php");
-require_once("$root/classes/class.wine_search.php");
-require_once("$root/classes/class.db.php");
-require_once("$root/classes/class.region.php");
+//$root = $_SERVER['DOCUMENT_ROOT'];
+define('__ROOT__', dirname(dirname(__FILE__)));
+require_once(__ROOT__.'/includes/init.inc.php');
+require_once(__ROOT__.'/classes/class.wine_search.php');
+require_once(__ROOT__.'/classes/class.db.php');
+require_once(__ROOT__.'/classes/class.region.php');
 
 
 $q = strtolower($_REQUEST['term']);

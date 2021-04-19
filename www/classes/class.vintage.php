@@ -59,16 +59,19 @@ class vintage extends db {
             ),
         'alcohol' => array(
             'map' => 'alcohol',
-            'datatype' => 'string'
+            'datatype' => 'double'
             ),
         'closure_id' => array(
-            'map' => 'closure_id'
+            'map' => 'closure_id',
+            'datatype' => 'integer'
             ),
         'drink_year_from' => array(
-            'map' => 'drink_year_from'
+            'map' => 'drink_year_from',
+            'datatype' => 'integer'
             ),
         'drink_year_to' => array(
-            'map' => 'drink_year_to'
+            'map' => 'drink_year_to',
+            'datatype' => 'integer'
             ),
         'created' => array(
             'map' => 'created',
@@ -429,10 +432,16 @@ class vintage extends db {
                 
         public function delete_vintage(){
             //deletes vintage and all associations
-            global $new_root, $label_path;
+
+            $user = new UserObj();
+            $user_id = $user ->isAuthed();
+            if(!$user_id){
+                $this->set_sql_error('user not authenticated cannot continue');
+                return false;
+            }
             
             if($this->vintage_id<=0){
-                $this->last_error = "delete_vintage(): no vintage_id nothing to delete";
+                $this->set_sql_error("delete_vintage(): no vintage_id nothing to delete");
                 return false; //nothing to delete
             }
                 
@@ -441,7 +450,7 @@ class vintage extends db {
 
             $obj_notes = new tasting_note();
             $obj_notes -> delete($where);
-            $obj_notes =null;
+            $obj_notes = null;
 
             $obj_awards = new vintage_has_award;
             $obj_awards -> delete($where);
@@ -450,6 +459,11 @@ class vintage extends db {
             $obj_grapes = new vintage_has_grape;
             $obj_grapes -> delete($where);
             $obj_grapes = null;
+            
+            $obj_list = new list_has_vintage(); //delete from basket if it exists
+            $where_list = " trelListHasVintage.vintage_id = $vintage_id AND trelListHasVintage.list_id = 0 AND trelListHasVintage.user_id = $user_id ";
+            $obj_list -> delete($where_list);
+            $obj_list = null;
 
             $var_record = $this->get_all($where);
             $image_name = $var_record['image1']; 
@@ -461,8 +475,6 @@ class vintage extends db {
 
             $this -> table = 'tblVintage';
             return db::delete($where);
-
-      
 
         }
         
@@ -568,19 +580,20 @@ class vintage extends db {
         }
 
         
-       public function row_count($where){
+       public function row_count($where=false){
+           
            if($where){
                 $row_count = parent::row_count($where);
            } elseif ($this->vintage_id>0){
                 $where = "vintage_id = ".$this -> vintage_id;
                 $row_count = parent::row_count($where);
            } else {
-               //return error
-               $row_count = -1;
+               $row_count = parent::row_count();
            }
-            return $row_count;
+           
+           return $row_count;
        }
 
 
 }
-?>
+

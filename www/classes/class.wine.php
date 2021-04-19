@@ -70,6 +70,7 @@ class wine extends db {
         
     }
 
+    
     function update($input_array, $where=false){
        return db::update($input_array, $where);
     }
@@ -95,6 +96,6 @@ class wine extends db {
         return db::get($where, $columns, $group, $sort, $limit);
     }
    
-
+   
    
 }

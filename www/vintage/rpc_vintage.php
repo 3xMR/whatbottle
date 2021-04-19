@@ -570,7 +570,7 @@ function put_vintage_to_db(){
     
     $var = $_SESSION['var_vintage_temp'];
     
-    foreach($var_values as $value){
+    foreach($var_values as $value){ //update session with values from json POST
         $var[$value['name']] = $value['value'];
     }
 

@@ -3,7 +3,7 @@
 
 define('__ROOT__', dirname(dirname(__FILE__)));
 
-$root = $_SERVER['DOCUMENT_ROOT'];
+//$root = $_SERVER['DOCUMENT_ROOT'];
 
 require_once(__ROOT__.'/classes/MyPDO.php'); //database connection class
 
@@ -127,12 +127,13 @@ function update ($input_array, $where=false){
     foreach ($this->fieldlist as $field => $var_field){ //process input_array to create sql statement
 
         $include = true; //add all fields by default
+        $handle_null = false; //use to handle null values differently
 
         $find_key = $var_field['map'];
         $found = array_key_exists($find_key, $input_array); //return field mapping if key exists
         
         if($found){
-            $value = $input_array[$find_key]; //get value
+            $value = empty($input_array[$find_key]) ? null : $input_array[$find_key]; //get value
         }else{
             $value = null; //no value found, set to null
         }
@@ -161,6 +162,7 @@ function update ($input_array, $where=false){
             $default = $var_field['default']; //set to default value as this is required but has not been found
             $value = $default;
         }
+                 
              
         if($field=='modified'){ //ensure timestamp is applied for modified and created
             $value = date('Y-m-d H:i:s');
@@ -172,19 +174,32 @@ function update ($input_array, $where=false){
             $error_detail .= " Required field missing: $field ";
         }
         
-        if(isset($var_field['primary_key']) && empty($where)){ //no WHERE clause provided so default to primary key update
-            $where = "$field = $value";
-            //do not include pk value in sql update statement
+        if(!$found){ //not found and didn't match any of above conditions - don't include and allow db to set defaults
             $include = false;
-        } 
-
-        //write to array for PDO insert
-        if($include){
-            $assocUpdateArray[$field] = $value; //add value to array
-            $set .= "$field = :$field, "; //add column to set sql statement    
+        }
+         
+        If(isset($var_field['datatype'])){ //set param type for PDO bindvalue - default to string
+            if($var_field['datatype'] == 'integer'){
+                $param = PDO::PARAM_INT;
+            }else{
+                $param = PDO::PARAM_STR; //default if nothing else set
+            }
+        }else{
+            $param = PDO::PARAM_STR; //default if not set
+        }
+    
+        if($include){ //write to array for PDO update
+            $var = []; //reset array on each loop
+            $var['field'] = $field;
+            $var['value'] = $value;
+            $var['param'] = $param;
+            $var_bind[] = $var; //push values in to master array
+            
+            $assocUpdateArray[$field] = $value;//add value to array
+            $set .= "$field = :$field, "; //add column to set sql statement 
         }
         
-    } //end foreach
+    } //foreach
     
     
     if($required_missing == true){ //abort insert
@@ -194,13 +209,20 @@ function update ($input_array, $where=false){
     }
     
     $setSql = rtrim($set, ', ');
-  
     $sql = "UPDATE $this->table SET $setSql WHERE $where;";
-
-    //PDO UPDATE statement
     $stmt = $this->db->prepare($sql);
-    $stmt->execute($assocUpdateArray);
-
+    //print_r($sql);
+    
+    foreach($var_bind as $var){ //bind values to placeholders
+        //print_r($var);
+        $field = $var['field'];
+        $value = $var['value'];
+        $param = $var['param'];
+   
+        $stmt->bindValue(":$field",$value,$param);
+    }
+    
+    $stmt->execute();
     
     if(!$stmt){ //PDO update failed
         $this->sql_error = "class.db:update() UPDATE operation failed when calling PDO execute";
@@ -215,8 +237,7 @@ function update ($input_array, $where=false){
 
 function insert($input_array){
     //insert new record into db
-    
-    //initialise
+
     $value = null;
     $error_detail = null;
     $assocInputArray = [];
@@ -242,7 +263,7 @@ function insert($input_array){
         if($found){
             $value = $input_array[$find_key]; //get value
         }else{
-            $value = null; //no value found, reset
+            $value = 'NULL'; //no value found, reset
         }
         
         if(isset($var_field['primary_key'])){ //remove for inserts as this will be an auto_number field in db
@@ -260,15 +281,16 @@ function insert($input_array){
             $value = $default;
         }
         
-        if(!$found && isset($var_field['datatype']) ){ //not found and not required so set value to Null or empty string
-            if($var_field['datatype']=='string' ){
-                $value = ''; 
-            } else {
-                $value = null; //was 'Null'
-            }
+        if(empty($value) && ($var_field['datatype'] == 'integer' || $var_field['datatype'] == 'double')){ //set empty integer field to null to prevent zero (e.g. date_drink_from)
+            $include = false;
+            //Note: issue with empty string saving as '0' rather than Null on DB update, if it has no value omit it so that db defaults to Null
         }
-             
-        if($field=='modified' || $field=='created'){ //ensure timestamp is applied for modified and created
+        
+        if(!$found){ //not found and didn't match any of above conditions - don't include and allow db to set defaults
+             $include = false;
+        }
+        
+        if($field=='modified' || $field=='created'){ //ensure timestamp is applied for modified and created this needs to override !found so comes after
             $value = date('Y-m-d H:i:s');
             $include = true;
         }
@@ -276,10 +298,9 @@ function insert($input_array){
         if(!$found && isset($var_field['required']) && $var_field['required']==true){ //required field is missing do not insert this record
             $required_missing = true;
             $error_detail .= " Required field missing: $field ";
-        }
-
-        //write to array for PDO insert
-        If($include){
+        }        
+              
+        If($include){//write to array for PDO insert
             $assocInputArray[$field] = $value;
             $column .= "$field, ";
             $valueName .= ":$field, ";
@@ -387,7 +408,7 @@ function count(){
 }
 
 
-function row_count($where){
+function row_count($where=false){
     //get number of rows
     
     if($where){
