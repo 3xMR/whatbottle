@@ -376,7 +376,6 @@ function delete_acquire_from_db(){
         $vintage_has_acquire_obj = new vintage_has_acquire;
         $vintage_result = $vintage_has_acquire_obj -> delete($where);
         if($vintage_result){ //vintage records deletion successful
-            $where = " acquire_id = $acquire_id ";
             $acquire_obj = new acquire;
             $acquire_result = $acquire_obj -> delete($where); //delete master acquire record
             if($acquire_result){ //master acquire deletion successful

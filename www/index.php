@@ -5,6 +5,10 @@
  * Release Notes:
  * Fixed Null/0 issue on Vintage drink_from_dates - change to PDO Bind approach in UPDATE function
  * Minor bug fixes after R5 release
+ * Fixed issue with DELETE db changes
+ * Added tab selection to Acquisition.php
+ * Moved form validation to notifcation on acqusition.php and vintage.php
+ * Reduced image size on vintage.php
  * 
  * 
  * 
@@ -107,10 +111,11 @@
  *      Validations changed for Wine and Vintage forms
  * 
  * Backlog:
+ * FIX: 'Available' search only shows Wines if all Vintages are available
  * TODO: Put wine and vintage count on reporting page
  * TODO: free text search on notes
  * TODO: Double-click on image to open image_manager page as overlay
- * TODO: centre align vertically vintage year with stars and pound signs
+
  * 
  * //Configuration Management
  * mysql version 5.7.32
@@ -584,8 +589,6 @@ require_once("$root/includes/standard_dialogs.inc.php");
 
 $(document).ready(function(){
     
-    //FIX: Clear search 'X' not showing when page refreshed but still filtered
-    //FIX: 'Available' search only shows Wines if all Vintages are available
     
     var this_page = "/index.php";
     var bln_expand_all_vintages = false;
@@ -683,7 +686,8 @@ $(document).ready(function(){
             console.log('acquisition selected data:');
             console.log(data);
         },
-        clickEdit: function(event, data){         
+        clickEdit: function(event, data){
+           
             open_acquisition(data.listBox_id);
         },
         clickFilter: function(event, data){
@@ -973,8 +977,6 @@ $(document).ready(function(){
         $('#note_general').val("");
         $('#quick_price').text("");
         
-        //TODO add arrPrice values to dialog, show nothing if values are not present
-        
         get_vintage_price(vintage_id);
         
         //determine screen size
@@ -1113,12 +1115,6 @@ $(document).ready(function(){
     function search_trigger(element){
         //use as trigger to update search results when a search input is
         //updated
-        
-        //FIX: class.wine_search is filtered on details stored in session, because text box is cleared after search but session 
-        //isnt then the subsequent search is an AND search based on saved session.
-        // If the session is cleared after the page refreshes and loads results then navigating away from the page would result in the
-        // filtered list being lost, and the serach being repeated
-        // 
         
         console.log('search_trigger');
         
@@ -2078,7 +2074,7 @@ $(document).ready(function(){
     };
     
     
-    function open_acquisition(acquire_id,vintage_id){
+    function open_acquisition(acquire_id){
         //open existing acquisition
         
         obj_page.leave_page({
@@ -2222,6 +2218,13 @@ $(document).ready(function(){
     $(document).on('scroll','page_container', function(){
         console.log("scroll...");
     });
+    
+    
+    $(document).on('click', '.open_acquisition',function(){
+        var acquire_id = $(this).attr('id').replace("open_acquisition_", "");
+        open_acquisition(acquire_id);
+    });
+    
 
 }); //document.ready
 

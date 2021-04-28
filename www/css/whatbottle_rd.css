@@ -1191,8 +1191,11 @@ div.selected{
 .image-placeholder{
     /*position:relative;*/
     /*float:left;*/
-    width:150px;
-    height:225px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:125px;
+    height:188px;
     padding:3px;
     border: solid 1px #D0D0D0;
     /*border-radius: 3px;*/

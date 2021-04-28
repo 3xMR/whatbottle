@@ -168,13 +168,7 @@ $(document).ready(function(){
 
   
     //TODO: Make grapes select a modal form based on listbox
-    //TODO: Hide Vintage listbox until page has loaded
-    //TODO: Add ability to navigate to page with url for links
-    //FIX: Add image on new vintage then add note, when returning to vintage image is missing on vintage page but has been saved, likely relates to clean-up script on image manager page
-
-    
-
-
+   
 
     //____Global variables____
 
@@ -960,35 +954,42 @@ $(document).ready(function(){
             },      
             messages: {
                     year: {
-                    required: "A year is required",
-                    range: "Must be a 4 digit year e.g. 2005",
-                    number: "Must be a 4 digit year e.g. 2005",
-                    remote: "This vintage has already been added"
+                        required: "A vintage year is required",
+                        range: "Vintage year must be 4 digits e.g. 2005",
+                        number: "Vintage year must be 4 digits e.g. 2005",
+                        remote: "This vintage year has already been added"
                     },
                     drink_year_from: {
-                    number: "Must be a 4 digit year e.g. 2005",
-                    range: "Must be a 4 digit year e.g. 2005",
+                        number: "Drink from year must be 4 digits e.g. 2005",
+                        range: "Drink from year must be 4 digits e.g. 2005",
                     },
                     drink_year_to: {
-                    number: "Must be a 4 digit year e.g. 2005",
-                    range: "Must be a 4 digit year e.g. 2005",
+                        number: "Drink to year must be 4 digits e.g. 2005",
+                        range: "Drink to year must be 4 digits e.g. 2005",
+                    },
+                    alcohol: {
+                        number: "Alcohol must be a number"
                     }
                 },
-            errorPlacement: function(error, element){
-                //place error in new div after error div parent
-                d = document.createElement('div');
-                $(d).addClass('clear-left float-left error-validation').append(error);
-                element.parent().after($(d));
-                },
+            errorPlacement: function(error, element){}, 
             invalidHandler: function(event, validator){
-                $(".con_button_bar").notify("Validation Failed",{
-                    position: "top left",
-                    style: "msg",
-                    className: "warning",
-                    arrowShow: false,
-                    autoHideDelay: 1000
-                });
-                }
+                  //validation failed
+                  console.log('Validation failed');
+                  var errorMsg = validator.errorList;
+                  var errorMsgCombined = "";
+                  for(var key in errorMsg){
+                      errorMsgCombined = errorMsgCombined + errorMsg[key]['message'] + "\n";
+                  }
+
+                  $(".con_button_bar").notify(errorMsgCombined,{
+                      position: "top left",
+                      style: "msg",
+                      className: "warning",
+                      arrowShow: false,
+                      autoHideDelay: 3000
+                  });
+
+              }
         });
     }
 

@@ -777,23 +777,23 @@ $(document).ready(function(){
     //});
     
 
-    $("#frm_wine").submit(function(){
-        //save button - save wine to database after validation
-
-        console.log('frm_wine submitted');
-        //validate form
-        console.log('validate form');
-        $("#frm_wine").validate();
-
-        if($("#frm_wine").valid()){
-            console.log('form validation OK - continue to save');
-            save_wine_to_db(false);
-        }else{
-            console.log('form validation FAILED');
-        }
-
-        return false;
-    });
+//    $("#frm_wine").submit(function(){
+//        //save button - save wine to database after validation
+//
+//        console.log('frm_wine submitted');
+//        //validate form
+//        console.log('validate form');
+//        $("#frm_wine").validate();
+//
+//        if($("#frm_wine").valid()){
+//            console.log('form validation OK - continue to save');
+//            save_wine_to_db(false);
+//        }else{
+//            console.log('form validation FAILED');
+//        }
+//
+//        return false;
+//    });
 
 
     
@@ -966,7 +966,6 @@ $(document).ready(function(){
                     required: "Region is required"
                 }
             }, //messages
-            //errorLabelContainer: $('#error_labels'),
             errorPlacement: function(error, element){}, //prevent error messages being displayed
             invalidHandler: function(event, validator){
                 //validation failed
@@ -1588,37 +1587,37 @@ $(document).ready(function(){
 
 
 
-    $("#frm_add_subregion").validate({
-        rules:
-        {
-            new_subregion:
-            {
-                required: true,
-                remote: {
-                    url: "/admin/rpc_duplicate_subregion.php",
-                    type: "post",
-                    data: {
-                        region_id: function(){
-                            return $('#region_id').val();
-                        }
-                    }
-
-                }
-
-            }
-       },//rules
-       messages:
-       {
-            new_subregion:
-            {
-                required: "Enter name of Subregion",
-                remote: "Subregion already added"
-            }
-      },
-      errorPlacement: function(error, element) {
-                error.insertAfter($('#error_message_subregion'));
-            }
-    });
+//    $("#frm_add_subregion").validate({
+//        rules:
+//        {
+//            new_subregion:
+//            {
+//                required: true,
+//                remote: {
+//                    url: "/admin/rpc_duplicate_subregion.php",
+//                    type: "post",
+//                    data: {
+//                        region_id: function(){
+//                            return $('#region_id').val();
+//                        }
+//                    }
+//
+//                }
+//
+//            }
+//       },//rules
+//       messages:
+//       {
+//            new_subregion:
+//            {
+//                required: "Enter name of Subregion",
+//                remote: "Subregion already added"
+//            }
+//      },
+//      errorPlacement: function(error, element) {
+//                error.insertAfter($('#error_message_subregion'));
+//            }
+//    });
 
 
     $("#dialog-form-add-subregion").keydown(function (event) { //set default enter behaviour

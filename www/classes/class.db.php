@@ -454,14 +454,16 @@ function delete($where){
         return false;
     }
     
-    $count = $stmt->rowCount(); //determine if any rows were affected - Delete will return true even if no records were changed
-    if($count>0){
-        return true;
-    }else{
-        $this->sql_error = "class.db:delete() no records deleted, likely no matching record to delete";
-        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
-        return false;
-    }
+    return true;
+    
+//    $count = $stmt->rowCount(); //determine if any rows were affected - Delete will return true even if no records were changed
+//    if($count>0){
+        
+//    }else{
+//        $this->sql_error = "class.db:delete() no records deleted, likely no matching record to delete";
+//        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+//        return false;
+//    }
 
 }
     
