@@ -1,7 +1,16 @@
 <?php
 /* 
+ * 
+ * Release 5.2
+ * Released: 30-04-2021
+ * Release Notes:
+ * Reporting page and menu item addded
+ * Total stats added to reporting
+ * 
+ * 
+ * 
  * Release 5.1
- * Released: 19-04-2021
+ * Released: 29-04-2021
  * Release Notes:
  * Fixed Null/0 issue on Vintage drink_from_dates - change to PDO Bind approach in UPDATE function
  * Minor bug fixes after R5 release
@@ -9,7 +18,6 @@
  * Added tab selection to Acquisition.php
  * Moved form validation to notifcation on acqusition.php and vintage.php
  * Reduced image size on vintage.php
- * 
  * 
  * 
  * Release 5.0
@@ -27,9 +35,6 @@
  * Upgraded Basket to a db solution rather than session based so that is persists across sessions and devices
  * Changed Add Wine page signicantly to make it easier and faster to add new wines
  * Changed home page to add new acquisition button and new show acquisition button
- * 
- * 
- * 
  * 
  * 
  * Branch R5_PDO_Update
@@ -556,12 +561,14 @@ require_once("$root/includes/standard_dialogs.inc.php");
     
 <!-- Pop-up Menus-->
 <div id='main_menu' class="pop_up" style="width:225px; display:none; position:fixed; z-index:35;">
-    <div class="ui-menu-item-first">Show Acquisitions<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-first">New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>Show Acquisitions<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
+
 
 <div id='wine_menu' class="pop_up" style="width:200px; display:none;">
     <div class="ui-menu-item-first ui-menu-header">Wine actions</div>
@@ -1420,6 +1427,9 @@ $(document).ready(function(){
                     case 'Wines':
                         open_wines();
                         break;
+                    case 'Reporting':
+                        open_reporting();
+                        break;
                     case 'Settings':
                         open_settings();
                         break;
@@ -1498,6 +1508,16 @@ $(document).ready(function(){
         
     }
     
+    
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+        
+    }
     
     function open_wines(){
         //open Wines page

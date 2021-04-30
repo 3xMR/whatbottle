@@ -106,6 +106,94 @@ function get_wine_count(){
 }
 
 
+function get_note_count(){
+    //return count of notes for period (return total if no period provided)
+    
+    $note = new tasting_note();
+    $note_count = $note ->row_count();
+    
+    if(!$note_count){
+        $var_result['success']=false;
+        return $var_result; 
+    }
+    
+    $var_result['note_count'] = $note_count;
+    $var_result['success']=true;
+    $var_result['data']=$var_result;
+    return $var_result; 
+  
+}
+
+
+function get_bottle_count(){
+    //return count of acquired bottle for period (return total if no period provided)
+    
+    $from_date = $_REQUEST['from_date'];
+    $to_date = $_REQUEST['to_date'];
+
+    $obj = new vintage_has_acquire();
+    $columns = " sum(qty) as qty";
+    $where = null;
+    $rst = $obj ->get($where,$columns);
+    
+    if(!$rst){
+        $var_result['success']=false;
+        return $var_result; 
+    }
+
+    $var_result['success']=true;
+    $var_result['bottle_count']=$rst[0]['qty'];
+    return $var_result; 
+
+}
+
+
+function get_acquisition_count(){
+    //return count of acquisitions for period (return total if no period provided)
+    
+    $from_date = $_REQUEST['from_date'];
+    $to_date = $_REQUEST['to_date'];
+
+    $acquire = new acquire();
+    $acquire_count = $acquire->row_count();
+ 
+    if(!$acquire_count){
+        $var_result['success']=false;
+        return $var_result; 
+    }
+    
+    $var_result['acquisition_count'] = $acquire_count;
+    $var_result['success']=true;
+    $var_result['data']=$var_result;
+    return $var_result; 
+
+}
+
+
+function get_override_count(){
+    //return count of available bottles (return total if no period provided)
+    
+    $from_date = $_REQUEST['from_date'];
+    $to_date = $_REQUEST['to_date'];
+
+    $obj= new available_override();
+    $columns = " sum(override) as qty";
+    $where = null;
+    $rst = $obj ->get($where,$columns);
+    
+    if(!$rst){
+        $var_result['success']=false;
+        return $var_result; 
+    };
+    
+    $var_result['override_count'] = $rst[0]['qty'];
+    $var_result['success']=true;
+    $var_result['data']=$var_result;
+    return $var_result; 
+    
+}
+
+
 function get_wine_count_by_country(){
     //return count of vintages for period (return total if no period provided)
     
@@ -167,6 +255,10 @@ function get_all_stats(){
      
     $var_result['wine_count'] = get_wine_count()['wine_count'];
     $var_result['vintage_count'] = get_vintage_count()['vintage_count'];
+    $var_result['note_count'] = get_note_count()['note_count'];
+    $var_result['bottle_count'] = get_bottle_count()['bottle_count'];
+    $var_result['acquisition_count'] = get_acquisition_count()['acquisition_count'];
+    $var_result['available_count'] = $var_result['bottle_count'] - $var_result['note_count'] - get_override_count()['override_count'];
     $var_result['success']=true;
     $var_result['data']=$var_result;
     return $var_result; 
