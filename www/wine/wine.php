@@ -185,16 +185,16 @@ echo "</div>"; //page_container
 require_once("$root/includes/standard_dialogs.inc.php");
 
 ?>
-
-        
-<div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:30;">
-    <div class="ui-menu-item-first" >New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Vintage<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+   
+<div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:35;">
+    <div class="ui-menu-item-first">New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Vintage<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
-    
 
 </body>
 
@@ -1701,11 +1701,17 @@ $(document).ready(function(){
                     case 'Wines':
                         open_wines();
                         break;
+                    case 'Reporting':
+                        open_reporting();
+                        break;
                     case 'Reference Data':
                         open_reference_data();
                         break;
+                    case 'Settings':
+                        open_settings();
+                        break;
                     default:
-                        console.log('selected_item not recognised: '+selected_item);
+                        console.log('manin menu selected_item not recognised: '+selected_item);
                 }
                 break;
 
@@ -1720,17 +1726,6 @@ $(document).ready(function(){
         //open Wines page
         obj_page.leave_page({
             dst_url: "/index.php",
-            dst_action: 'open',
-            page_action: 'leave'
-        });
-    }
-
-
-    function open_reference_data(){
-        //open ref data page
-        obj_page.leave_page({
-            dst_url: "/admin/index_admin.php",
-            rtn_url: this_page,
             dst_action: 'open',
             page_action: 'leave'
         });
@@ -1766,6 +1761,34 @@ $(document).ready(function(){
     };
 
 
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });  
+    }
+    
+    
+    function open_reference_data(){
+        //open ref data page
+        obj_page.leave_page({
+            dst_url: "/admin/index_admin.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
 
     
     function initialise_listBox_location(){

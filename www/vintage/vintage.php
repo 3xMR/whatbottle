@@ -140,11 +140,13 @@ require_once("$root/includes/script_libraries.inc.php"); ?>
 
 <!-- Pop-up Menus-->
 <div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:35;">
-    <div class="ui-menu-item-first">New Note<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-first">New Note<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
     
     
@@ -1092,6 +1094,12 @@ $(document).ready(function(){
                     case 'Wines':
                         open_wines();
                         break;
+                    case 'Reporting':
+                        open_reporting();
+                        break;
+                    case 'Settings':
+                        open_settings();
+                        break;
                     case 'Reference Data':
                         open_reference_data();
                         break;
@@ -1117,15 +1125,7 @@ $(document).ready(function(){
     }
 
 
-    function open_reference_data(){
-        //open ref data page
-        obj_page.leave_page({
-            dst_url: "/admin/index_admin.php",
-            rtn_url: this_page,
-            dst_action: 'open',
-            page_action: 'leave'
-        });
-    }
+
 
 
     function add_wine(){
@@ -1154,8 +1154,37 @@ $(document).ready(function(){
         });
 
     };
-
-
+    
+    
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });  
+    }
+    
+    
+    function open_reference_data(){
+        //open ref data page
+        obj_page.leave_page({
+            dst_url: "/admin/index_admin.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
 
     function add_note(vintage_id){
         //Add tasting note
@@ -1192,6 +1221,7 @@ $(document).ready(function(){
         }
         
     };
+    
     
     
 

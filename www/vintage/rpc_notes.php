@@ -220,25 +220,40 @@ function put_db(){
 }
 
 
-function delete_db($note_id, $vintage_id){
+function delete_db($note_id = false, $vintage_id = false){
     //delete record from db
     
     $note_id = $_REQUEST['note_id'];
     $vintage_id = $_REQUEST['vintage_id'];
    
+    if(!is_authed()){ //check if user is authorised
+        $var_result['success'] = false;
+        $var_result['error'] = "You must login to use this application";
+        return $var_result;
+    }
+    
+    if(empty($note_id)){ //use parameter if present
+        $note_id_post = filter_input(INPUT_POST, "note_id", FILTER_SANITIZE_NUMBER_INT);
+        $note_id_get = filter_input(INPUT_GET, "note_id", FILTER_SANITIZE_NUMBER_INT);
+        $note_id = $note_id_post > 0 ? $note_id_post : $note_id_get;
+    }
+    
+    if(empty($note_id)){
+        $var_result['success'] = false;
+        $var_result['error'] = "note_id not provided cannot continue";
+        return $var_result;
+    }
 
     //get vintage_id for note
     $class_obj = new tasting_note;
-    $where = "note_id = $note_id";
+    $where = " note_id = $note_id ";
     $result = $class_obj -> get($where);
     
     if($result){
         $vintage_id = $result[0]['vintage_id'];
     }
-    
-    log_write("vintage_id = $vintage_id",1,'delete_db');
+
     $class_obj = $where = $result = null;
-    
     
     //delete note
     $class_obj = new tasting_note;
@@ -279,7 +294,6 @@ function delete_db($note_id, $vintage_id){
         }
         
     } else {
-        log_write("ERROR - no note_id provided",3,'delete_db');
         $var_return['error'] = "no note_id provided";
         $var_return['success'] = false;
         return $var_return;
@@ -288,7 +302,6 @@ function delete_db($note_id, $vintage_id){
      //update average ratings
     if($var_return['success']){
         //update quality and value averages
-        log_write("update average ratings vintage_id=$vintage_id",1,'delete_db');
         update_rating($vintage_id,'quality');
         update_rating($vintage_id, 'value');
     }

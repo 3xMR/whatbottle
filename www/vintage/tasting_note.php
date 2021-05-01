@@ -110,8 +110,10 @@ echo "</head>";
     <div>Delete Note<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
 
 </body>
@@ -120,8 +122,8 @@ echo "</head>";
     
 $(document).ready(function(){
 
-    //TODO: Add Main Menu navigation to Tasting Note
     //FIX: Deleting note leaves the deleted page open - should go to last note or new note
+    //FIX: Listbox width too small for 5* 5*
     
     var this_page = "/vintage/tasting_note.php";
     
@@ -263,15 +265,13 @@ $(document).ready(function(){
                     arrowShow: false
                     }
                 );
+                console.log(data);
                 if(data.note_id>0){
-                    var note_id = data.note_id;
-                    url = "/vintage/tasting_note.php?note_id="+data.note_id;
-                    get_db(note_id,url);
-                } else {
-                    page_flow_return(this_page);
+                    open_note(data.note_id); //open prev note
+                }else{
+                    new_note(); //no prev note - create new note
                 }
-            } else {
-                //delete failed
+            } else {  //delete failed
                 var msg = "Failed to delete tasting Note error: "+data.error;
                 $(".con_button_bar").notify(msg,{
                     position: "top left",
@@ -288,14 +288,6 @@ $(document).ready(function(){
     }
 
 
-    function old_refresh_all_notes(){
-        var vintage_id = $('#vintage_id').val();
-        $('#all_notes_content').load('/vintage/rpc_all_notes_html.php', {vintage_id: vintage_id}, function(){
-           //run following code once refreshed
-       });
-    }
-
-
     function refresh_note_form(){
         var request_vintage_id = $('#request_vintage_id').val();
         $('#tasting_note_form_content').load('/vintage/rpc_note_form_html.php',{request_vintage_id: request_vintage_id}, function(){
@@ -308,7 +300,7 @@ $(document).ready(function(){
     function all_notes_listBox(){
         $("#con_all_notes").listBox({
             title: "Tasting Notes",
-            width: 315,
+            width: 325,
             height: 200,
             showFilter: false,
             showBorder: true,
@@ -347,6 +339,8 @@ $(document).ready(function(){
             positionAt = "right bottom";
             positionOf = "#top_nav";
         }   
+        
+        
         
         $("#dialog-delete").dialog({
             modal: true,
@@ -439,8 +433,14 @@ $(document).ready(function(){
                     case 'Delete Note':
                         delete_note();;
                         break;
+                    case 'Reporting':
+                        open_reporting();
+                        break;
                     case 'Reference Data':
                         open_reference_data();
+                        break;
+                    case 'Settings':
+                        open_settings();
                         break;
                     default:
                         console.log('selected_item not recognised: '+selected_item);
@@ -492,12 +492,31 @@ $(document).ready(function(){
         });
        
     };
+   
+
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });  
+    }
     
     
     function open_reference_data(){
         //open ref data page
         obj_page.leave_page({
             dst_url: "/admin/index_admin.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
             rtn_url: this_page,
             dst_action: 'open',
             page_action: 'leave'

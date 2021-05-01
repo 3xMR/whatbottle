@@ -215,11 +215,13 @@ require_once("$root/includes/script_libraries.inc.php"); //include all script li
 </div>
 
 <div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:30;">
-    <div class="ui-menu-item-first" >New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>Delete Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-first" >New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>Delete Acquisition<img style="float:right; margin-top:2px;" src="/images/minus_black_256.png" height="21px" /></div>
+    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
 
 </body>
@@ -1199,6 +1201,12 @@ function menu_select(selected_object){
                 case 'Wines':
                     open_wines();
                     break;
+                case 'Reporting':
+                    open_reporting();
+                    break;
+                case 'Settings':
+                    open_settings();
+                    break;
                 case 'Reference Data':
                     open_reference_data();
                     break;
@@ -1214,54 +1222,73 @@ function menu_select(selected_object){
 }
 
 
-function open_wines(){
-    //open Wines page
-    obj_page.leave_page({
-        dst_url: "/index.php",
-        dst_action: 'open',
-        page_action: 'leave'
-    });
-}
+    function open_wines(){
+        //open Wines page
+        obj_page.leave_page({
+            dst_url: "/index.php",
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
 
 
-function open_reference_data(){
-    //open ref data page
-    obj_page.leave_page({
-        dst_url: "/admin/index_admin.php",
-        rtn_url: this_page,
-        dst_action: 'open',
-        page_action: 'leave'
-    });
-}
+    function add_wine(){
+        //Add new wine
+        obj_page.leave_page({
+            dst_url:        "/wine/wine.php",
+            rtn_url:        "/index.php",
+            page_action:    'leave',
+            dst_type:       "wine",
+            object_id:      null,
+            dst_action:     "add"
+        });
+
+    };
 
 
-function add_wine(){
-    //Add new wine
-    obj_page.leave_page({
-        dst_url:        "/wine/wine.php",
-        rtn_url:        "/index.php",
-        page_action:    'leave',
-        dst_type:       "wine",
-        object_id:      null,
-        dst_action:     "add"
-    });
+    function add_acquisition(){
+        //add new acquisition
 
-};
+        obj_page.leave_page({
+            dst_url:        "/acquire/acquisition.php",
+            rtn_url:        this_page,
+            page_action:    'leave',
+            dst_type:       "acquisition",
+            object_id:      0,
+            dst_action:     "add"
+        });
 
-function add_acquisition(){
-    //add new acquisition
+    };
 
-    obj_page.leave_page({
-        dst_url:        "/acquire/acquisition.php",
-        rtn_url:        this_page,
-        page_action:    'leave',
-        dst_type:       "acquisition",
-        object_id:      0,
-        dst_action:     "add"
-    });
 
-};
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });  
+    }
     
+    
+    function open_reference_data(){
+        //open ref data page
+        obj_page.leave_page({
+            dst_url: "/admin/index_admin.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
 
 
 

@@ -198,8 +198,8 @@ function get_wine_count_by_country(){
     //return count of vintages for period (return total if no period provided)
     
     $obj = new wine();
-    $columns = " tblcountry.country, count(tblwine.wine_id) as qty ";
-    $group = " tblcountry.country ";
+    $columns = " tblCountry.country, count(tblWine.wine_id) as qty ";
+    $group = " tblCountry.country ";
     $where = null;
     $sort = " qty DESC ";
     $limit = '10';
@@ -209,8 +209,6 @@ function get_wine_count_by_country(){
         $var_result['success']=false;
         return $var_result; 
     }
-    
-    //print_r($rst);
     
     $var_result['success']=true;
     $var_result['data']=$rst;
@@ -228,9 +226,9 @@ function get_acquisition_qty_by_country(){
 
     $obj = new vintage_has_acquire();
     //$columns = "DATE_FORMAT(acquire_date,'%b') as Month";
-    $columns = " tblCountry.country, sum(trelVintageHasAcquire.qty) as qty";
+    $columns = " tblcountry.country, sum(trelVintageHasAcquire.qty) as qty";
     //$group = " trelVintageHasAcquire.acquire_id ";
-    $group = " tblCountry.country ";
+    $group = " tblcountry.country ";
     //$where = " tblAcquire.acquire_date BETWEEN '2014-01-01' AND '2014-12-31'";
     $sort = " qty DESC ";
     $limit = '12';

@@ -4,9 +4,11 @@
  * Release 5.2
  * Released: 30-04-2021
  * Release Notes:
- * Reporting page and menu item addded
- * Total stats added to reporting
- * 
+ * Updated main menu pop-up icons and items on index.php, vintage.php, wine.php, tasting_note.php added Reporting
+ * Added Reporting page
+ * Added total stats to reporting page
+ * Fixed missing merchant on index.php acquisitions
+ * Fixed Tasting note delete and listbox formatting
  * 
  * 
  * Release 5.1
@@ -563,7 +565,7 @@ require_once("$root/includes/standard_dialogs.inc.php");
 <div id='main_menu' class="pop_up" style="width:225px; display:none; position:fixed; z-index:35;">
     <div class="ui-menu-item-first">New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
     <div>New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
-    <div>Show Acquisitions<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Acquisitions<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
     <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
@@ -1418,7 +1420,7 @@ $(document).ready(function(){
                     case 'New Acquisition':
                         add_acquisition();
                         break;
-                    case 'Show Acquisitions':
+                    case 'Acquisitions':
                         $('#panel_right').toggle("slide", { direction: "right" }, 500);
                         break;
                     case 'Reference Data':
@@ -1515,8 +1517,7 @@ $(document).ready(function(){
             rtn_url: this_page,
             dst_action: 'open',
             page_action: 'leave'
-        });
-        
+        });  
     }
     
     function open_wines(){
