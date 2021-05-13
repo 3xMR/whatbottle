@@ -3,6 +3,7 @@
 //header('Content-Type: text/html; charset=utf-8');
 $root = $_SERVER['DOCUMENT_ROOT'];
 require_once("$root/includes/init.inc.php");
+require_once("$root/classes/MyPDO.php");
 
 /* Class wine_search
  *  
@@ -17,22 +18,27 @@ require_once("$root/includes/init.inc.php");
  * 
  */
 
-
-
 class wine_search {
 
-    private $select, $from, $where, $order, $group, $having, $search_initialised, $num_vintages;
+    private $select = null;
+    private $from = null;
+    private $where = null;
+    private $order, $group, $having, $search_initialised, $num_vintages;
     private $varSearchParam;
     private $page_rows = 20;
     private $num_pages;
     private $current_page = 1;
+    private $db;
     
     public $last_error = null;
 
-    //public function search($type=false, $name=false, $wine_id=false, $winetype_id=false, $country_id=0, $region_id=0, $subregion_id=0,
-     //               $producer_id=0, $merchant_id=0, $acquire_id=0,  $group=false, $order=false, $limit=false, $available=0, $having=false, $varSearchParam){
         
-    public function search($varSearchParam){
+    function __construct() {
+        $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+    }
+    
+    
+    function search($varSearchParam){
         /* Search parameters passed as associative array
          * $type=false, $search_text=false, $wine_id=false, $winetype_id=false, $country_id=0, $region_id=0, 
          * $subregion_id=0, $producer_id=0, $merchant_id=0, $acquire_id=0, $group=false, 
@@ -41,13 +47,17 @@ class wine_search {
          * //TODO: The last vintage of a wine will set the last_modified date so it will NOT always be set to the newest date
          */
         
-        //$this -> _timerStart();
-       
-        $this -> varSearchParam = $varSearchParam; //save parameters to class variable
+        //initialise variables
+        $where = null;
+        $sql_limit = null;
+        $limit = null;
+        
+        
+        $this -> varSearchParam = $varSearchParam; //save parameters passed to function to a class variable
         extract($varSearchParam, EXTR_SKIP); //extract array to variables
         
         //initialise variables
-        $data_array = array();
+        
         $select = "SELECT
                 tblWine.wine_id,
                 tblWine.wine,
@@ -80,63 +90,66 @@ class wine_search {
                   LEFT JOIN tblRegion ON tblWine.region_id = tblRegion.region_id
                   LEFT JOIN tblSubRegion ON tblWine.subregion_id = tblSubRegion.subregion_id ";
         
-        //**** Wine Related Search Terms ****//
+        
+//**** Wine Related Search Terms ****//
         
         //winetype
-        if($winetype_id>0){
+        if(isset($winetype_id) && $winetype_id >0){
                 $select .= ",tlkpWineType.winetype";
                 $from .= "LEFT JOIN tlkpWineType ON tblWine.winetype_id = tlkpWineType.winetype_id ";
                 $where .= "tblWine.winetype_id = $winetype_id ";
         }
 
         //country
-        if($country_id>0){
+        if(isset($country_id) && $country_id>0){
             $where .= "AND tblWine.country_id = $country_id ";
         }
 
         //region
-        if($region_id>0){
+        if(isset($region_id) && $region_id >0){
             $select .= ",tblRegion.region";
             $where .= "AND tblWine.region_id = $region_id ";
             //$from .= "LEFT JOIN tblRegion ON tblWine.region_id = tblRegion.region_id ";
         }
 
         //subregion
-        if($subregion_id>0){
+        if(isset($subregion_id) && $subregion_id >0){
             $select .= ",tblSubRegion.subregion";
             $where .= "AND tblWine.subregion_id = $subregion_id ";
         }
 
         //wine_id & name search
-        if($wine_id>0){
+        if(isset($wine_id) && $wine_id>0){
             //if wine_id is provided don't search by text
             $where .= "AND tblWine.wine_id = $wine_id ";
-        } else if($search_text){
+        } else if(isset($search_text)){
             //look for wine name only or wine name or producer
             if($producer_id>0){
-                //producer_id provided do don't include producer in text search
+                //producer_id provided don't include producer in text search
                 $where .= "AND (tblWine.wine LIKE '%$search_text%') ";
+                
             }else{
                 //search for text in wine and producer
                 $where .= "AND (tblWine.wine LIKE '%$search_text%' OR tblProducer.producer LIKE '%$search_text%') ";
+                //$where .= "AND (tblWine.wine LIKE :wine_text OR tblProducer.producer LIKE :producer_text) ";
             }
         }
 
         //Producer
-        if($producer_id>0){
+        if(!empty($producer_id)){
             $where .= "AND tblWine.producer_id = $producer_id ";
         }
 
         //**** Vintage Related Search Terms ****//
         
         //Merchant or Acquire
-        if($acquire_id>0){
+        if(isset($acquire_id) && $acquire_id>0){
             $where .= "AND tblVintage.vintage_id IN
             (SELECT DISTINCT tblVintage.vintage_id FROM tblAcquire
             LEFT JOIN trelVintageHasAcquire ON tblAcquire.acquire_id = trelVintageHasAcquire.acquire_id
             LEFT JOIN tblVintage ON trelVintageHasAcquire.vintage_id = tblVintage.vintage_id
             WHERE tblAcquire.acquire_id = $acquire_id) ";
-        } else if($merchant_id>0){
+        } else if(isset($merchant_id) && $merchant_id>0){
             $where .= "AND tblVintage.vintage_id IN
             (SELECT DISTINCT tblVintage.vintage_id FROM tblAcquire
             LEFT JOIN trelVintageHasAcquire ON tblAcquire.acquire_id = trelVintageHasAcquire.acquire_id
@@ -145,14 +158,14 @@ class wine_search {
         }
         
         //Vintage Quality
-        if($vintage_quality>0){
+        if(isset($vintage_quality) && $vintage_quality>0){
             $where .= "AND tblVintage.vintage_quality >= $vintage_quality ";
         }
         
         //Available
         if($available>0){
             $select .= ", (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0)) available ";
-            $from .= "  LEFT JOIN (SELECT vintage_id, SUM(trelVintageHasAcquire.qty) purchased
+            $from .= "  LEFT JOIN (SELECT vintage_id, SUM(qty) purchased
                         FROM trelVintageHasAcquire GROUP BY vintage_id) AS acquisitions
                         ON acquisitions.vintage_id = tblVintage.vintage_id
                         LEFT JOIN (SELECT vintage_id, IFNULL(COUNT(tblNotes.note_id),0) opened
@@ -163,8 +176,23 @@ class wine_search {
                         ON override.vintage_id = tblVintage.vintage_id ";
             //$group = " tblVintage.vintage_id ";
             $having = " available > 0 "; //use HAVING to filter by alias 'Available' WHERE won't work with alias
-        }else{
-            $having = null;
+        
+            //create temporary table
+            if( $this->_createAvailableWinesTable() === false){
+                $this->last_error = "Failed to create search query because createAvailableWinesTable()returned false";
+                return false;
+            };
+
+            //add sql to join temporary table to query
+            $select .= ", tmpAvailableWines.available ";
+            $from .= " LEFT JOIN tmpAvailableWines ON tmpAvailableWines.wine_id = tblWine.wine_id ";
+
+            if($where){
+                $where .= " AND tmpAvailableWines.available > 0 ";
+            }else{
+                $where = " tmpAvailableWines.available > 0 ";
+            }
+        
         }
         
         //Drinking Guide
@@ -180,7 +208,7 @@ class wine_search {
         }
 
         
-        if($limit > 0){
+        if(isset($limit) && $limit > 0){
             $sql_limit = $limit;
         } else {
             //set pagination limit
@@ -195,7 +223,7 @@ class wine_search {
         }
         
         
-        if($having > ""){
+        if(isset($having) && $having > ""){
             $sql_having = "HAVING $having ";
         } else {
             $sql_having = null;
@@ -203,12 +231,11 @@ class wine_search {
 
 
         //remove AND from start of where statement
-        $where = ltrim($where,"AND ");
-
-        if($where){
+        if(isset($where)){
+            $where = ltrim($where,"AND ");
             $where = " WHERE ".$where;
+            $this -> where = $where;
         }
-
 
         //construct sql query
         $this -> where = $where;
@@ -217,51 +244,45 @@ class wine_search {
         $this -> order = $sql_order;
         $this -> group = $sql_group;
         $this -> having = $sql_having;
-
+        
         $query = $select.$from.$where.$sql_group.$sql_having.$sql_order.$sql_limit;
         
-        //echo $query;
+        //print $query;
 
         //run query
-        $result = mysql_query($query) or die(mysql_error());
-
-        if($result==false){
-            $this-> last_error = "search mysql query returned an error";
-            return false;
+        $stmt = $this->db->prepare($query);
+        //$stmt->execute(array(":wine_text"=>$search_text, ":producer_text"=>$search_text));
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all records in recordset as assoc. array
+        
+        if(!$stmt){
+            print "<br>PDO execute failed";
             
+        };
+        
+
+        if($stmt==false){
+            $this-> last_error = "search query returned an error";
+            return false;
         }
         
         //search results successful
         $this -> search_initialised = true;
 
-        $num_rows = mysql_num_rows($result);
+        $num_rows = count($result); //count results (rows) in array
         $page_rows = $this -> page_rows;
         $num_pages = $num_rows/$page_rows;
-        
-        //echo " [num_rows=$num_rows page_rows=$page_rows num_pages=$num_pages] ";
 
         if($num_pages>0){
             $this -> num_pages = ceil($num_pages);
         }else{
             $this -> num_pages = 1;
         }
-        //update session
-        //$_SESSION['index_page_pagination']['current_page'] = 1;
+        
+        //update session with pagination details
         $_SESSION['index_page_pagination']['num_pages'] = ceil($num_pages);
 
-        //put results into standard array
-        while ($row = mysql_fetch_assoc($result)) {
-            $data_array[] = $row;
-        }
-
-        //return search results
-        //$debug ->debug_write();
-        //$this->_timerStop('search');
-            
-        //print_r($data_array);
-        
-        return $data_array;
-
+        return $result;
 
     }
     
@@ -286,56 +307,77 @@ class wine_search {
 
     public function get_wines($page_num){
         //return wines from initialised search
+        
+        $data_array = array();
 
-        if($this -> search_initialised){
-
-            //construct query
-            $select = $this -> select;
-            $from = $this -> from;
-            $where = $this -> where;
-            $group = $this -> group;
-            $order = $this -> order;
-            $having = $this -> having;
-            $num_pages = $this -> num_pages;
-            $page_rows = $this -> page_rows;
-
-            //calculate pagination
-            if($page_num < 1){
-                $page_num = 1;
-            }else if($page_num > $num_pages){
-                //no page requested set to page 1
-                $page_num = $num_pages;
-            }
-
-            $this -> current_page = $page_num;
-
-            //determine limits
-            $start_row = ($page_num - 1) * $page_rows;
-            $limit = "LIMIT $start_row, $page_rows";
-
-            $query = $select.$from.$where.$group.$having.$order.$limit;
-            
-            //run query
-            $result = mysql_query($query) or die(mysql_error());
-
-            if($result){
-                //put results into standard array
-
-                while ($row = mysql_fetch_assoc($result)) {
-                    $data_array[] = $row;
-                }
-
-                //return search results
-                return $data_array;
-
-            }else{
-                //search failed
-                return false;
-            }
-        }else{
+        if(!$this -> search_initialised){
             return false;
-        }//initialised
+        }
 
+        //construct query
+        $select = $this -> select;
+        $from = $this -> from;
+        $where = $this -> where;
+        $group = $this -> group;
+        $order = $this -> order;
+        $having = $this -> having;
+        $num_pages = $this -> num_pages;
+        $page_rows = $this -> page_rows;
+
+        //calculate pagination
+        if($page_num < 1){
+            $page_num = 1;
+        }else if($page_num > $num_pages){
+            //no page requested set to page 1
+            $page_num = $num_pages;
+        }
+
+        $this -> current_page = $page_num;
+
+        //determine limits
+        $start_row = ($page_num - 1) * $page_rows;
+        $limit = "LIMIT $start_row, $page_rows";
+
+        $query = $select.$from.$where.$group.$having.$order.$limit;
+
+        //execute query
+            //$result = mysql_query($query) or die(mysql_error());
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all records in recordset as assoc. array
+
+        if(!$result){ return false; }//query failed
+
+        return $result;
+
+    }
+    
+    private function _createAvailableWinesTable(){
+        //run query to create temporary table with a list of wines that have have one or more vintages with available bottles
+        //wine_id, available
+     
+        $query = "DROP TEMPORARY TABLE IF EXISTS tmpAvailableWines;";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        if(!$stmt){ return false; }
+
+        
+        $query = "  CREATE TEMPORARY TABLE tmpAvailableWines
+                    SELECT tblWine.wine_id, tblVintage.vintage_id,
+                        (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0) ) available
+                    FROM tblWine 
+                    LEFT JOIN tblVintage ON  tblWine.wine_id = tblVintage.wine_id 
+                    LEFT JOIN (SELECT vintage_id, SUM(qty) purchased FROM trelVintageHasAcquire GROUP BY vintage_id) AS acquisitions ON acquisitions.vintage_id = tblVintage.vintage_id
+                    LEFT JOIN (SELECT vintage_id, COUNT(tblNotes.note_id) opened FROM tblNotes GROUP BY vintage_id) as notes ON notes.vintage_id = tblVintage.vintage_id
+                    LEFT JOIN (SELECT vintage_id, override FROM tblAvailableOverride) as override ON override.vintage_id = tblVintage.vintage_id
+                    HAVING available >0";
+    
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        if(!$stmt){ return false; }
+        
+        return true;
+                
     }
 
 
@@ -357,6 +399,9 @@ class wine_search {
     public function get_vintages($wine_id){
         //return only vintages after initial wine search, will return all vintages if not filtered by passing wine_id
         
+        $sql_limit = null; //initialise
+        $rst_vintages = array();
+        
         if(!$this -> search_initialised){
             $this-> last_error = "search has not been initialised - use 'Search(varSearchParam)' method";
             return false; //search not initialised
@@ -372,8 +417,6 @@ class wine_search {
             return false; //no wine_id parameter provided
         }
         
-        //print_r($this -> varSearchParam);
-        //echo "</br>";
         extract($this -> varSearchParam, EXTR_SKIP); //extract array to variables
 
         //construct query
@@ -409,8 +452,7 @@ class wine_search {
         if($vintage_quality>0){
             $where .= "AND tblVintage.vintage_quality >= $vintage_quality ";
         }
-        
-        
+                
         //Available - use sub-select statements with a LEFT JOIN to calculate sums from different tables
         if($available>0){
             $select .= ", (acquisitions.purchased - ifnull(notes.opened,0) - ifnull(override.override,0)) available ";
@@ -438,19 +480,15 @@ class wine_search {
             $sql_order = null;
         }
 
-        
-        if($limit > 0){
+        if(isset($limit) && $limit > 0){
             $sql_limit = $limit;
         } //$sql_limit = "LIMIT 0,25 ";
-        
-
         
         if($group > ""){
             $sql_group = "GROUP BY $group ";
         } else {
             $sql_group = null;
         }
-        
         
         if($having > ""){
             $sql_having = "HAVING $having ";
@@ -459,37 +497,27 @@ class wine_search {
         }
         
         $query = $select.$from.$where.$sql_group.$sql_having.$sql_order.$sql_limit;
-        //echo $query;
-        //echo "</br>";
 
-        //run query
-        $result = mysql_query($query) or die(mysql_error());
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all records in recordset as assoc. array
 
         if(!$result){
-            $this-> last_error = "my_sql query failed";
+            $this-> last_error = "class.wine_search:get_vintages() query failed";
             return false; //failed
         }
+
+        $this -> num_vintages =  count($result); //count rows for pagination
         
-        //count rows
-        $this -> num_vintages =  mysql_num_rows($result);
-        
-        //vintage class object
         $obj_vintage = new vintage();
-        
-        //put results into standard array
-        while ($row = mysql_fetch_assoc($result)) {
-            //$data_array[] = $row;
-            $rst_vintage = $obj_vintage->get_extended("vintage_id = ".$row['vintage_id']);
-            $rst_vintages[] = $rst_vintage[0];
-            
+
+        foreach($result as $row){ //get extended data for vintage
+            $rst_vintage = $obj_vintage->get_extended("vintage_id = ".$row['vintage_id']); 
+            $rst_vintages[] = $rst_vintage[0]; //append to vintages array
         }
+    
+        return $rst_vintages; //return extended vintage search results
         
-        //print_r($rst_vintages);
-        
-        //return search results
-        return $rst_vintages;
-        
-  
     }
     
     

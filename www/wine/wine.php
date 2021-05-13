@@ -1,8 +1,15 @@
 <?php
 /*
- * Site details
- * Screen Size optimisation: 1280x760
- *
+ * Add new wine page
+ * August 2019
+ * Redesigned to making adding wines even easier
+ * Step 1. Find or add new Producer
+ * Step 2. Select from existing wines or add a new wine
+ * Step 3. Select Region from a new easy pick dialog
+ * 
+ * rpc_wine_form_html.php - this page loads the html
+ * rpc_wine_from_producer_html.php - this page shows the wines for the selected producer
+ * autocomplete_results.php - autocomplete for Producer
  */
 $root = $_SERVER['DOCUMENT_ROOT'];
 require_once("$root/includes/init.inc.php");
@@ -17,8 +24,18 @@ require_once("$root/includes/standard_html_head.inc.php");
 require_once("$root/includes/css.inc.php");
 echo "<title>What Bottle?</title>"; //page title
 
-//include all script libraries
-require_once("$root/includes/script_libraries.inc.php");
+require_once("$root/includes/script_libraries.inc.php"); //include all script libraries
+
+If(isset($_SESSION['var_wine_temp']['status'])){
+    //determine status and set title accordingly - form is reset on rpc_wine_form_html.php
+    $status = $_SESSION['var_wine_temp']['status'];
+    if($status == 1){
+        $title_text = "Add New Wine";
+    }else{
+        $title_text = "Edit Wine Details";
+    }
+}
+
 ?>
 
 </head>
@@ -30,60 +47,86 @@ require_once("$root/includes/script_libraries.inc.php");
         <div class="input-main-label">
             <p>Producer</p>
         </div>
-        <div class="input-main">
+        <div class="input-main" >
             <input type="text" style="width:100%;" id="add_producer"></input>
         </div>
-        <br/>
     </div>
     
-    <div id="dialog-country" class="hidden" title="Add Country?">	
-        <h2 style="margin-bottom:15px;"> Add New Country</h2>
+    
+    <div id="dialog-country" class="hidden" title="Add Edit Country">
+        <h2 style="margin-bottom:15px;" id="country_dialog_title" > Add Country</h2>
         <div class="input-main-label">
-            <p>Country</p>
+            <p>Country Name</p>
         </div>
         <div class="input-main">
-            <input type="text" id="add_country" ></input>
+            <input type="text" name="country_text" id="country_text" autocomplete="new-location" style="width:100%;"/>
+            <input type="hidden" id="add_country_id" />
         </div>
-        <br/>
+        <div class="input-main-label">
+            <p>Flag Image</p>
+        </div>
+        <div class="input-main">
+            <input type="text" name="flag_file" id="flag_file" autocomplete="off" style="width:100%;"/>
+            <input type="hidden" id="flag_file" />
+        </div>
+        <div class="clear" ></div>
     </div>
     
-    <div id="dialog-region" class="hidden" title="Add Region?">	
-        <h2 style="margin-bottom:15px;"> Add New Region</h2>
+   
+    <div id="dialog-region" class="hidden" title="Add Edit Region">
+        <h2 style="margin-bottom:15px;" id="region_dialog_title" >Add Region</h2>
         <div class="input-main-label">
             <p>Region</p>
         </div>
         <div class="input-main">
-            <input type="text" style="width:100%;" id="add_region" ></input>
+            <input type="text" name="region_text" id="region_text" autocomplete="off" style="width:100%;"/>
+            <input type="hidden" id="add_region_id" />
+            <input type="hidden" id="region_country_id" />
         </div>
-        <br/>
+        <div class="clear" ></div>
     </div>
+   
     
-    <div id="dialog-subregion" class="hidden" title="Add Subregion?">	
-        <h2 style="margin-bottom:15px;"> Add New Subregion</h2>
+    <div id="dialog-subregion" class="hidden" title="Add Edit Subregion">
+        <h2 style="margin-bottom:15px;" id="subregion_dialog_title" >Add Subregion</h2>
         <div class="input-main-label">
             <p>Subregion</p>
         </div>
         <div class="input-main">
-            <input type="text" style="width:100%;" id="add_subregion" ></input>
+            <input type="text" name="subregion_text" id="subregion_text" autocomplete="off" style="width:100%;"/>
+            <input type="hidden" id="add_subregion_id" />
+            <input type="hidden" id="subregion_region_id" />
         </div>
-        <br/>
+        <div class="clear" ></div>
     </div>
-
+    
     
     <div id="dialog-unique-wine" class="hidden" title="Warning - Duplicate Wine">
-            <p>
-                    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 10px 10px 0;"></span>
-                    Duplicate Wine - A wine with this name, wine type and producer already exists!
-            </p>
-            </br>
-            <p>
-                <b>OK</b> - to continue and create a duplicate wine<br/>
-                <b>Cancel</b> - to return to page and make changes
-            </p>
-
+        <p>
+            <span class="ui-icon ui-icon-alert" style="float:left; margin:0 10px 10px 0;"></span>
+            Duplicate Wine - A wine with this name, wine type and producer already exists!
+        </p>
+        </br>
+        <p>
+            <b>OK</b> - to continue and create a duplicate wine<br/>
+            <b>Cancel</b> - to return to page and make changes
+        </p>
+    </div>
+    
+    
+    <div id="dialog-location-select" class="hidden" title="Select Region">
+            <div id="con_listBox_location" ></div>
     </div>
 
 
+    <div class="hidden"><!--hidden fields-->
+        <span>wine_id: </span><input type="text"name="wine_id" id="wine_id" value="<?php echo $_SESSION['var_wine_temp']['wine_id']; ?>" ><br/>
+        <span>is_dirty: </span><input type="text" name="is_dirty" id="is_dirty" value="<?php echo $_SESSION['var_wine_temp']['is_dirty'];?>" ><br/>
+        <span>status: </span><input type="text" name="status" id="status" value="<?php echo $_SESSION['var_wine_temp']['status'];?>" ><br/> <!--determines add, edit, delete -->
+        <input type="text" name="country_id" id="country_id" value="<?php echo $_SESSION['var_wine_temp']['country_id'];?>" /><br/>
+        <input type="text" name="region_id" id="region_id" value="<?php echo $_SESSION['var_wine_temp']['region_id'];?>" /><br/>
+        <input type="text" name="subregion_id" id="subregion_id" value="<?php echo $_SESSION['var_wine_temp']['subregion_id'];?>" /><br/>
+    </div>    
 <?php
 
 
@@ -96,17 +139,14 @@ echo "<div class=\"page_container\">";
 
     //wine_form
     echo "<div class=\"con_single_form\" >";
-        echo "<input type=\"hidden\" name=\"status\" id=\"status\"/>"; //hidden field to store form editStatus
-
-        //Title bar
-        echo "<div class=\"con_title_bar\" >";
+        echo "<div class=\"con_title_bar\" >";  //title bar
             //wine name
             echo "<div style=\"border-bottom: solid 1px darkgray; padding-bottom:5px; margin-top:5px; margin-bottom:5px;\" >";
                 echo "<div style=\"float:left; width:3em;\" >";
                     echo "<img style=\"width:2.5em; height:2.5em;\" src=\"/images/wine_flat_grey_64.png\"  >";
                 echo "</div>";
                 echo "<div style=\"width:auto; float:left; padding-top:5px;\" >";
-                    echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >Wine Details</h1>";
+                    echo "<h1 class=\"inline\" style=\"padding-top:10px;\" >$title_text</h1>";
                 echo "</div>";
                 echo "<div class=\"vertical-centre\" style=\"padding-left:15px; float:left; height:2em;\"  >";
                     echo "<img id=\"process_indicator\" src=\"/images/ajax-loader.gif\" height=\"24px\" width=\"24px\" />";
@@ -121,39 +161,21 @@ echo "<div class=\"page_container\">";
             //filled by jquery load method - rpc_wine_form_html.php
         echo "</div>";
 
-        //Column 2
-        //echo "<div class=\"con_column_2_2\" >";
-        //    echo "<div style=\"float:left; margin-top:5px; margin-left:10px;\" id=\"con_listBox_vintages\" >";
-        //        // vintages/rpc_listBox_vintages_html.php
-         //   echo "</div>"; //vintages listBox
-        //echo "</div>";
-
-        
-        echo "<div id=\"error_labels\" class=\"clear\" style=\"padding:10px; display:none;\" >";
-            //empty
-        echo "</div>";
 
         //Button Bar
         echo "<div class=\"con_button_bar\" >";
             if(is_authed()){
                 echo "<input type=\"button\" name=\"btn_save\"  id=\"btn_save\" value=\"Save\" class=\"submit form_input\" />";
                 echo "<input type=\"button\" name=\"btn_edit\" id=\"btn_edit\" value=\"Edit\" />";
-                echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" value=\"Delete\" />";
+                echo "<input type=\"button\" name=\"btn_delete\" id=\"btn_delete\" value=\"Delete\" style=\"display:none\" />";
             }
             echo "<input type=\"button\" name=\"btn_close\" id=\"btn_close\" value=\"Close\" class=\"btn_close form_input\" />";
 
-            //if($_SESSION['var_wine_temp']['status']==1){ //add vintage check box
-            //    echo "<input type=\"checkbox\" style=\"margin-left:20px;\" value=\"Add Vintage\" name=\"add_vintage\" id=\"chk_add_vintage\" checked>";
-            //    echo "<label for=\"add_vintage\"> Add Vintage</label>";
-            //}
-
         echo "</div>";
-
 
         //clear page_container
         echo "<div class=\"clear\"></div>";
 
-        //echo "</div>"; //con_single_form_inner
     echo "</div>"; //con_single_form
 
 
@@ -163,16 +185,16 @@ echo "</div>"; //page_container
 require_once("$root/includes/standard_dialogs.inc.php");
 
 ?>
-
-        
-<div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:30;">
-    <div class="ui-menu-item-first" >New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Vintage<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+   
+<div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:35;">
+    <div class="ui-menu-item-first">New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Vintage<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
-    
 
 </body>
 
@@ -180,10 +202,8 @@ require_once("$root/includes/standard_dialogs.inc.php");
 
 $(document).ready(function(){
     
-    //FIX: Merchant autocomplete results is using escape character for '&' in Marks & Spencer
-
     //____Global variables____
-
+    var objLocation = null;
     var this_page = "/wine/wine.php";
 
 
@@ -194,7 +214,6 @@ $(document).ready(function(){
             return save_page(true);
         },
         page_url: this_page //set page url
-        
     });
 
     get_wine_session(); //get form status, calls load_wine_html, which calls initialise page
@@ -202,8 +221,9 @@ $(document).ready(function(){
     function load_wine_html(){
        //load vintage html from remote script
        $('#wine_form_content').load('/wine/rpc_wine_form_html.php', function(){
-            console.log('html loaded');
+            console.log('rpc_wine_form_html.php loaded');
             initialise_page(); //initialise page and set control status
+            
        });
     }
     
@@ -212,7 +232,7 @@ $(document).ready(function(){
         /* function to intialise page as html load means form
         *  will load after parent page has completed loading
         */
-
+       console.log('initialise page...');
         $('#process_indicator') //show ajax activity
         .hide()  // hide it initially
         .ajaxStart(function() {
@@ -224,56 +244,18 @@ $(document).ready(function(){
 
         set_autocomplete();
         set_validation();
-        initialise_dropdown();
-        loadVintageListbox($('#status').val()); //load vintage listbox
+
+        initialise_listBox_location(); //select location pop-up
+        $('#producer').focus(); //set initial focus
         update_page_status(); //update control states
-        $('#wine_name').focus(); //set initial focus
+        
     
     }
     
 
     //____functions____
-
-   
-    function initialise_dropdown(){
-        //populate dropdown boxes
-
-        load_region_select($("#country_id").val()); //populate region select
-        load_subregion_select($("#region_id").val()); //populate subregion select
-
-    }
     
-    
-    function loadVintageListbox(status){ //setup vintages listBox
-      //run as function to allow page status to de defined first and then
-      //load listBox knowing editStaus
-        
-        $("#con_listBox_vintages").listBox({
-            title: "Vintages",
-            width: 250,
-            height: 250,
-            scrollTo: true,
-            showTitle: true,
-            showFooter: true,
-            showBorder: true,
-            showRoundedCorners: false,
-            addClass: 'listBox_flat_theme',
-            listContent: '/vintage/rpc_listBox_vintages_html.php',
-            editStatus: status, //add(1),edit(2),read(3)
-            clickAdd: function(event, data){
-                add_vintage();
-            },
-            clickEdit: function(event, data){
-                var index = data.listBox_id;
-                open_vintage(index);
-            }
-
-        });
-        
-    }
-
-
-    function putWineServer(save_db){
+    function putWineServer(save_to_db){
         //put wine record to server
         //save_db (boolean) - true to commit data to db as well as session
         
@@ -284,37 +266,38 @@ $(document).ready(function(){
         var json_array = JSON.stringify(var_fields);
         console.log("serialize form data");
         console.log(json_array);
+        console.log('save_to_db = '+save_to_db);
         
         //post data to server and when completed return promise
-        $.when(post_data(save_db)).then(function(data){ 
-            //promise returned resolve
-            console.log("post_data to server returned resolved");
-            console.log(data);
-            deferred.resolve(true);
-            
-        }, function(data){
-            //promise returned reject
+        $.when(post_data(save_to_db)).then(function(data){ 
+            console.log("post_data to server returned resolved: "+data);
+            deferred.resolve(true); 
+        }, function(data){//promise rejected
             deferred.reject(data);
-            console.log("post_data to server returned reject");
-            console.log(data);
+            console.log("post_data to server returned rejected: "+data);
         });
 
 
-        function post_data(save_db){
+        function post_data(save_to_db){
             
             var def_post_data = $.Deferred();
 
             $.post("/wine/rpc_wine_db.php", {
                     action: 'put_wine_session',
                     json_array: json_array,
-                    save_db: save_db
+                    save_db: save_to_db
                 }, function(data){
                     console.log(data);
                     if(data.success){
-                        console.log('put_wine_session OK');
+                        console.log('put_wine_session OK db save_type = '+data.save_type);
+                        
+                        if(data.save_type == 'session'){ //session update - no need to process beyond here
+                           console.log('put_wine_to_session - put to session successfully');
+                           def_post_data.resolve(data);
+                        }
 
-                        if(data.save_type){
-                            console.log('db save_type = '+data.save_type);
+                        if(data.save_type == 'db update' || data.save_type == 'db insert' ){
+                            
                             $('#wine_id').val(data.wine_id); //update wine_id
                             $('#status').val('saved');//update status
                             obj_page.set_is_dirty(false);//reset is_dirty
@@ -329,7 +312,6 @@ $(document).ready(function(){
                             );
 
                             //go straight to add new vintage for new wines
-                            //if(data.save_type==='db insert' && $("#chk_add_vintage:checked").val() !== undefined){
                             if(data.save_type==='db insert'){
                                 //new wine - checkbox selected so create new vintage
                                 console.log('add vintage - redirect to vintage page');
@@ -341,18 +323,14 @@ $(document).ready(function(){
                             
                             def_post_data.resolve(true);
 
-                        } else {
-                            //no save_type returned from server side function
-                            console.log('put_wine_to_session no save_type returned');
-                            def_post_data.reject(data);
-                        }
+                        } 
 
                     } else {
                         console.log('put_wine_session failed with error = '+data.error);
                         def_post_data.reject(data);
                         
                         //display message
-                        $(".con_button_bar").notify("Save Failed with error: "+data.error,{
+                        $(".con_button_bar").notify(data.error,{
                             position: "top left",
                             style: "msg",
                             className: "error",
@@ -372,268 +350,87 @@ $(document).ready(function(){
             
     }; //putWineServer
 
-
-
-    function check_producer(){
-        //Check if producer is new and prompt user before adding
-        console.log('check_producer...');
-        
-        var def = $.Deferred();
-        
-        var producer_name = $('#producer').val();
-        
-        if( producer_name === "" ){ 
-            $('#producer_id').val("");//field is empty - clear key
-            console.log('no producer value entered');
-            def.resolve();
+    
+    function producerSelected(){
+        //function called once producer is selected
+        console.log('producerSelected');
+        var producer_id = $("#producer_id").val();
+        if(producer_id > 0){ //get count of wines for producer, and update wine session so that producer_id is updated
+            console.log('producerSelected producer_id: '+producer_id);
+            $.when( getWinesForProducerCount(producer_id), putWineServer() ).then(
+                function(count){
+                    if(count>0){
+                        $( "#con_wines_from_producer" ).load( "/wine/rpc_wine_from_producer_html.php" ); //load html into div
+                        $('#con_wines_from_producer').show('medium'); //show div
+                        console.log('producerSelected(): show wines for producer');
+                    }else{
+                        console.log('hide wines for producer');
+                        $('#con_wines_from_producer').hide('fast'); 
+                    }
+                }
+            );  
         }else{
-            $.when( producer_duplicate_check(producer_name) ).then(function(data){
-                console.log('producer_duplicate_check data: '+data);
-                def.resolve();
-            });
+            //no producer selected - hide wines div
+            $('#con_wines_from_producer').hide('fast'); 
         }
         
-        return def.promise();
-
-    }; 
-    
-    
-    function producer_duplicate_check(producer_name){
-
-            var def = $.Deferred();
-            console.log('producer_duplicate_db = '+producer_name);
-
-            if(producer_name == ""){
-                var msg = 'no producer_name provided - aborted!';
-                console.log(msg);
-                var response = {
-                    success: false,
-                    error: msg
-                };
-                def.reject(msg);
-            }
-
-            //producer_name = encodeURIComponent(producer_name);
-
-            $.post("/vintage/rpc_validate.php", {
-                field: 'producer', 
-                value: producer_name
-            },
-            function(xml) {
-                
-                if( $("status",xml).text() === "True" ){ //if status is true - then producer is already added
-                    //producer name exists - set key_country
-                    //key_producer = $("producer_key",xml).text();
-                    //$('#producer_id').val(key_producer);
-                    console.log('producer value matches db entry');
-
-                    def.resolve(xml);
-
-                } else { //new producer - clear key field
-                    console.log('Identified as new producer');
-                    $('#producer_id').val(""); //clear id field to remove any remnants
-                    $("#add_producer").val(producer_name);
-                    add_producer();
-                }
-                
-          }, "xml");
-
-        return def.promise();
-    };
-         
+    }
+             
  
-        
-
-
-   function get_wine_db(){
-        //get wine details from DB
-
-        $.post("/wine/rpc_wine_db.php",{
-            wine_id: window.wine_id,
-            action: 'get_from_db'
-
+    function getWinesForProducerCount(producer_id){
+       //return count of wines for given producer_id
+       
+       var def = $.Deferred();
+       
+       console.log('getWinesForProducerCount producer_id:'+producer_id);
+       
+       $.post("/wine/rpc_wine_db.php",{
+            producer_id: producer_id,
+            action: 'get_wine_count_for_producer'
             }, function(data) {
                 if(data.success){
-                    console.log('get_from_db successful');
-
-                    console.log(data.country);
-                    console.log(data.country_id);
-                    $("#country").val(data.country);
-                    $("#country_id").val(data.country_id);
-
-                    //fill region
-                    if(data.region_id){
-                        $("#region").val(data.region);
-                        $("#region_id").val(data.region_id);
-                    }
-
+                    console.log('getWinesForProducerCount successful');
+                    console.log('wine count = '+data.count);
+                    def.resolve(data.count);
                 } else {
-                    console.log('rpc_fill_country returned FAILED');
-                    return;
+                    console.log('getWinesForProducerCount failed');
+                    def.reject();
                 }
         }, "json");
-
-    }
-
-
-    function fill_country_region(field,index,text){
-    //auto populate country and region fields
-
-        console.log('fill_country_region - field='+field+' index='+index+' text='+text);
-        obj_page.set_is_dirty(true);
-
-        if(field==='country'){
-            //clear region and subregion
-            console.log('country changed - clear region and subregion');
-            $("#region").val('');
-            $("#region_id").val('');
-            $("#subregion").val('');
-            $("#subregion_id").val('');
-
-            //populate fields
-            if(index>0){
-                $("#country").val(text);
-                $("#country_id").val(index);
-                $("#select_country").val(index);
-            }else{
-                //index suggests no valid selection - clear all fields
-                $("#country").val('');
-                $("#country_id").val('');
-                $("#select_country").val(-1);
-            }
-
-            //update region select list
-            load_region_select(index);
-
-        }
-        
-        if (field==='region'){
-            //clear subregion
-            console.log('region changed - clear subregion');
-            $("#subregion").val('');
-            $("#subregion_id").val('');
-            
-            //get country values and populate
-            $.post("/wine/rpc_wine_db.php",{
-                action: 'get_country_for_region',
-                id: index
-                }, function(data) {
-                    if(data.success){
-                        console.log('get_country_for_region successful');
-                        console.log(data);
-                        
-                        //fill country details
-                        $("#country").val(data.country);
-                        $("#country_id").val(data.country_id);
-                        $("#select_country").val(data.country_id);
-                     
-                         //fill region
-                        $("#region").val(text);
-                        $("#region_id").val(index);
-                        $("#select_region").val(index);
-                        
-                        //refresh dropdowns
-                        load_region_select(data.country_id);
-                        load_subregion_select(index);
-
-                    } else {
-                        var msg = data.error;
-                        console.log(msg);
-                        return;
-                    }
-                }, "json");
-
-        }
-        
-        if (field==="subregion"){
-            
-            //get country and region details  
-            $.post("/wine/rpc_wine_db.php",{
-                action: 'get_region_for_subregion',
-                id: index
-                }, function(data) {
-                    if(data.success){
-                        console.log('get_region_for_subregion successful');
-                        console.log(data);
-                        //fill country details
-                        $("#country").val(data.country);
-                        $("#country_id").val(data.country_id);
-                        $("#select_country").val(data.country_id);
-                        //fill region details
-                        $("#region").val(data.region);
-                        $("#region_id").val(data.region_id);
-                        $("#select_region").val(data.region_id);
-                        //fill subregions
-                        $("#subregion").val(text);
-                        $("#subregion_id").val(index);
-                        $("#select_subregion").val(index);
-                        //refresh dropdowns
-                        load_region_select(data.country_id);
-                        load_subregion_select(data.region_id);
-                    } else {
-                        var msg = data.error;
-                        console.log(msg);
-                    }
-                }, "json");
-                
+       
+       return def.promise();
+   }
 
 
-            }
-        
-    }
-
-
-    function load_region_select(country_id){
-        //populate region select control
-        console.log('function: load_region_select');
-
-        $.post("/wine/rpc_wine_db.php", {
-            action: 'get_regions',
-            country_id: country_id
-            }, function(data){
-                if(data.success){
-                    console.log('get Region data successful');
-                    //update region select
-                    load_select_options('select_region','region_id','region',data.json_array,true);
-
-                    //call callback if provided
-                    if(typeof callback === 'function'){
-                        console.log('Call callback');
-                        callback();
-                    };
-
-                }else{
-                    console.log('get region select fill failed with error='+data.error);
-                }
-        }, "json");
-    }
-
-
-    function load_subregion_select(region_id){
-    //populate region select control
-        console.log('function: load_subregion_select');
-
-        $.post("/wine/rpc_wine_db.php", {
-            action: 'get_subregions',
-            region_id: region_id
-            }, function(data){
-                if(data.success){
-                    console.log('get subregion data successful');
-                    //update subregion select
-                    load_select_options('select_subregion','subregion_id','subregion',data.json_array,true);
-
-                    //call callback if provided
-                    if(typeof callback === 'function'){
-                        console.log('Call callback');
-                        callback();
-                    };
-
-                }else{
-                    console.log('load_subregion_select failed with error = '+data.error);
-                }
-        }, "json");
-
-    }
+//   function get_wine_db(){
+//        //get wine details from DB
+//
+//        $.post("/wine/rpc_wine_db.php",{
+//            wine_id: window.wine_id,
+//            action: 'get_from_db'
+//
+//            }, function(data) {
+//                if(data.success){
+//                    console.log('get_from_db successful');
+//
+//                    console.log(data.country);
+//                    console.log(data.country_id);
+//                    $("#country").val(data.country);
+//                    $("#country_id").val(data.country_id);
+//
+//                    //fill region
+//                    if(data.region_id){
+//                        $("#region").val(data.region);
+//                        $("#region_id").val(data.region_id);
+//                    }
+//
+//                } else {
+//                    console.log('rpc_wine_db returned FAILED');
+//                    return;
+//                }
+//        }, "json");
+//
+//    }
 
 
     function load_select_options(select,key_name,value_name,json_array){
@@ -684,7 +481,7 @@ $(document).ready(function(){
 
     function get_wine_session(callback){
         //get session variables for form
-
+        console.log('get_wine_session()');
         $.post("/wine/rpc_wine_db.php", {
             action: 'get_wine_session'
         }, function(data){
@@ -747,7 +544,7 @@ $(document).ready(function(){
            //inactive
            $('#btn_edit').attr('disabled', true).hide();
             //set focus
-            $('#wine_name').focus();
+            $('#producer').focus();
             $("#status").val(status); //set form status
         }
 
@@ -898,10 +695,17 @@ $(document).ready(function(){
     }
     
     
-    function add_vintage(rtn_url){
-        //add new vintage to open wine
-       
-        var wine_id = $("#wine_id").val();
+    function add_vintage(wine_id, rtn_url){
+        //add new vintage to wine
+        
+        if(wine_id > 0){
+            //new wine - use this wine_id
+            suppress_warning = true;
+        }else{
+           //existing wine
+           var wine_id = $("#wine_id").val();
+           suppress_warning = false;
+        }
         
         console.log('selected wine_id='+wine_id);
         
@@ -916,10 +720,11 @@ $(document).ready(function(){
             {
                 page_action: 'leave',
                 dst_url: "/vintage/vintage.php",
-                rtn_url: return_url,
+                rtn_url: "/index.php",
                 dst_type: 'vintage',
                 dst_action: 'add',
                 parent_id: wine_id,
+                no_dirty: suppress_warning,
                 
                 put_dst_details: function()
                 {
@@ -960,48 +765,37 @@ $(document).ready(function(){
     //____Actions & Events____
 
 
-    $(document).on('focus',":input",function() { //highlight input when it has focus
-        //highlight active input field
-        console.log('focus on '+$(this).attr('id'));
-        $(":input").removeClass("highlight_input");
+    //$(document).on('focus',":input",function() { //highlight input when it has focus
+    //    //highlight active input field
+    //    console.log('focus on '+$(this).attr('id'));
+    //    $(":input").removeClass("highlight_input");
+//
+   //     if($(this).attr('disabled') !== true){
+    //       $(this).removeClass("highlight_input").addClass("highlight_input");
+    //    };
 
-        if($(this).attr('disabled') !== true){
-           $(this).removeClass("highlight_input").addClass("highlight_input");
-        };
-
-    });
+    //});
     
 
-    $("#frm_wine").submit(function(){
-        //save button - save wine to database after validation
+//    $("#frm_wine").submit(function(){
+//        //save button - save wine to database after validation
+//
+//        console.log('frm_wine submitted');
+//        //validate form
+//        console.log('validate form');
+//        $("#frm_wine").validate();
+//
+//        if($("#frm_wine").valid()){
+//            console.log('form validation OK - continue to save');
+//            save_wine_to_db(false);
+//        }else{
+//            console.log('form validation FAILED');
+//        }
+//
+//        return false;
+//    });
 
-        console.log('frm_wine submitted');
-        //validate form
-        console.log('validate form');
-        $("#frm_wine").validate();
 
-        if($("#frm_wine").valid()){
-            console.log('form validation OK - continue to save');
-            save_wine_to_db(false);
-        }else{
-            console.log('form validation FAILED');
-        }
-
-        return false;
-    });
-
-
-
-    $(document).on('blur','#producer',function(){
-        //check if producer is new on blur
-        console.log('producer - blur event');
-        //delay added to allow time to select autocomplete before checking
-        setTimeout(function(){
-            ( !$.trim( $('#producer').val() ) ) ? false : check_producer();
-            //check_producer();
-        }, 500);
-    });
-    
     
     function validate_page(){
         //validate page
@@ -1009,21 +803,11 @@ $(document).ready(function(){
 
         if( !$("#frm_wine").valid() ){ //validation failed do NOT continue
             console.log('frm_wine failed validation');
-            $('#unsaved').dialog('close'); //close save_dialog if it is open to allow form validation to be corrected
-            //display message
-            $(".con_button_bar").notify("Validation Failed",{
-                position: "top left",
-                style: "msg",
-                className: "warning",
-                arrowShow: false,
-                autoHideDelay: 1000
-                }
-            );
-            
+            $('#unsaved').dialog('close'); //close save_dialog if it is open to allow form validation to be corrected      
             def.reject('frm_wine failed validation');
         }else{
            console.log('frm_wine validated OK'); 
-           def.resolve();
+           def.resolve('frm_wine validated OK');
         };
         
         return def.promise();
@@ -1039,25 +823,16 @@ $(document).ready(function(){
          
         validate_page().done(function(response){
             console.log('Page validation successful. response = '+response);
-            //check to see if Producer needs to be added
-            check_producer()
-                .then(function(){ //check producer is not new
-                    console.log("check_producer - promise resolved");
-                    putWineServer(save_db).then(function(){ //put wine to server
-                        console.log("putWineServer successful");
-                        update_page_status(3);
-                        def.resolve(true);
-                    });
-                },function(){
-                    var msg = "check_producer - promise rejected";
-                    console.log(msg);
-                    var response = {
-                        status: false,
-                        error: msg
-                    };
-                    def.reject(false);
-            }); //check_producer
-            
+          
+            putWineServer(save_db).then(function(){ //put wine to server
+                console.log("putWineServer successful");
+                update_page_status(3);
+                def.resolve(true);
+            }).fail(function(response){ //save to db failed
+                console.log("putWineServer failed: "+response);
+                def.reject(false);
+            });
+                
         }).fail(function(response){
             console.log('Page validation failed. response = '+response);
         });
@@ -1103,55 +878,17 @@ $(document).ready(function(){
 
     });
 
+
     $(document).on('click',"#btn_add_producer",function(){
         console.log('show add producer dialog');
         add_producer();
     });
 
 
-    $(document).on('click',"#btn_add_country",function(){
-        console.log('add country click event');
-        add_new_country();
-    });
-
-
-     $(document).on('click',"#btn_add_region",function(){
-        console.log('add region');
-        if($('#country').val()>""){
-            console.log('open add_region dialog');
-            add_new_region();
-        }else{
-            msg = 'Please select a Country before attempting to add a new Region';
-            $(".con_button_bar").notify(msg,{
-                position: "top left",
-                style: "msg",
-                className: "warning",
-                arrowShow: false,
-                autoHideDelay: 3000
-                }
-            );
-        }
-
-    });
-
-
-    $(document).on('click',"#btn_add_subregion",function(){
-        console.log('add subregion');
-        if($('#region_id').val() > 0){
-            console.log('open add_subregion dialog');
-            add_new_subregion();
-        }else{
-            msg = 'Please select a Region before attempting to add a new Subregion';
-            $(".con_button_bar").notify(msg,{
-                position: "top left",
-                style: "msg",
-                className: "warning",
-                arrowShow: false,
-                autoHideDelay: 3000
-                }
-            );
-        }
-
+    $(document).on('click',".btn_add_vintage",function(event){
+        var wine_id = $(this).data('wine_id');
+        console.log('add new vintage to wine: '+wine_id);
+        add_vintage(wine_id);
     });
 
 
@@ -1161,6 +898,9 @@ $(document).ready(function(){
         $("#producer_id").val(index);
         $("#producer").val(text);
         $("#select_producer").val(index);
+        if(index > 0){ //producer selected
+            producerSelected();
+        }
     });
 
 
@@ -1199,61 +939,56 @@ $(document).ready(function(){
 
 
 
-
-
-
-
     //____Form Validation____
 
     function set_validation(){
         //validation - handled as function so that it can be called after html has loaded
 
-        //console.log('set form validation');
-
         $("#frm_wine").validate({
             rules: {
-                year: {number: true, range: [1800,9999]},
-                winetype_id: {number: true, required: true},
-                country: {required: true},
-                region: {required: true},
                 producer: {required: true},
                 wine: {required: true},
-                country_id: {
-                    number: true,
-                    required: function(element){
-                        return ($("#input_country").val()=="False");
-                    }
-                },
-                producer_id: {
-                    number: true,
-                    required: function(element){
-                        return ($("#input_producer").val()=="False");
-                    }
-                }
+                winetype_id: {number: true, required: true},
+                location: {required: true},
+                region_id: {number: true, required: true}
             },
             messages: {
-
-                type: {
-                    required: "Wine type is required<br/>"
-                },
                 producer: {
-                    required: "Producer is required</br>"
-                },
-                country: {
-                    required: "Country is required</br>"
-                },
-                region: {
-                    required: "Region is required</br>"
+                    required: "Producer is required"
                 },
                 wine: {
-                    required: "Wine name is required</br>"
+                    required: "Wine Name is required"
                 },
-                key_country: "Add country to List",
-                year: "4 digits"
+                type: {
+                    required: "Wine type is required"
+                },
+                location: {
+                    required: "Region is required"
+                }
             }, //messages
-            errorLabelContainer: $('#error_labels')
+            errorPlacement: function(error, element){}, //prevent error messages being displayed
+            invalidHandler: function(event, validator){
+                //validation failed
+                console.log('Validation failed');
+                var errorMsg = validator.errorList;
+                var errorMsgCombined = "";
+                for(var key in errorMsg){
+                    errorMsgCombined = errorMsgCombined + errorMsg[key]['message'] + "\n";
+                }
+
+                $(".con_button_bar").notify(errorMsgCombined,{
+                    position: "top left",
+                    style: "msg",
+                    className: "warning",
+                    arrowShow: false,
+                    autoHideDelay: 3000
+                });
+                
+            }
         });
     }
+    
+
 
     //____AutoComplete Fields____
     
@@ -1266,7 +1001,6 @@ $(document).ready(function(){
         var start = new Date().getTime();
         
         $("#producer").autocomplete({
-            //source: "/wine/autocomplete_results.php",
             source: function(request, response) {
                 $.ajax({
                     url: "/wine/autocomplete_results.php",
@@ -1281,215 +1015,41 @@ $(document).ready(function(){
                 });
             },
             minLength: 2,
+            autoFocus:true,
             select: function( event, ui ) {
-                console.log("Selected: " + ui.item.value + " aka " + ui.item.id + " input was " + this.value );
+                console.log("Selected: " + ui.item.value + " id: " + ui.item.id + " input was " + this.value );
                 console.log(ui);
                 if(ui.item.id){
                     $("#producer_id").val(ui.item.id);
                     $("#select_producer").val(ui.item.id);
+                    $("#producer").val(ui.item.value);
                     obj_page.set_is_dirty(true);
+                    producerSelected();
                 }
             },
             open: function(){
                 if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //resolves two click issue in IOS
                     $('.ui-autocomplete').off('menufocus hover mouseover');
-                }
-            }
-        });
-        
-        
-        $("#country").autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: "/wine/autocomplete_results.php",
-                    dataType: "json",
-                    data: {
-                        term : request.term,
-                        category : 'country'
-                    },
-                    success: function(data) {
-                        response(data);
-                    }
-                });
-            },
-            minLength: 1,
-            autoFocus: true,
-            select: function( event, ui ) {
-                console.log("Selected: " + ui.item.value + " aka " + ui.item.id + " input was " + this.value );
-                console.log(ui);
-                if(ui.item.id){
-                    $("#country_id").val(ui.item.id);
-                    $("#select_country").val(ui.item.id);
-                    clear_region();
-                    obj_page.set_is_dirty(true);
                 }
             },
             change: function(e, ui) {
-                if (!ui.item) { //no match event
+                console.log('Producer autocomplete change event');
+                if (!ui.item) { //no match event clear producer
                     $(this).val("");
-                    $("#country_id").val(""); //clear country_id
-                    clear_region();
+                    $("#producer_id").val(""); //clear producer_id
+                    producerSelected();
                 }
             },
-            response: function(e, ui) {
-                if (ui.content.length == 0) {
-                    $(this).val("");
-                    clear_region();
+            search: function(e, ui) {
+                console.log('Producer autocomplete search event');
+                if (!ui.item) { //no match event clear producer
+                    $("#producer_id").val(""); //clear producer_id
+                    producerSelected();
                 }
-            },
-            open: function(){
-                if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //resolves two click issue in IOS
-                    $('.ui-autocomplete').off('menufocus hover mouseover');
-                }
-            }
-        }).on("keydown", function(e) {
-            if (e.keyCode == 27) {
-                $(this).val(""); //clear value on escape
-                clear_region();
-            }
-        }).on("keyup", function(e){
-            if($('#country').val()==""){ //clear values when deleted
-                clear_region();
             }
         });
+    }
         
-        
-        function clear_region(){
-            //clear region and subregion values
-            console.log("reset region and subregion values"); 
-            $("#region").val(''); //clear region values
-            $("#region_id").val(''); 
-            $("#subregion").val(''); //clear region values
-            $("#subregion_id").val('');
-            var country_id = $("#country_id").val();
-            load_region_select(country_id);
-            load_subregion_select();
-        }
-        
-        
-        $("#region").autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: "/wine/autocomplete_results.php",
-                    dataType: "json",
-                    data: {
-                        term : request.term,
-                        category : 'region',
-                        country_id: $('#country_id').val()
-                    },
-                    success: function(data) {
-                        response(data);
-                    }
-                });
-            },
-            minLength: 1,
-            autoFocus: true,
-            select: function( event, ui ) {
-                console.log("Selected: " + ui.item.value + " aka " + ui.item.id + " input was " + this.value );
-                console.log(ui);
-                if(ui.item.id){
-                    fill_country_region('region', ui.item.id, ui.item.label);
-                }
-            },
-            change: function(e, ui) {
-                if (!ui.item) { //no match
-                    $(this).val("");
-                    $("#region_id").val('');
-                    clear_subregion();
-                }
-            },
-            response: function(e, ui) {
-                if (ui.content.length == 0) {
-                    $(this).val("");
-                    clear_subregion();
-                }
-            },
-            open: function(){
-                if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //resolves two click issue in IOS
-                    $('.ui-autocomplete').off('menufocus hover mouseover');
-                }
-            }
-        }).on("keydown", function(e) {
-            if (e.keyCode == 27) {
-                $(this).val(""); //clear value on escape
-                clear_subregion();
-            }
-        }).on("keyup", function(e){
-            console.log("#region val= "+$('#region').val());
-            if($('#region').val()==""){
-                console.log('Region value is empty');
-                clear_subregion();
-            }
-        });
-        
-        
-        $("#subregion").autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: "/wine/autocomplete_results.php",
-                    dataType: "json",
-                    data: {
-                        term : request.term,
-                        category : 'subregion',
-                        region_id: $('#region_id').val()
-                    },
-                    success: function(data) {
-                        console.log('subregion_ac data:');
-                        console.log(data);
-                        response(data);
-                    }
-                });
-            },
-            minLength: 1,
-            autoFocus: true,
-            select: function( event, ui ) {
-                console.log("Selected: " + ui.item.value + " aka " + ui.item.id + " input was " + this.value );
-                console.log(ui);
-                if(ui.item.id){
-                    fill_country_region('subregion', ui.item.id, ui.item.label);
-                }
-            },
-            change: function(e, ui) {
-                if (!ui.item) {
-                    $(this).val("");
-                }
-            },
-            response: function(e, ui) {
-                if (ui.content.length == 0) {
-                    $(this).val("");
-                }
-            },
-            open: function(){
-                if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //resolves two click issue in IOS
-                    $('.ui-autocomplete').off('menufocus hover mouseover');
-                }
-            }
-        }).on("keydown", function(e) {
-            if (e.keyCode == 27) {
-                $(this).val(""); //clear value on escape
-            }
-        });
-        
-        
-        function clear_subregion(){
-            $("#subregion").val(''); //clear region values
-            $("#subregion_id").val('');
-            var region_id = $("#region_id").val();
-            load_subregion_select(region_id);
-        }
-        
-        
-
-        
-        var end = new Date().getTime();
-        var time = end - start;
-        console.log("time for autocomplete = "+time);
-        
-    } //set_autocomplete
-
-
-
-
 
 
 
@@ -1518,17 +1078,19 @@ $(document).ready(function(){
         
         var def = $.Deferred();
         
-        //determine screen size
+        //dynamically determine dialog size
         var windowWidth = $(window).width();
         if(windowWidth > 500){
             dialogWidth = 370;
-            positionMy = "left bottom";
+            dialogHeight = 225;
+            positionMy = "left top";
             positionAt = "right top";
             positionOf = '#btn_add_producer'
         } else {
-            dialogWidth = windowWidth;
-            positionMy = "right top+20px";
-            positionAt = "right bottom";
+            dialogWidth = windowWidth-20;
+            dialogHeight = 200;
+            positionMy = "center top+20px";
+            positionAt = "centre bottom";
             positionOf = "#top_nav";
         }  
         
@@ -1540,7 +1102,7 @@ $(document).ready(function(){
         $("#dialog-producer").dialog({
             modal: true,
             width: dialogWidth,
-            height:205,
+            height: dialogHeight,
             buttons: {
                 OK: function() {
                     console.log('add_producer_dialog - response: OK'); 
@@ -1556,10 +1118,10 @@ $(document).ready(function(){
                     var_response = {
                         button: 'Cancel'
                     };
-                    if(automated_add){ //user cancelled an automated add so clear all fields
-                        $("#producer").val(''); //clear values
-                        $("#producer_id").val('');
-                    }
+//                    if(automated_add){ //user cancelled an automated add so clear all fields
+//                        $("#producer").val(''); //clear values
+//                        $("#producer_id").val('');
+//                    }
                     $("#add_producer" ).val("");
                     $(this).dialog('close');
                     def.reject(var_response);
@@ -1592,30 +1154,31 @@ $(document).ready(function(){
             return false;
         }
 
-        $.post("/wine/rpc_wine_db.php", {
+
+        $.post("/admin/rpc_ref_data.php", {
             value: producer,
-            action: 'add_producer_db'
+            //action: 'add_producer_db'
+            action: 'save_producer_db'
         }, function(data){
             if(data.success){
-                console.log('add_producer_db successful id: '+data.producer_id);
-                //set producer value
-                $("#producer_id").val(data.producer_id);
+                console.log('add_producer_db successful id: '+data.id);
+                $("#producer_id").val(data.id); //set producer values
                 $("#producer").val(producer);
-                $("#producer").focus();
                 
-                //reset and close dialog
+                 //reset and close dialog
                 $( "#add_producer" ).val("");
                 $( "#dialog-producer" ).dialog( "close" );
                 
-                var msg = ('Add Producer Successful');
-                $(".con_button_bar").notify(msg,{
-                    position: "top left",
-                    style: "msg",   
-                    className: "success",
-                    arrowShow: false
-                    }
-                );
-
+                $('#con_wines_from_producer').hide('fast',function(){ //new wine - close wine list div before showing notification otherwise it it orphaned
+                    var msg = ('Add Producer Successful');
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",   
+                        className: "success",
+                        arrowShow: false
+                    });
+                }); 
+               
                 if(typeof(callback) === "function"){
                     console.log('add_producer_db callback');
                     callback();
@@ -1635,61 +1198,71 @@ $(document).ready(function(){
             }
         }, "json");
     }
-
+    
 
     function add_new_country(){
         //open dialog to add new country
         console.log('add_new_country');
-        $( "#dialog-country" ).dialog( "open" );//open dialog
-        $('#new_country').focus();
+        $('#add_country_id').val(-1); //set hidden id field to neg to identify as new
+        $('#country_text').val(null);
+        $('#flag_file').val(null);
+        //open dialog
+        $("#dialog-country").dialog( "open" ); //open dialog
+        $('#country_text').focus();
     }
+    
+    
+    function edit_country(index, data){
+        console.log("edit country index="+index);
+        if(index <= 0){
+            console.log('edit_county - incomplete parameters');
+        }
+        var country = data.listBox_values[0];
+        var flag_file = data.listBox_values[2];
+        $('#add_country_id').val(index);//fill form fields
+        $('#country_text').val(country);
+        $('#flag_file').val(flag_file);
+        $("#country_dialog_title" ).text( "Edit Country" ); //update dialog title
+        $("#dialog-country").dialog( "open" ); //open dialog
+        $('#country_text').focus();
 
+    }
+    
 
     $( "#dialog-country" ).dialog({
-            //requires jquery-ui plug-in
-            autoOpen: false,
-            modal: true,
-            width: 365,
-            height:205,
-            buttons: {
-                    "OK": function() {
-                        var new_country = $('#add_country').val();
-                        console.log(new_country);
-                        add_country_to_db(new_country, function(){
-                            $('#dialog-country').dialog( "close" );
-                        });
-                    },
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
-                    }
-            },
-            dialogClass: "clean-dialog",
-            position: { my: "left bottom", at: "right top", of: '#btn_add_country' },
-            close: function() {
-                   $('#add_country').val( "" );
-            }
-    });
-    
-    
-    
-    $("#dialog-country").keydown(function (event) { //set default enter behaviour
-        console.log("return key keydown event detected");
-        if (event.keyCode == 13) {
-            $(this).parent()
-                   .find("button:eq(1)").trigger("click");
-            return false;
+        autoOpen: false,
+        height: 310,
+        width: 325,
+        modal: true,
+        buttons: {
+                OK: function() {
+                    var country_text = $('#country_text').val();
+                    var country_flag = $('#flag_file').val();
+                    var country_id = $('#add_country_id').val();
+                    add_country_to_db(country_text, country_flag, country_id, function(){
+                        $('#dialog-country').dialog( "close" );
+                    });
+                },
+                Cancel: function() {
+                        $(this).dialog( "close" );
+                }
+        },
+        dialogClass: "clean-dialog",
+        position: { my: "center bottom", at: "center top", of: '#con_listBox_location_footer' },
+        close: function() {
+            $('#country_text').val('');
         }
     });
-
-
-    function add_country_to_db(country, callback){
-        //add country to  db
-        console.log('add_country_to_db');
+    
+    
+    function add_country_to_db(country, flag, country_id, callback){
+        //add country to db
+        console.log('add_country_to_db country = '+country);
         
         if(!$.trim(country)){
             msg = "Country name cannot be blank";
-            $(".ui-dialog-buttonset").notify(msg,{
-                position: "top right",
+            $('#dialog-country').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                position: "top left",
                 style: "msg",
                 className: "warning",
                 arrowShow: false,
@@ -1697,39 +1270,38 @@ $(document).ready(function(){
                 }
             );
             return false;
-        }
-
+        } 
+        
         $.post("/admin/rpc_ref_data.php",{
             action: 'save_country_db',
-            country_text: country
-
+            country_text: country,
+            country_flag: flag,
+            country_id: country_id
             }, function(data) {
                 if(data.success){
-                    console.log('rpc add_country_to_db SUCCESS');
-                    //update form with newly added country
-                    $('#country').val(country);
+                    console.log('add_country_to_db successful');
+                    $('#country').val(country);//update form with newly added value
                     $('#country_id').val(data.country_id);
-                    //clear region and subregion as country is new
-                    $('#region').val('');
-                    $('#region_id').val('');
-                    $('#subregion').val('');
-                    $('#subregion_id').val('');
-                    var msg = ('Add Country Successful');
-                    $(".con_button_bar").notify(msg,{
+                    var msg = ('Save country successful');
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
                         position: "top left",
                         style: "msg",   
                         className: "success",
                         arrowShow: false
                         }
                     );
+            
+                    $("#con_listBox_location").listBox('refresh',data.country_id); //refresh listbox and show new item
+                    
                     if($.isFunction(callback)){
                         callback();
                     }
+                    
                 } else {
                     var msg = data.error;
                     console.log(msg);
-                    $(".ui-dialog-buttonset").notify(msg,{
-                        position: "top right",
+                    $('#dialog-country').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
                         style: "msg",
                         className: "warning",
                         arrowShow: false,
@@ -1740,26 +1312,72 @@ $(document).ready(function(){
                 }
         }, "json");
     }
+    
+    
+    $("#dialog-country").keydown(function (event) { //set default enter behaviour
+        console.log("return key keydown event detected");
+        if (event.keyCode == 13) {
+            $(this).parent()
+                   .find("button:eq(1)").trigger("click");
+            return false;
+        }
+    });
+    
+    
+    
+    $('#con_listBox_location').keydown(function(e){
+        console.log("keydown event detected");
+        if (e.keyCode == 39) {      
+            $(".move:focus").next().focus();
+            $(this).closest('div').next().find('.listBox_row').first().focus();
 
+        }
+        if (e.keyCode == 37) {      
+            $(".move:focus").prev().focus();
 
+        }
+    });
+    
 
-    function add_new_region(){
+    function add_new_region(parent_id){
         //open dialog to add new country
         console.log('add_new_region function');
-        $( "#dialog-region" ).dialog( "open" ); //open dialog
-        $('#add_region').focus();
+        $('#region_country_id').val(parent_id); //set parent_id
+        $('#region_text').val(''); //clear form
+        $('#add_region_id').val(''); //clear form
+        $("#region_dialog_title" ).text( "Add Region" ); //update dialog title
+        $("#dialog-region").dialog( "open" ); //open dialog
+        $('#region_text').focus(); //set focus on text field
     }
-
+    
+    
+    function edit_region(index, value, parent_index){
+        //edit region
+        console.log('edit_region index='+index);
+        if(index <= 0){ 
+            return false;
+            console.log('edit_region - incomplete parameters');
+        }
+        $('#add_region_id').val(index);
+        $('#region_text').val(value);
+        $('#region_country_id').val(parent_index);
+        $("#region_dialog_title" ).text( "Edit Region" ); //update dialog title
+        $("#dialog-region").dialog( "open" );
+        $('#region_text').focus();
+    };
+  
 
     $( "#dialog-region" ).dialog({
             autoOpen: false,
-            height: 205,
-            width: 365,
+            height: 225,
+            width: 325,
             modal: true,
             buttons: {
-                    "OK": function() {
-                        var new_region = $('#add_region').val();
-                        add_region_to_db(new_region, function(){
+                    OK: function() {
+                        var region_id = $('#add_region_id').val();
+                        var region_text = $('#region_text').val();
+                        var country_id = $('#region_country_id').val();
+                        add_region_to_db(region_text, region_id, country_id, function(){
                             $('#dialog-region').dialog( "close" );
                         });
                     },
@@ -1768,9 +1386,11 @@ $(document).ready(function(){
                     }
             },
             dialogClass: "clean-dialog",
-            position: { my: "left bottom", at: "right top", of: '#btn_add_region' },
+            position: { my: "left bottom", at: "left top", of: '#con_listBox_location_btn_add' },
             close: function() {
-                   $('#add_region').val( "" )
+                $('#region_text').val('');
+                $('#dialog-region').removeData('id');
+                $('#dialog-region').removeData('parent_id');
             }
     });
     
@@ -1784,7 +1404,7 @@ $(document).ready(function(){
     });
     
 
-    function add_region_to_db(region, callback){
+    function add_region_to_db(region, region_id, country_id, callback){
         //add region to  db
         console.log('add_region_to_db region = '+region);
         
@@ -1800,34 +1420,36 @@ $(document).ready(function(){
             );
             return false;
         } 
-        var country_id = $('#country_id').val();
         
         $.post("/admin/rpc_ref_data.php",{
-            action: 'add_region',
-            region: region,
+            action: 'save_region_db',
+            region_text: region,
+            region_id: region_id,
             country_id: country_id
             }, function(data) {
                 if(data.success){
-                    console.log('rpc add_region_to_db SUCCESS');
-                    //update form with newly added value
-                    $('#region').val(region);
+                    console.log('add_region_to_db successful');
+                    $('#region').val(region);//update form with newly added value
                     $('#region_id').val(data.region_id);
-                    var msg = ('Add Region Successful');
-                    $(".con_button_bar").notify(msg,{
+                    var msg = ('Save region successful');
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
                         position: "top left",
                         style: "msg",   
                         className: "success",
                         arrowShow: false
                         }
                     );
+            
+                    $("#con_listBox_location").listBox('refresh',data.region_id); //refresh listbox and show new item
+                    
                     if($.isFunction(callback)){
                         callback();
                     }
                 } else {
                     var msg = data.error;
                     console.log(msg);
-                    $(".ui-dialog-buttonset").notify(msg,{
-                        position: "top right",
+                    $('#dialog-region').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
                         style: "msg",
                         className: "warning",
                         arrowShow: false,
@@ -1840,41 +1462,63 @@ $(document).ready(function(){
     }
 
 
-    function add_new_subregion(){
-        //open dialog to add new country
+    function add_new_subregion(id, parent_id){
+        //open dialog to add new subregion
         console.log('add_new_subregion function');
-        $( "#dialog-subregion" ).dialog( "open" );//open dialog
-        $('#add_subregion').focus();
+        $('#subregion_text').val(''); //clear form text
+        $('#subregion_region_id').val(id); //set region_id on dialog hidden field
+        $("#subregion_dialog_title" ).text( "Add Subregion" ); //update dialog title
+        $('#dialog-subregion').dialog( "open" ); //open dialog
+        $('#subregion_text').focus(); //set focus
     }
+    
+    
+    function edit_subregion(index, value, parent_index){
+        console.log('edit_subregion='+index);
+        if(index <= 0){
+            console.log('nothing selected');
+            return false;
+        }
+        $('#add_subregion_id').val(index); //fill dialog form fields
+        $('#subregion_text').val(value);
+        $('#subregion_region_id').val(parent_index);
+        $("#subregion_dialog_title" ).text( "Edit Subregion" ); //update dialog title
+        $("#dialog-subregion").dialog( "open" );
+        $('#subregion_text').focus();
 
+    };
 
     $( "#dialog-subregion" ).dialog({
-        //requires jquery-ui plug-in
             autoOpen: false,
-            height: 205,
-            width: 365,
+            height: 225,
+            width: 325,
             modal: true,
             buttons: {
-                    "OK": function() {
-                        var new_subregion = $('#add_subregion').val();
-                        add_subregion_to_db(new_subregion, function(){
+                    OK: function() {
+                        subregion_text = $('#subregion_text').val();
+                        subregion_id = $('#add_subregion_id').val();
+                        region_id = $('#subregion_region_id').val();
+                        add_subregion_to_db(subregion_text, region_id, subregion_id, function(){
                             $('#dialog-subregion').dialog( "close" );
                         });
                     },
-                    Cancel: function() {
-                            $( this ).dialog( "close" );
+                    Close: function() {
+                        $('#dialog-subregion').dialog( "close" );
                     }
             },
             dialogClass: "clean-dialog",
-            position: { my: "left bottom", at: "right top", of: '#btn_add_subregion' },
+            position: { my: "left bottom", at: "right top", of: '#con_listBox_location_btn_add' },
             close: function() {
-                   $('#add_subregion').val( "" );
+                $('#subregion_text').val(''); //clear dialog form fields
+                $('#add_subregion_id').val('');
+                $('#subregion_region_id').val('');
             }
+            
     });
     
     
     $("#dialog-subregion").keydown(function (event) { //set default enter behaviour
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             $(this).parent()
                    .find("button:eq(1)").trigger("click");
             return false;
@@ -1882,14 +1526,15 @@ $(document).ready(function(){
     });
 
 
-    function add_subregion_to_db(subregion, callback){
+    function add_subregion_to_db(subregion_text, region_id, subregion_id, callback){
         //add subregion to  db
-        console.log('add_subregion_to_db');
+
+        console.log('add_subregion_to_db subregion: '+subregion_text+' region_id: '+region_id);
         
-        if(!$.trim(subregion)){
+        if(!$.trim(subregion_text)){
             msg = "Subregion name cannot be blank";
-            $(".ui-dialog-buttonset").notify(msg,{
-                position: "top right",
+            $('#dialog-subregion').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                position: "top left",
                 style: "msg",
                 className: "warning",
                 arrowShow: false,
@@ -1899,76 +1544,80 @@ $(document).ready(function(){
             return false;
         }
         
-        var region_id = $('#region_id').val();
         $.post("/admin/rpc_ref_data.php",{
-            action: 'add_subregion',
-            subregion: subregion,
-            region_id: region_id
+            action: 'save_subregion_db',
+            subregion_text: subregion_text,
+            region_id: region_id,
+            subregion_id: subregion_id
             }, function(data) {
-                if(data.success){
-                    console.log('rpc add_subregion_to_db SUCCESS');
-                    //update form with newly added value
-                    $('#subregion').val(subregion);
-                    $('#subregion_id').val(data.subregion_id);
-                    var msg = ('Add Subregion Successful');
-                    $(".con_button_bar").notify(msg,{
+                if(data.success){   
+                    var msg = ('Save subregion successful');
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{ //show message on location dialog because subregion dialog has closed
                         position: "top left",
                         style: "msg",   
                         className: "success",
                         arrowShow: false
                         }
                     );
+                    
+                    $("#con_listBox_location").listBox('refresh',data.subregion_id); //refresh listbox and show new item
+            
                     if($.isFunction(callback)){
                         callback();
                     }
+         
                 } else {
                     var msg = data.error;
                     console.log(msg);
-                    $(".ui-dialog-buttonset").notify(msg,{
-                        position: "top right",
+                    $('#dialog-subregion').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
                         style: "msg",
                         className: "warning",
                         arrowShow: false,
                         autoHideDelay: 3000
                         }
                     );
-                    return;
+                 
                 }
         }, "json");
-    }
+
+    };
+    
 
 
-    $("#frm_add_subregion").validate({
-        rules:
-        {
-            new_subregion:
-            {
-                required: true,
-                remote: {
-                    url: "/admin/rpc_duplicate_subregion.php",
-                    type: "post",
-                    data: {
-                        region_id: function(){
-                            return $('#region_id').val();
-                        }
-                    }
 
-                }
 
-            }
-       },//rules
-       messages:
-       {
-            new_subregion:
-            {
-                required: "Enter name of Subregion",
-                remote: "Subregion already added"
-            }
-      },
-      errorPlacement: function(error, element) {
-                error.insertAfter($('#error_message_subregion'));
-            }
-    });
+//    $("#frm_add_subregion").validate({
+//        rules:
+//        {
+//            new_subregion:
+//            {
+//                required: true,
+//                remote: {
+//                    url: "/admin/rpc_duplicate_subregion.php",
+//                    type: "post",
+//                    data: {
+//                        region_id: function(){
+//                            return $('#region_id').val();
+//                        }
+//                    }
+//
+//                }
+//
+//            }
+//       },//rules
+//       messages:
+//       {
+//            new_subregion:
+//            {
+//                required: "Enter name of Subregion",
+//                remote: "Subregion already added"
+//            }
+//      },
+//      errorPlacement: function(error, element) {
+//                error.insertAfter($('#error_message_subregion'));
+//            }
+//    });
 
 
     $("#dialog-form-add-subregion").keydown(function (event) { //set default enter behaviour
@@ -2052,11 +1701,17 @@ $(document).ready(function(){
                     case 'Wines':
                         open_wines();
                         break;
+                    case 'Reporting':
+                        open_reporting();
+                        break;
                     case 'Reference Data':
                         open_reference_data();
                         break;
+                    case 'Settings':
+                        open_settings();
+                        break;
                     default:
-                        console.log('selected_item not recognised: '+selected_item);
+                        console.log('manin menu selected_item not recognised: '+selected_item);
                 }
                 break;
 
@@ -2077,17 +1732,6 @@ $(document).ready(function(){
     }
 
 
-    function open_reference_data(){
-        //open ref data page
-        obj_page.leave_page({
-            dst_url: "/admin/index_admin.php",
-            rtn_url: this_page,
-            dst_action: 'open',
-            page_action: 'leave'
-        });
-    }
-
-
     function add_wine(){
         //Add new wine
         obj_page.leave_page({
@@ -2100,6 +1744,7 @@ $(document).ready(function(){
         });
 
     };
+
 
     function add_acquisition(){
         //add new acquisition
@@ -2117,6 +1762,641 @@ $(document).ready(function(){
     
 
 
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });  
+    }
+    
+    
+    function open_reference_data(){
+        //open ref data page
+        obj_page.leave_page({
+            dst_url: "/admin/index_admin.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+
+    
+    function initialise_listBox_location(){
+        
+        //determine size based on window dims
+        var width = $(window).width();
+        var height = $(window).height();
+        console.log('window.width: '+width);
+        console.log('window.length: '+height);
+        if(width<450){
+            width = '90%';
+        } else{
+            width = '450px';
+        }
+        
+        //setup region listBox
+        $("#con_listBox_location").listBox({
+            title: "Region",
+            width: '100%',
+            height: $(window).height() - 250,
+            listContent: '/admin/rpc_listBox_location_html.php',
+            showTitle: false,
+            showFilter: true,
+            showBorder: false,
+            showShadow: false,
+            showRoundedCorners: false,
+            addClass: 'listBox_large_theme',
+            clickAdd: function(event, data){
+                add_location(data);
+            },
+            clickRemove: function(event, data){
+                console.log('clickRemove Event');
+                delete_location(data);
+            },
+            clickEdit: function(event, data){
+                console.log('clickEdit Event');
+                edit_location(data);
+            },
+            clickSelected: function(event, data){
+                console.log('clickSelected Event');
+                objLocation = data; //persist data in global object
+                updateListBoxLocation(data);
+            },
+            clickFilterClear: function(event, data){
+                console.log('clickFilterClear Event');
+                updateListBoxLocation(data);
+            }
+        });
+    }
+    
+    
+    function add_location(data){
+        //add_location type selector function
+        //determine what type of record is being added then call specific function
+        
+        var id = data.listBox_id;
+        var parent_id = data.listBox_parent_id;
+        var level = data.listBox_level;
+        
+        console.log("add_location data: id="+id+" parent_id="+parent_id+" parent_type="+level);
+              
+        if(typeof level === 'undefined'){
+            level = 0;//add country
+        } 
+        
+        var el = $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first'); //find first buttonpane to prevent notification on both dialogs
+        
+        //determine 'what to add
+        switch(level){
+            case 1:
+                console.log('add Region');
+                add_new_region(id);
+                break;
+            case 2:
+                console.log('add Subregion');
+                add_new_subregion(id);
+                break;
+            case 3:
+                msg = 'Cannot add child to subregion';
+                console.log(msg);
+                $(el).notify(msg,{
+                    position: "top left",
+                    style: "msg",
+                    className: "warning",
+                    arrowShow: false,
+                    autoHideDelay: 3000
+                    }
+                );       
+                break;
+            default:
+                console.log('add Country');
+                add_new_country();
+        }
+    
+    }
+    
+    
+    function edit_location(data){
+
+        var id = data.listBox_id;
+        var parent_id = data.listBox_parent_id;
+        var level = data.listBox_level;
+        var value = data.listBox_values[0];
+        
+        if(typeof level === 'undefined'){
+            level = 0; //nothing selected
+        }
+        
+        switch(level){
+            case 1:
+                console.log('edit Country');
+                edit_country(id, data);
+                break;
+            case 2:
+                console.log('edit Region');
+                edit_region(id, value, parent_id);
+                break;
+            case 3:
+                console.log('edit subRegion');
+                edit_subregion(id, value, parent_id);
+                break;
+            default:
+                //code to be executed if n is different from case 1 and 2
+                console.log('nothing selected');
+        }
+        
+    }
+    
+    
+    function delete_location(data){
+        //listbox delete location    
+        console.log('delete_location');
+        console.log(data);
+        
+        if(jQuery.isEmptyObject(data)){ //check for a selected object
+            var msg = "Nothing selected to delete";
+            var el = $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first'); //find first buttonpane to prevent notification on both dialogs
+            console.log(msg);
+            $(el).notify(msg,{
+                position: "top left",
+                style: "msg",
+                className: "warning",
+                arrowShow: false,
+                autoHideDelay: 2000
+                }
+            );
+            return false;
+        }
+        
+        var level = data.listBox_level;
+        var id = data.listBox_id;
+        var value = data.listBox_values[0];
+        
+        if(typeof level === 'undefined'){
+            level = 0;//nothing selected
+        }
+        
+        
+        if($("#con_listBox_location").listBox("hasChildren")){ //check if row has children
+            var msg = "Location cannot be deleted whilst it contains other locations";
+            var el = $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first'); //find first buttonpane to prevent notification on both dialogs
+            console.log(msg);
+            $(el).notify(msg,{
+                position: "top left",
+                style: "msg",
+                className: "warning",
+                arrowShow: false,
+                autoHideDelay: 3000
+                }
+            );                  
+            return false; 
+        }
+
+        switch(level){ //determine 'what to delete'
+            case 1:
+            console.log('delete Country');
+            delete_country(id, data);
+            break;
+            case 2:
+            console.log('delete Region');
+            delete_region(id, data);
+            break;
+            case 3:
+            console.log('delete Subregion');
+            delete_subregion(id, data);
+            break;
+            default:
+            console.log('nothing selected');
+        }
+        
+    }
+    
+    
+    function delete_country(index, event_data){
+        //delete country with provided index
+        
+        if(index <= 0){
+            console.log('delete_country - no index provided to delete');
+            return false;
+        }
+        
+        $.post("/admin/rpc_ref_data.php", {
+                action: 'delete_country',
+                country_id: index
+            }, function(data){
+                if(data.success){
+                    $('#'+event_data.listBox_row_id).remove(); //hide deleted element, avoids the need to Refresh
+                    hideLocationDialogButtonOK(); //prevent selection of deleted item by removing OK button
+                    cleanUpLocationDelete(1,index); //remove location details on wine form if they included this country
+                    var msg = "Delete country successful";
+                    console.log(msg);
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "success",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }else if(data.error == 'has_children'){
+                    var msg = 'Country is associated with one or more wines';
+                    console.log(msg);
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "warning",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                } else { //some other error
+                    var msg = data.error;
+                    console.log(msg);
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "error",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }
+           }, "json"); 
+  
+    }
+    
+    
+    function delete_region(index, event_data){
+        //delete region with provided index
+        var msg;
+        
+        if(index <= 0){
+            console.log('delete_region - no index provided to delete');
+            return false;
+        }
+        
+        $.post("/admin/rpc_ref_data.php", {
+                action: 'delete_region',
+                region_id: index
+            }, function(data){
+                if(data.success){
+                    $('#'+event_data.listBox_row_id).remove(); //hide deleted element, avoids the need to Refresh
+                    hideLocationDialogButtonOK() //prevent selection of deleted item by removing OK button
+                    cleanUpLocationDelete(2, index) //clean up wine form on deletion
+                    msg = "Delete region successful";
+                    console.log(msg);
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "success",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }else if(data.error == 'has_children'){
+                    var msg = 'Region is associated with one or more wines';
+                    console.log(msg);
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "warning",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                } else { //some other error
+                    var msg = data.error;
+                    console.log(msg);
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "error",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }
+           }, "json"); 
+  
+    }
+
+        
+    function delete_subregion(index, event_data){
+    //delete subregion with provided index
+        
+        if(index <= 0){
+            console.log('delete_subregion - no index provided to delete');
+            return false;
+        }
+        
+        $.post("/admin/rpc_ref_data.php", {
+                action: 'delete_subregion',
+                subregion_id: index
+            }, function(data){
+                if(data.success){
+                    $('#'+event_data.listBox_row_id).hide(); //hide deleted element, avoids the need to Refresh
+                    hideLocationDialogButtonOK(); //prevent selection of deleted item by removing OK button
+                    cleanUpLocationDelete(3, index) //clean up wine form on deletion
+                    var msg = "Delete subregion successful";
+                    console.log(msg);
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "success",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }else if(data.error == 'has_children'){
+                    var msg = 'Subregion is associated with one or more wines';
+                    console.log(msg);
+                    $('#dialog-location-select').siblings('.ui-dialog-buttonpane:first').notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "warning",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                } else { //some other error
+                    var msg = data.error;
+                    console.log(msg);
+                    $(".con_button_bar").notify(msg,{
+                        position: "top left",
+                        style: "msg",
+                        className: "error",
+                        arrowShow: false,
+                        autoHideDelay: 3000
+                        }
+                    );
+
+                }
+           }, "json"); 
+  
+    }
+
+    
+    function updateListBoxLocation(data){
+        console.log('updateListBoxLocation');
+        //Set status of buttons
+        console.log(data);
+        if(data.listBox_level >= 2){
+            console.log('valid Region selected - enable OK button');
+            showLocationDialogButtonOK();
+        }else{
+            hideLocationDialogButtonOK();
+        }
+        
+    }
+    
+    
+    function updateRegion(){
+        //update country, region, subregion after listBox selection
+        
+        var data = objLocation; //global object from listBox selection
+        var category = data.listBox_values[1];
+        console.log('updateRegion()');
+        
+        if(category == 'region'){
+            console.log('region selected');
+            //update region input with id, lookup country
+            var regionName = data.listBox_values[0];
+            var regionIndex = data.listBox_values[2];
+            var countryName = data.listBox_values[3];
+            var countryIndex = data.listBox_values[4];
+            var locationName = regionName + ", " + countryName;
+ 
+            objLocation = data; //set global object
+            console.log('country_id ='+countryIndex);
+            console.log('region_id ='+regionIndex);
+            
+            $('#location').val(locationName);
+            $("#country_id").val(countryIndex);
+            $("#region_id").val(regionIndex);
+            $('#is_dirty').val(1); //flag form as dirty
+       
+        }
+                    
+        if(category == 'subRegion'){
+            console.log('subregion selected')
+            var subregionName = data.listBox_values[0];
+            var subregionIndex = data.listBox_values[2];
+            var countryName = data.listBox_values[3];
+            var countryIndex = data.listBox_values[4];
+            var regionName = data.listBox_values[5];
+            var regionIndex = data.listBox_values[6];
+            var locationName = subregionName + ", " + regionName + ", " + countryName;
+
+            objLocation = data; //set global object
+            
+            $('#location').val(locationName);
+            $("#country_id").val(countryIndex);
+            $("#region_id").val(regionIndex);
+            $("#subregion_id").val(subregionIndex);
+            $('#is_dirty').val(1); //flag form as dirty
+        }
+        
+    }
+
+    
+    $(document).on('click','#location', function(){
+        showLocationDialog();
+    });
+
+
+    function showLocationDialog(){
+        
+        objLocation = null; //reset location object
+        
+        var width = $(window).width();
+        var height = $(window).height();
+        if(width<415){ //iPhone 8 Plus
+            width = '90%';
+        } else{
+            width = '415px'; //all other bigger devices
+        }
+        
+        $("#dialog-location-select").dialog({
+            modal: true,
+            width: width,
+            buttons: {
+                Close: function() {
+                    //lose changes
+                    $(this).dialog('close');
+                }
+            },
+            dialogClass: "clean-dialog",
+            position: { my: "left top", at: "left top", of: '#btn_main_menu' }
+        });
+        
+        
+        
+    }
+    
+    
+    function showLocationDialogButtonOK(){
+        
+        console.log('showLocationDialogButtonOK');
+        
+        $("#dialog-location-select").dialog( "option", "buttons", 
+          
+            {
+                OK: function() {
+                    //save changes
+                    disabled: true;
+                    updateRegion(); //check data collected from the location listBox and update form
+                    $(this).dialog('close');
+
+                },
+                Close: function() {
+                    //lose changes
+                    $(this).dialog('close');
+                }
+            }
+          
+        );
+    }
+    
+    
+    function hideLocationDialogButtonOK(){
+        
+        console.log('hideLocationDialogBUttonOK');
+        
+        $("#dialog-location-select").dialog( "option", "buttons", 
+          
+            {
+                Close: function() {
+                    //lose changes
+                    $(this).dialog('close');
+                }
+            }
+          
+        );
+    }
+    
+    
+    $(document).on('click','#btn_clear_location', function(){
+        clearLocation();
+        if($('#status').val()>1){ //location has been removed for an existing wine so mark form as dirty
+            $('#is_dirty').val(1);
+        }
+    });
+    
+    
+    function clearLocation(){
+        //clear all location details
+        $("#location").val('');
+
+        $("#select_country").val('');
+        $("#country_id").val('');
+        $("#select_region").val('');
+        $("#region_id").val('');
+        $("#select_subregion").val('');
+        $("#subregion_id").val('');
+        
+    }
+    
+    
+    function cleanUpLocationDelete(level, index){
+        //clear location details on wine form if they include a deleted index
+       switch(level){
+            case 1: //country
+                if($('#country_id').val() === index){
+                    clearLocation();
+                }
+                break;
+            case 2: //region
+                if($('#region_id').val() === index){
+                    clearLocation();
+                }
+                break;
+            case 3:
+                if($('#subregion_id').val() === index){
+                    clearLocation();
+                }    
+                break;
+        }
+        
+    }
+    
+    
+    $(document).on('click','.wine_panel_toggle',function(){
+        //toggle vintage panel
+        console.log('click .wine_panel_toggle');
+        var wine_id = ($(this).closest(".wine_accordian").attr('id').replace("wine_accordian_", ""));
+        toggle_vintage_panel(wine_id);
+        
+    });
+    
+    
+    function toggle_vintage_panel(wine_id, duration, callback){
+        //toggle vintage accordian panel to show vintages under a wine - open/close
+        console.log('toggle_vintage_panel wine_id='+wine_id);
+        //hide all children (vintage_details panels)
+        $('#wine_accordian_'+wine_id).next('.vintages_panel').children('.vintage_accordian').children('.vintage_details').hide();
+        //change all vintage expand / collapse indicators to closed (right arrow)
+        $('#wine_accordian_'+wine_id).next('.vintages_panel').children('.vintage_accordian').find('.vintage_expanded_indicator').removeClass('arrow_down').removeClass('arrow_right').addClass('arrow_right');
+        $panel = "#vintages_panel_"+wine_id;
+        $($panel).slideToggle(duration,function(){
+            //callback function
+            if($($panel).is(":visible")){
+                console.log($panel + ' :visible'); 
+             }else{
+                 console.log($panel + ' :hidden');
+             }
+        });
+        
+        //swivel open close arrow
+        arrow_id = '#arrow_indicator_'+wine_id;
+        $(arrow_id).toggleClass('arrow_down');
+        
+        if(typeof callback === 'function'){
+            callback();
+        }
+    }
+    
+    
+    $(document).on('click','.vintage_panel_toggle',function(){
+        var vintage_id = ($(this).closest(".vintage_accordian").attr('id').replace("vintage_accordian_", ""));
+        console.log('vintage_id: '+vintage_id);
+        if($(this).hasClass('.ignore_vintage_panel_toggle')){
+            console.log('event cancelled by .ignore_vintage_panel_toggle');
+            return false;
+        }
+        toggle_vintage_details_panel(vintage_id);
+    });
+    
+    
+    function toggle_vintage_details_panel(vintage_id,duration){
+        //toggle vintage details panel - open or close
+        console.log('toggle_vintage_details_panel');
+        $panel = "#vintage_details_"+vintage_id;
+        $($panel).slideToggle(duration);
+        arrow_id = '#arrow_indicator_vintage_'+vintage_id;
+        $(arrow_id).toggleClass('arrow_down');
+    }
+    
+    
+   
 });
 </script>
 </html

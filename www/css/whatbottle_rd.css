@@ -373,8 +373,9 @@ input.readonly:disabled {
     -webkit-opacity:1;
 }
 
+
 .click{
-    cursor: pointer;
+    cursor:pointer;
 }
 
 .link{
@@ -721,6 +722,14 @@ div.wine_results{
     /*background-color:lightgreen;*/
 }
 
+
+/*wine_add_css*/
+
+#con_wines_from_producer {
+    margin-left:20px;
+    margin-bottom:10px;
+
+}
 
 
 .other_vintage_image{
@@ -1078,7 +1087,12 @@ div.selected{
     background-color:white;
 }
 
+.input-main select:disabled{
+    color:#545454;
+}
+
 .input-main.bottom-spacer{
+    /* prevent dropdown/select text being greyed out when diabled */
     margin-bottom:1.2em;
 }
 
@@ -1177,8 +1191,11 @@ div.selected{
 .image-placeholder{
     /*position:relative;*/
     /*float:left;*/
-    width:150px;
-    height:225px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:125px;
+    height:188px;
     padding:3px;
     border: solid 1px #D0D0D0;
     /*border-radius: 3px;*/
@@ -1524,6 +1541,7 @@ table.ref_data td {
 	color: black;
 }
 
+
 /*** jqueryui dialog ***/
 
 .ui-dialog {
@@ -1533,6 +1551,7 @@ table.ref_data td {
 
 }
 
+
 .ui-dialog-buttonset .ui-button-text{
     color:#fff;
     background-color:#5292BE;
@@ -1540,6 +1559,7 @@ table.ref_data td {
     font-weight: bold;
     border:0px;
 }
+
 
 .ui-button-text{
     min-width:60px;
@@ -1558,6 +1578,7 @@ table.ref_data td {
 .basket-dialog .ui-button-text {
     min-width:50px;
 }
+
 
 .basket_table { 
     width:100%;
@@ -1624,6 +1645,11 @@ table.ref_data td {
     padding-right:5px;
     padding-left:5px;
 }
+
+.clean-dialog .ui-dialog-content {
+    /*padding-bottom:0px;*/
+}
+
 
 
 
@@ -2043,7 +2069,10 @@ table.listBox_table td {
     color:#5292BE;
 }
 
-
+.listBox_large_theme.listBox_footer{
+    color:#545454;
+    border-top:solid lightgray 1px;
+}
 
 
 

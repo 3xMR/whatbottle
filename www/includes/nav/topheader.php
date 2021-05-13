@@ -51,7 +51,7 @@ echo "<div id=\"top_nav\" class=\"vertical-centre\" style=\"$color\" >";
     echo "<img style=\"float:right; margin-right:20px;\" class=\"click btn_login\" authed_data=\"$authed\" id=\"btn_login_top_nav\" src=\"$user_image\" height=\"24px\" width=\"24px\" />";
         echo "<div id='noti_container' style=\"float:right; margin-right:20px;\" >";
             echo "<img class=\"click btn_basket\" id=\"btn_basket_top_nav\" src=\"/images/basket_simple_grey.png\" height=\"24px\" width=\"24px\" />";
-            echo "<div id=\"noti_bubble\" style=\"display:$display;\" >";
+            echo "<div class=\"click btn_basket\" id=\"noti_bubble\" style=\"display:$display;\" >";
                 echo "<p id=\"noti_bubble_count\" >$basket_count</p>";
             echo "</div>";
         echo "</div>";

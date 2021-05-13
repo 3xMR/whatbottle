@@ -1,57 +1,69 @@
 <?php
 
+
+define('__ROOT__', dirname(dirname(__FILE__)));
+
+//$root = $_SERVER['DOCUMENT_ROOT'];
+
+require_once(__ROOT__.'/classes/MyPDO.php'); //database connection class
+
 //include table classes
+require_once(__ROOT__.'/classes/class.acquire_type.php');
+require_once(__ROOT__.'/classes/class.available_override.php');
+require_once(__ROOT__.'/classes/class.acquire.php');
+require_once(__ROOT__.'/classes/class.award.php');
+require_once(__ROOT__.'/classes/class.award_org.php');
+require_once(__ROOT__.'/classes/class.country.php');
+require_once(__ROOT__.'/classes/class.fullness.php');
+require_once(__ROOT__.'/classes/class.grape.php');
+require_once(__ROOT__.'/classes/class.merchant.php');
+require_once(__ROOT__.'/classes/class.producer.php');
+require_once(__ROOT__.'/classes/class.region.php');
+require_once(__ROOT__.'/classes/class.subregion.php');
+require_once(__ROOT__.'/classes/class.sweetness.php');
+require_once(__ROOT__.'/classes/class.tasting_note.php');
+require_once(__ROOT__.'/classes/class.user.php');
+require_once(__ROOT__.'/classes/User.php');
+require_once(__ROOT__.'/classes/class.vintage_has_acquire.php');
+require_once(__ROOT__.'/classes/class.vintage_has_award.php');
+require_once(__ROOT__.'/classes/class.vintage_has_grape.php');
+require_once(__ROOT__.'/classes/class.vintage.php');
+require_once(__ROOT__.'/classes/class.wine.php');
+require_once(__ROOT__.'/classes/class.winetype.php');
+require_once(__ROOT__.'/classes/class.list_has_vintage.php');
 
-//header('Content-Type: text/html; charset=utf-8');
-$root = $_SERVER['DOCUMENT_ROOT'];
 
-require_once("$root/classes/class.debug.php");
-
-require_once("$root/classes/class.acquire.php");
-require_once("$root/classes/class.acquire_type.php");
-require_once("$root/classes/class.available_override.php");
-require_once("$root/classes/class.award.php");
-require_once("$root/classes/class.award_org.php");
-require_once("$root/classes/class.country.php");
-require_once("$root/classes/class.fullness.php");
-require_once("$root/classes/class.grape.php");
-require_once("$root/classes/class.merchant.php");
-require_once("$root/classes/class.producer.php");
-require_once("$root/classes/class.region.php");
-require_once("$root/classes/class.subregion.php");
-require_once("$root/classes/class.sweetness.php");
-require_once("$root/classes/class.tasting_note.php");
-require_once("$root/classes/class.user.php");
-require_once("$root/classes/class.vintage.php");
-require_once("$root/classes/class.vintage_has_acquire.php");
-require_once("$root/classes/class.vintage_has_award.php");
-require_once("$root/classes/class.vintage_has_grape.php");
-require_once("$root/classes/class.vintage.php");
-require_once("$root/classes/class.wine.php");
-require_once("$root/classes/class.winetype.php");
 
 class db {
 
     /**
      * Base database access class
      * inherit into table classes
+     * 27-02-2021 - upgraded to PDO
      *
      * Methods:
      * Insert - create new record, input array, returns index or array of errors
      * Update - update record, input array, WHERE statement or uses index, returns # of updated
      *      records or false
      * Delete - deletes record, input index, returns true or false
-     * Get - returns record(s), input WHERE or uses index if provided, returns array or false
-     *
-     * TODO: Add validation rules to fieldlist and create base validation class
+     * Get - returns record(s), input WHERE or uses index if provided
+     *  assoc. array on success
+     *  Null if no matching record
+     *  false on error - use get_sql_error() to retrieve error message
+     * 
      *
      */
 
 private $sql_error = null;
+private $last_error = null;
+public $count = null;
+protected $db;
 
-private $count = null;
 
-private $debug = false; //display debug comments
+function __construct() {
+    //construct function
+    $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+}
 
 function get_table(){
    return $this->table;
@@ -80,113 +92,166 @@ function unstrip_array($array){
     return $array;
 }
 
-function update($input_array, $where=false){
-    //UPDATE existing record in table
-    
-    //initialise
-    $set = null;
-    
-    //reset sql_error
-    $this->sql_error = null;
+
+function update ($input_array, $where=false){
+    //UPDATE existing record in db
+
+    $value = null;
+    $error_detail = null;
+    $assocUpdateArray = [];
     $required_missing = false;
-
-    foreach ($this->fieldlist as $field => $var_field){
-
-        $find_key = $var_field['map'];
-
-        //return field mapping if key exists
-        $found = array_key_exists($find_key, $input_array);
-        if ($found){
-            $value = $input_array[$find_key];
-
-        }
-
-        $include = true; //include all fields in UPDATE by default
-        
-        if(!$found ){
-            //field not found, ignore unless override provided
-            if(isset($var_field['override___'])){
-                //****this section has been disabled****
-                //
-                //set to default value
-                if($var_field['map']=='modified'){
-                    $default = $var_field['default'];
-                    $value = $default;
-                    //include in sql statement
-                    $include = true;
-                } else {
-                    //do NOT include in sql
-                    $include = false;
-                }
-            } else {
-                //do NOT include in sql
-                $include = false;
-            }
-        } else {
-            //determine WHERE clause to use
-            if(isset($var_field['primary_key']) && empty($where)){
-                //no WHERE clause provided so default to primary key update
-                $where = "$field = '$value'";
-                //do not include pk value in sql statement
-                $include = false;
-            } 
-        }
-        
-        //add to sql statement
-        if ($include){
-            //update strings
-            if($field=='modified'){
-                //exclude quotes for this field
-                //$set = $set." ".$field."=".$value.",";
-                $set = $set." ".$field."=NOW(),";
-            } else {
-                //escape strings to prevent insertion
-                if(get_magic_quotes_gpc()){
-                    //magic quotes is on strip slashes to prevent double escaping
-                    $value = stripslashes($value);
-                }
-                $value = mysql_real_escape_string($value);
-                $set = $set." ".$field."='".$value."',";
-            }
-        }
-
-    } //end foreach
-
-    //remove trailing comma
-    $set = rtrim($set,',');
-
-    //execute sql
-    if($required_missing <> true){
-    //id provided so OK to update
-
-        //create UPDATE statement
-        $query = "UPDATE $this->table SET $set WHERE $where";
-        //run query
-        $qry_result = mysql_query($query);
-
-        if($qry_result){
-            $result = $qry_result;
-        } else {
-            $this -> sql_error = mysql_error();
-            $result = false;
-        }
-        //return inserted index
+    $this->sql_error = null;
+    $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+    
+    if(!isset($this->table)||$this->table==''){ //check db table is set
+        $this->sql_error = "class.db:update() UPDATE operation was not possible because Table is missing";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
+    
+    if(!isset($input_array)){ //check input_array provided
+        $this->sql_error = "class.db:update() UPDATE operation was not possible because input_array is missing";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
     }
 
-    return $result;
+    if(isset($where)){ //check where statement provided
+        $where = str_ireplace('WHERE', '', $where); //remove 'where' non-case sensitive, because we add it later
+    } else{
+        $this->sql_error = "class.db:update() UPDATE operation was not possible because WHERE statement is missing";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
     
-} //end class_db: update
+    
+    foreach ($this->fieldlist as $field => $var_field){ //process input_array to create sql statement
+
+        $include = true; //add all fields by default
+        $handle_null = false; //use to handle null values differently
+
+        $find_key = $var_field['map'];
+        $found = array_key_exists($find_key, $input_array); //return field mapping if key exists
+        
+        if($found){
+            $value = empty($input_array[$find_key]) ? null : $input_array[$find_key]; //get value
+        }else{
+            $value = null; //no value found, set to null
+        }
+        
+        if(isset($var_field['primary_key']) && empty($where)){ //no WHERE clause provided so default to primary key update
+            $where = "$field = $value";
+            $include = false; //do not include in sql update statement
+        } 
+             
+        if(isset($var_field['primary_key'])){ //remove for updates
+            $include = false;
+            continue; //skip to next field;
+        }
+        
+        if(isset($var_field['autonumber'])){ //remove as this is an auto_number field
+            $include = false;
+            continue; //skip to next field
+        }
+        
+        if($field=='created'){ //ignore - don't change created date for record
+            $include = false;
+            continue;
+        }
+        
+        if(!$found && isset($var_field['override'])){
+            $default = $var_field['default']; //set to default value as this is required but has not been found
+            $value = $default;
+        }
+                 
+             
+        if($field=='modified'){ //ensure timestamp is applied for modified and created
+            $value = date('Y-m-d H:i:s');
+            $include = true;
+        }
+        
+        if(!$found && isset($var_field['required']) && $var_field['required']==true){ //required field is missing do not insert this record
+            $required_missing = true;
+            $error_detail .= " Required field missing: $field ";
+        }
+        
+        if(!$found){ //not found and didn't match any of above conditions - don't include and allow db to set defaults
+            $include = false;
+        }
+         
+        If(isset($var_field['datatype'])){ //set param type for PDO bindvalue - default to string
+            if($var_field['datatype'] == 'integer'){
+                $param = PDO::PARAM_INT;
+            }else{
+                $param = PDO::PARAM_STR; //default if nothing else set
+            }
+        }else{
+            $param = PDO::PARAM_STR; //default if not set
+        }
+    
+        if($include){ //write to array for PDO update
+            $var = []; //reset array on each loop
+            $var['field'] = $field;
+            $var['value'] = $value;
+            $var['param'] = $param;
+            $var_bind[] = $var; //push values in to master array
+            
+            $assocUpdateArray[$field] = $value;//add value to array
+            $set .= "$field = :$field, "; //add column to set sql statement 
+        }
+        
+    } //foreach
+    
+    
+    if($required_missing == true){ //abort insert
+        $this->sql_error = "class.db:update() UPDATE operation was not possible because one or more mandatory fields are missing. $error_detail";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
+    
+    $setSql = rtrim($set, ', ');
+    $sql = "UPDATE $this->table SET $setSql WHERE $where;";
+    $stmt = $this->db->prepare($sql);
+    //print_r($sql);
+    
+    foreach($var_bind as $var){ //bind values to placeholders
+        //print_r($var);
+        $field = $var['field'];
+        $value = $var['value'];
+        $param = $var['param'];
+   
+        $stmt->bindValue(":$field",$value,$param);
+    }
+    
+    $stmt->execute();
+    
+    if(!$stmt){ //PDO update failed
+        $this->sql_error = "class.db:update() UPDATE operation failed when calling PDO execute";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
+    
+    return $stmt;
+
+}
 
 
 function insert($input_array){
     //insert new record into db
-    
-    //initialise
-    $values = $value = $set = $error_detail = null;
-    
-    //reset sql_error
-    $this->sql_error = null;
+
+    $value = null;
+    $error_detail = null;
+    $assocInputArray = [];
     $required_missing = false;
+    $column = '';
+    $valueName = '';
+    $this->sql_error = null;
+    $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+    
+    if(!isset($this->table)||$this->table==''){
+        $this->sql_error = "class.db:insert() INSERT operation was not possible because Table is missing for class: ";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
     
     foreach ($this->fieldlist as $field => $var_field){
 
@@ -194,187 +259,146 @@ function insert($input_array){
 
         $find_key = $var_field['map'];
         $found = array_key_exists($find_key, $input_array); //return field mapping if key exists
-        if ($found){
-            $value = $input_array[$find_key];
-        }
-
         
-        if(!$found ){
-            //field not found, set to null unless override provided
-            if(isset($var_field['override'])){
-                //set to default value
-                $default = $var_field['default'];
-                $value = $default;
-            } else {
-                if(isset($var_field['required']) && isset($var_field['autonumber'])){
-                    $required_missing = true;
-                    $value ='NULL';
-                    $error_detail = $error_detail." missing field=".$var_field['map'];
-                } else {
-                    //set an empty value
-                    if(isset($var_field['datatype'])){
-                        if($var_field['datatype']=='string' ){
-                            $value = ''; 
-                        } else {
-                            $value = 'NULL';
-                        }
-                    }else{
-                        $value = 'NULL';
-                    }
-                }
-            }
+        if($found){
+            $value = $input_array[$find_key]; //get value
+        }else{
+            $value = 'NULL'; //no value found, reset
         }
-
         
-        //ensure timestamp is applied for modified and created
-        if($field=='modified' || $field=='created'){
-            $value = 'Now()';
+        if(isset($var_field['primary_key'])){ //remove for inserts as this will be an auto_number field in db
+            $include = false;
+            continue; //skip to next field;
+        }
+        
+        if(isset($var_field['autonumber'])){ //remove as this is an auto_number field
+            $include = false;
+            continue; //skip to next field
+        }
+        
+        if(!$found && isset($var_field['override'])){
+            $default = $var_field['default']; //set to default value as this is required but has not been found
+            $value = $default;
+        }
+        
+        if(empty($value) && ($var_field['datatype'] == 'integer' || $var_field['datatype'] == 'double')){ //set empty integer field to null to prevent zero (e.g. date_drink_from)
+            $include = false;
+            //Note: issue with empty string saving as '0' rather than Null on DB update, if it has no value omit it so that db defaults to Null
+        }
+        
+        if(!$found){ //not found and didn't match any of above conditions - don't include and allow db to set defaults
+             $include = false;
+        }
+        
+        if($field=='modified' || $field=='created'){ //ensure timestamp is applied for modified and created this needs to override !found so comes after
+            $value = date('Y-m-d H:i:s');
             $include = true;
         }
-
-        //add to sql statement
-        if(isset($var_field['datatype'])){
-            if($var_field['datatype'] == 'string'){
-
-                //escape strings to prevent insertion
-                if(get_magic_quotes_gpc()){
-                    //magic quotes is on  - strip slashes to prevent double escaping
-                    $value = stripslashes($value);
-                }
-                $value = mysql_real_escape_string($value);
-            }
-        }
         
-        if (isset($var_field['autonumber'])){
-            $include = false;
-            $required_missing = false;
-        }
-        
-        //write sql statement
-        if ($include){
-            
-            $set = $set." ".$field.",";
-            //remove quotes from NOW function
-            if ($value=="NOW()" || $value=="Now()"){
-                $values = $values."$value,";
-            } else {
-                $values = $values."'$value',";
-            }
-            
+        if(!$found && isset($var_field['required']) && $var_field['required']==true){ //required field is missing do not insert this record
+            $required_missing = true;
+            $error_detail .= " Required field missing: $field ";
+        }        
+              
+        If($include){//write to array for PDO insert
+            $assocInputArray[$field] = $value;
+            $column .= "$field, ";
+            $valueName .= ":$field, ";
         }
         
     } //end foreach
 
-    //remove trailing comma
-    $set = rtrim($set,',');
-    $values = rtrim($values,',');
+    //print_r($assocInputArray);
 
-    //execute sql
-    if($required_missing == false){
-
-        //create INSERT statement
-        $query = "INSERT INTO $this->table ($set) VALUES ($values)";
-        
-        //run query
-        mysql_query("SET NAMES utf8");
-        $qry_result = mysql_query($query);
-        
-        if($qry_result){
-            $index = mysql_insert_id();
-            //return new index
-            return $index;
-        } else {
-            //sql failed
-            $sql_error = mysql_error();
-            //set sql error
-            $this->sql_error = mysql_error(); 
-            return false;
-        }
-        
-    } else {
-        $this->sql_error = "Insert operation was cancelled because one or more mandatory fields are missing. $error_detail";
+    if($required_missing == true){ //abort insert
+        $this->sql_error = "class.db:insert() Insert operation was not possible because one or more mandatory fields are missing. $error_detail";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
     }
+       
+    $columnSql = "(".rtrim($column, ', ').")";
+    $valueNameSql = "(".rtrim($valueName, ', ').")";
+    //print_r($assocInputArray);
+    
+    $sql = "INSERT INTO $this->table $columnSql VALUES $valueNameSql;";
+    //print $sql;
+    
+    
+    //PDO INSERT statement
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($assocInputArray);
+    $id = $this->db->lastInsertId();
+    return $id;
 
     
 } //end insert
 
 
 
-function get($where=false, $columns=false, $group=false, $sort=false, $limit=false){
-    //retrieve record(s) from table
+function get($where=false, $columns=false, $group=false, $sort=false, $limit=false, $input_array=null){
+    //execute GET query against db
+    //$input_array -> associative array of input values
     
-    //reset sql_error
-    $this->sql_error = null;
+    $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+    $this->sql_error = null; //reset sql_error
+    
+     if(!isset($this->table)||$this->table==''){
+        $this->sql_error = "class.db:insert() INSERT operation was not possible because Table is missing for class: ";
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
     
     if(!$where){
         //return all records
-        $where = NULL;
+        $where = null;
     }else{
         $where = "WHERE $where";
     }
 
-    if (!$columns){
+    if(!$columns){
         $columns = '*';
     } else {
         $columns = $columns;
     }
 
-    if (!$group){
-        $group = NULL;
+    if(!$group){
+        $group = null;
     } else {
         $group = " GROUP BY $group";
     }
 
-    if (!$sort){
-        $sort = NULL;
+    if(!$sort){
+        $sort = null;
     } else {
         $sort = " ORDER BY $sort";
     }
       
-    if (!$limit){
-        $limit = NULL;
+    if(!$limit){
+        $limit = null;
     } else {
         $limit = " LIMIT $limit";
     }
     
-    //if(!$failed){
-        $query = "SELECT $columns FROM $this->table $where $group $sort $limit";
-        
-        //set db codeset
-        mysql_query("SET NAMES utf8");
+    $query = "SELECT $columns FROM $this->table $where $group $sort $limit";
+    
+    //print $query."<br>";
  
-        $result = mysql_query($query);
-        
-        if($result){
-            $this -> count = mysql_num_rows($result); //set count to number of rows
-        }else{
-            $this -> count = 0;
-        }
+    $stmt = $this->db->prepare($query);
+    if(isset($input_array)){
+        $stmt->execute($input_array);
+    }else{
+        $stmt->execute();
+    }
+    $rst = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all records in recordset as assoc. array
+        //$rstRow = $stmt->fetch(PDO::FETCH_ASSOC); //fetch next row as associated array
+    $this->count = count($rst); //count results in array
 
-        if($result==false){ //differentiate between no rows returned and a fail
-            //error getting results - return error (false)
-            $this->sql_error = mysql_error(); 
-            return $result;
-        } else {
-            //set count to number of rows
-            //$this -> count = mysql_num_rows($result);
+    if($this->count < 1){
+        return null; //no records to return
+    }
 
-            //dump results into a standard php array
-            $var_results = array();
-            
-            while ($row = mysql_fetch_assoc($result)) {     
-                //$this->data_array[] = $row;
-                $var_results[] = $row;
-            } // while
-            
-            if(is_array($var_results)){
-                 return $var_results;
-            } else {
-                return false;
-            }
-        }  
+    return $rst; //return dataset
 
-    //}
 }
 
 
@@ -384,58 +408,96 @@ function count(){
 }
 
 
-function row_count($where){
+function row_count($where=false){
     //get number of rows
+    
     if($where){
         $where = " WHERE $where";
     }else{
         $where = NULL;
     }
 
-    $query = "SELECT COUNT(*) FROM $this->table $where";
-    $result = mysql_query($query) or die (mysql_error());
-    if(!$result){
-        return false;
+    $query = "SELECT count(*) FROM $this->table $where";
+    //print $query;
+    
+    $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+    if($stmt){
+        $count = $stmt->fetchColumn();
     }
-    $row = mysql_fetch_array($result);
-    return $row['COUNT(*)'];
+    if(!$count){ return false; }
+  
+    return $this->count = $count;
 }
 
 
 function delete($where){
     //delete records that match the where statement
-    if($where){
-        $where = " WHERE $where";
-        $query = "DELETE FROM $this->table $where";
-        $result = mysql_query($query);
-    }else{
-        //no where statement provided
-        $result = false;
-        $error = 'important';
-        $msg = "no where statement provided for delete function";
+    
+    $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+    
+    if(!$where){//no where statement provided
+        $this->sql_error = "class.db:delete() no WHERE statement provided - cannot continue. table class:".$this->table;
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
     }
+    
+    $where = " WHERE $where";
+    $query = "DELETE FROM $this->table $where";
+    //print $query;
+    $stmt = $this->db->prepare($query);
+    $result = $stmt->execute();
+ 
+    if(!$result){
+        $this->sql_error = "class.db:delete() PDO execution failed - cannot continue. table class:".$this->table;
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
+    
+    return true;
+    
+//    $count = $stmt->rowCount(); //determine if any rows were affected - Delete will return true even if no records were changed
+//    if($count>0){
+        
+//    }else{
+//        $this->sql_error = "class.db:delete() no records deleted, likely no matching record to delete";
+//        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+//        return false;
+//    }
 
-    return $result;
 }
     
 
-    function update_custom($set, $where){
-        //allow update of a set of columns only
-
-        $query = "UPDATE $this->table SET $set WHERE $where";
-
-        //run query
-        $qry_result = mysql_query($query);
-
-        if($qry_result){
-            return true;
-        } else {
-            $this -> sql_error = mysql_error();
-            return false;
-        }
-
+function update_custom($set, $where){
+    //allow update of a set of columns only
+    
+    $this->db = MyPDO::instance(); //return a static instance of the PDO class for db connectivity
+  
+    if(!$where){//no where statement provided
+        $this->sql_error = "class.db:update_custom() no WHERE statement provided - cannot continue. table class:".$this->table;
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
     }
+    
+    if(!$set){//no where statement provided
+        $this->sql_error = "class.db:update_custom() no columns provided - cannot continue. table class:".$this->table;
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+    }
+    
+    
+    $query = "UPDATE $this->table SET $set WHERE $where";
+    //print $query;
+    $stmt = $this->db->prepare($query);
+    $result = $stmt->execute();
+ 
+    if(!$result){
+        $this->sql_error = "class.db:update_custom() PDO execution failed - cannot continue. table class:".$this->table;
+        $this->last_error = $this->sql_error; //set last_error property in table class so it can be retrieved on error
+        return false;
+    }
+
+    return $result;
+
+}
 
 
 } //end class
-?>

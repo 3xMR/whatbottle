@@ -16,17 +16,6 @@ require_once("$root/includes/css.inc.php");
 echo "<title>Acquisition - What Bottle?</title>";//page title
 ?>
 
-<style>
-    /*Added to highlight input fields as red on 
-    validation errors*/
-    
-    input.error { 
-        background: red;
-        color: white;
-    }
-    
-</style>
-
     <div id="dialog-form-add-merchant" class="hidden" title="Add Merchant?">	
         <h2 style="margin-bottom:15px;"> Add New Merchant</h2>
         <div class="input-main-label">
@@ -38,7 +27,6 @@ echo "<title>Acquisition - What Bottle?</title>";//page title
         </div>
         <br/>
     </div>
-
 
 
 <?php
@@ -61,15 +49,15 @@ echo "<div class=\"con_single_form\" >";
         $acquire_id = $_SESSION['var_acquire']['acquire_id'];
         echo "<input type=\"hidden\" name=\"acquire_id\" id=\"acquire_id\" value=\"$acquire_id\" />";
         
-        echo "<div class=\"vertical-centre\" style=\"height:2.5em; border-bottom: solid 1px darkgray; padding-bottom:5px; margin-top:5px; margin-bottom:5px;\" >";
-            echo "<div style=\"float:left; width:3em;\" >";
-                echo "<img src=\"/images/shopping_cart_flat_grey_32.png\" style=\"height:1.8em; width:1.8em;\" >";
+        echo "<div class=\"vertical-centre\" style=\"height:30px; border-bottom: solid 1px darkgray; background-color:; padding-bottom:0px; margin-top:0px; margin-bottom:0px;\" >";
+            echo "<div style=\"float:left; width:2.5em;\" >";
+                echo "<img src=\"/images/shopping_cart_512.png\" style=\"display:block; height:25px; width:25px; margin-bottom:5px; \" >";
             echo "</div>";
             echo "<div style=\"float:left; \" >";
                 echo "<h1 class=\"inline\" >Acquisition</h1>";
             echo "</div>";
             echo "<div style=\"padding-left:15px; float:left;\"  >";
-                echo "<img id=\"process_indicator\" src=\"/images/ajax-loader.gif\" style=\"height:2em; width:2em;\" />";
+                echo "<img id=\"process_indicator\" src=\"/images/ajax-loader.gif\" style=\"height:1.6em; width:1.6em;\" />";
             echo "</div>";
             echo "<div class=\"clear\"></div>";
         echo "</div>";
@@ -170,7 +158,7 @@ echo "<div class=\"con_single_form\" >";
         
     echo "</div>";
     
-    echo "<div class=\"rwd-con-100\" style=\"background-color:; margin-top:10px;\" >";
+    echo "<div class=\"rwd-con-100\" style=\"background-color:; margin-top:0px;\" >";
 
         //Vintages
     
@@ -227,11 +215,13 @@ require_once("$root/includes/script_libraries.inc.php"); //include all script li
 </div>
 
 <div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:30;">
-    <div class="ui-menu-item-first" >New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>Delete Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-first" >New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>Delete Acquisition<img style="float:right; margin-top:2px;" src="/images/minus_black_256.png" height="21px" /></div>
+    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
 
 </body>
@@ -316,7 +306,6 @@ $(document).ready(function(){
             var total_price_paid = price_paid*qty;
 
             //update cells
-            //if(isNaN(qty)){ qty=0; }
             $row.find('#qty_'+row_id).val((qty).toFixed(0));
             $row.find('#full_price_'+row_id).val((full_price).toFixed(2));
             $row.find('#discount_percent_'+row_id).val((discount_percent).toFixed(1));
@@ -705,6 +694,7 @@ $(document).ready(function(){
         console.log('add_merchant_to_db');
         
         var merchant = $('#new_merchant').val();
+        console.log('merchant name: '+merchant);
         
         if(!$.trim(merchant)){
             msg = "Merchant name cannot be blank";
@@ -845,6 +835,21 @@ $(document).ready(function(){
         //select text on ios
         var myInput = document.getElementById($(this).attr('id'));
         myInput.setSelectionRange(0, 9999); //for ios
+        
+    });
+    
+    
+    $("#acquistion_content").on('keyup', "#table_acquisition tr input", function(e){    
+        //highlight input when tabbing into box
+        var key = e.which;
+        console.log('keyup key = '+ key);
+        if(key === 9){ //tab detected - select contents of input
+            $(this).select();    
+            //select text on ios
+            var myInput = document.getElementById($(this).attr('id'));
+            myInput.setSelectionRange(0, 9999); //for ios
+        }
+
         
     });
     
@@ -990,6 +995,7 @@ $(document).ready(function(){
         
         var def = new jQuery.Deferred();
         var validator = $("#form").validate();
+        
         validator.resetForm(); //clear errors before validating
         if($("#form").valid()){
             console.log('validated OK');
@@ -1012,13 +1018,6 @@ $(document).ready(function(){
                 
             }); 
         }else{
-            $(".con_button_bar").notify("Validation failed",{
-                position: "top left",
-                style: "msg",
-                className: "warning",
-                arrowShow: false
-                }
-            );
             def.reject('validation of page failed');
         }
         
@@ -1039,7 +1038,7 @@ $(document).ready(function(){
 //***form validation***
 
     $("#form").validate({
-        debug: false,
+//        debug: false,
         rules:{
             acquire_date:{
                 required: true
@@ -1055,20 +1054,39 @@ $(document).ready(function(){
         },
         messages:{
             acquire_date:{
-                required: "Pick a Date"
+                required: "Date is required"
             },
             acquire_type_id:{
-                required: "Select a Type",
-                min: "Select a Type"
+                required: "Type is required",
+                min: "Type is required"
             },
             merchant_id:{
-                required: "Select a Merchant",
-                min: "Select a Merchant"
+                required: "Merchant is required",
+                min: "Merchant is required"
             }
         },
-        errorLabelContainer: $('#error_labels'),
-        wrapper: "li",
-        focusCleanup: true
+//        errorLabelContainer: $('#error_labels'),
+//        wrapper: "li",
+//        focusCleanup: true,
+        errorPlacement: function(error, element){}, 
+        invalidHandler: function(event, validator){
+              //validation failed
+              console.log('Validation failed');
+              var errorMsg = validator.errorList;
+              var errorMsgCombined = "";
+              for(var key in errorMsg){
+                  errorMsgCombined = errorMsgCombined + errorMsg[key]['message'] + "\n";
+              }
+
+              $(".con_button_bar").notify(errorMsgCombined,{
+                  position: "top left",
+                  style: "msg",
+                  className: "warning",
+                  arrowShow: false,
+                  autoHideDelay: 3000
+              });
+              
+          }
     });
     
     
@@ -1183,6 +1201,12 @@ function menu_select(selected_object){
                 case 'Wines':
                     open_wines();
                     break;
+                case 'Reporting':
+                    open_reporting();
+                    break;
+                case 'Settings':
+                    open_settings();
+                    break;
                 case 'Reference Data':
                     open_reference_data();
                     break;
@@ -1198,54 +1222,73 @@ function menu_select(selected_object){
 }
 
 
-function open_wines(){
-    //open Wines page
-    obj_page.leave_page({
-        dst_url: "/index.php",
-        dst_action: 'open',
-        page_action: 'leave'
-    });
-}
+    function open_wines(){
+        //open Wines page
+        obj_page.leave_page({
+            dst_url: "/index.php",
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
 
 
-function open_reference_data(){
-    //open ref data page
-    obj_page.leave_page({
-        dst_url: "/admin/index_admin.php",
-        rtn_url: this_page,
-        dst_action: 'open',
-        page_action: 'leave'
-    });
-}
+    function add_wine(){
+        //Add new wine
+        obj_page.leave_page({
+            dst_url:        "/wine/wine.php",
+            rtn_url:        "/index.php",
+            page_action:    'leave',
+            dst_type:       "wine",
+            object_id:      null,
+            dst_action:     "add"
+        });
+
+    };
 
 
-function add_wine(){
-    //Add new wine
-    obj_page.leave_page({
-        dst_url:        "/wine/wine.php",
-        rtn_url:        "/index.php",
-        page_action:    'leave',
-        dst_type:       "wine",
-        object_id:      null,
-        dst_action:     "add"
-    });
+    function add_acquisition(){
+        //add new acquisition
 
-};
+        obj_page.leave_page({
+            dst_url:        "/acquire/acquisition.php",
+            rtn_url:        this_page,
+            page_action:    'leave',
+            dst_type:       "acquisition",
+            object_id:      0,
+            dst_action:     "add"
+        });
 
-function add_acquisition(){
-    //add new acquisition
+    };
 
-    obj_page.leave_page({
-        dst_url:        "/acquire/acquisition.php",
-        rtn_url:        this_page,
-        page_action:    'leave',
-        dst_type:       "acquisition",
-        object_id:      0,
-        dst_action:     "add"
-    });
 
-};
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });  
+    }
     
+    
+    function open_reference_data(){
+        //open ref data page
+        obj_page.leave_page({
+            dst_url: "/admin/index_admin.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
 
 
 

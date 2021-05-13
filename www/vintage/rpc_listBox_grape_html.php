@@ -13,15 +13,19 @@ if (isset($_SESSION['var_vintage_temp'])){
     //get grape details from session and create string of selected ids
     $var_grapes = $_SESSION['var_vintage_temp']['var_grapes'];
     
-    foreach($var_grapes as $key => $grape){
-        $grape_id = $grape['grape_id'];
-        $var_selected_grapes[] = $grape_id;       
-    }
-    
-    if($var_selected_grapes){
-        $str_selected_grapes = implode(",", $var_selected_grapes) ?: 0; //set to zero if empty
+    if($var_grapes){ //check for grapes array
+        
+        foreach($var_grapes as $key => $grape){
+            $grape_id = $grape['grape_id'];
+            $var_selected_grapes[] = $grape_id;       
+        }
+
+        if($var_selected_grapes){
+            $str_selected_grapes = implode(",", $var_selected_grapes) ?: 0; //set to zero if empty
+        }
+        
     }else{
-        $str_selected_grapes = 0;
+        $str_selected_grapes = 0; //no selected grapes
     }
     
 }else{

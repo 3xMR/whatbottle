@@ -7,7 +7,7 @@
  */
 
 
-
+$root = $_SERVER['DOCUMENT_ROOT'];
 require_once("$root/classes/MyPDO.php"); //include PDO db class
 
 class UserObj{
@@ -247,7 +247,7 @@ class UserObj{
             $_SESSION['firstname'] = $this->firstName;
             $_SESSION['lastname'] = $this->lastName;
             
-            return true; //authenticated
+            return $userID; //authenticated
         } else {
             
             return false; //not authenticated
@@ -261,8 +261,8 @@ class UserObj{
         
         if($this->isAuthed()){
             $names = array(); //create empty array
-            $names[] = $this->firstName;
-            $names[1] = $this->lastName;
+            $names['firstName'] = $this->firstName;
+            $names['lastName'] = $this->lastName;
             return $names;
         }else{
             //no authenticated user results to return

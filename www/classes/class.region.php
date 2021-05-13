@@ -38,9 +38,9 @@ public $fieldlist = array(
     );
 
     function get_extended($where=false, $columns=false, $group=false, $sort=false, $limit=false){
-       $this->table = "tblCountry
+        $this->table = "tblCountry
                        LEFT JOIN tblRegion ON tblRegion.country_id = tblCountry.country_id";
-       return db::get($where, $columns, $group, $sort, $limit);
+        return db::get($where, $columns, $group, $sort, $limit);
     }
 
 

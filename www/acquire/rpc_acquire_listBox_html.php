@@ -27,16 +27,20 @@ if(is_array($var_acquires)){
         $acquire_merchant = $acquire['merchant'];
 
         echo "<div class=\"listBox_row click\" id=\"$id\" >";
-            echo "<div>";
-                
+            echo "<div class=\"open_acquisition\" id=\"open_acquisition_$id\" style=\"float:left; width:auto;\">";
                 echo "<div style=\"float:left; width:190px; \" >";
                     echo "<p>$acquire_merchant</p>";
                 echo "</div>";
-    
-                echo "<div style=\"float:right; text-align:right; width:90px; \" >";
+                
+                echo "<div style=\"float:left; text-align:right; width:90px; \" >";
                     echo "<p>$acquire_date</p>";
                 echo "</div>";
-
+            echo "</div>";
+            
+            echo "<div style=\"float:right; width: 40px;\">";
+                 echo "<div style=\"\" >";
+                    echo "<img style=\"display:block; margin-left:12.5px; margin-top:4px; \" src=\"/images/filter_flat_grey_24.png\" height=\"15px\" width=\"15px\" id=\"acquire_filter_$id\" class=\"click acquire_filter\" data-acquire_id=\"$id\" />";
+                echo "</div>";
             echo "</div>";
             
             echo "<div class=\"clear\" ></div>";

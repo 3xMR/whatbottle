@@ -1,21 +1,15 @@
-
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-$root = $_SERVER['DOCUMENT_ROOT'];
-require_once("$root/includes/init.inc.php");
-require_once("$root/functions/function.php");
-require_once("$root/includes/script_libraries.inc.php"); //include all script libraries
-
+define('__ROOT__', dirname(dirname(__FILE__)));
+require_once(__ROOT__.'/includes/init.inc.php');
+require_once(__ROOT__.'/functions/function.php');
+require_once(__ROOT__.'/includes/script_libraries.inc.php'); //include all script libraries
 ?>
+
 <html>
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link href="/styles/whatbottle.css" rel="stylesheet" type="text/css">
+<link href="/css/whatbottle_rd.css" rel="stylesheet" type="text/css">
 <title>Session Manager</title>
 
 <script type="text/javascript" src="/libraries/jquery.page_control_1.4.js"></script>
@@ -52,14 +46,6 @@ $(document).ready(function(){
 </script>
 </head>
 <body>
-
-<?php
-
-
-
-?>
-
-</body>
 
 <div class="page_container">
 
@@ -112,8 +98,8 @@ $(document).ready(function(){
     echo $_COOKIE['cookie_username'];
     echo "<hr/>";
 
-    echo "<a href=\"/vintage/test.php\">Test</a>";
 
 ?>
 
 </div>
+</body>

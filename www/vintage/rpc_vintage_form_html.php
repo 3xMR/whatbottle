@@ -17,9 +17,10 @@
     }
     
     //determine if results are filtered
-    if($_SESSION['var_vintage_temp']['filtered']==true){
-        echo "results are filtered";
-    }
+    
+//    if($_SESSION['var_vintage_temp']['filtered']==true){
+//        echo "results are filtered";
+//    }
     
 
     if($_SESSION['var_vintage_temp']['status']>0){
@@ -183,8 +184,8 @@
 
                 //set size of image to fit in placeholder
                 list($source_width, $source_height, $type, $attr) = getimagesize("$new_root/$image_path");
-                $target_width = 150;
-                $target_height = 225;
+                $target_width = 125;
+                $target_height = 188;
                 $height_ratio = $source_height/$target_height;
                 $width_ratio = $source_width/$target_width;
                 $target_ratio = ($height_ratio > $width_ratio) ? $height_ratio : $width_ratio;
@@ -194,44 +195,21 @@
                 if(file_exists($new_root.$image_path)){
                     echo "<img src=\"$image_path\" width=\"$set_width\" height=\"$set_height\" style=\"display:block; margin-left:auto; margin-right:auto;\" />";
                 } else {
-                    echo "<p style=\"text-align:center; vertial-align:middle; line-height:225px; color:gray;\" >Image file NOT found</p>";
+                    echo "<p style=\"color:gray; font-size:14px;\" >file not found</p>";
                 }
 
             }else{
                 //no image added
-                echo "<p style=\"text-align:center; vertial-align:middle; line-height:225px; color:gray;\" >Click to Add Image</p>";
+                //echo "<p style=\"text-align:center; vertial-align:middle; line-height:94px; color:gray; background-color:yellow;\" >Click to Add Image</p>";
+                echo "<p style=\"color:gray; font-size:14px; \" >Click to add image</p>";
             }
         echo "</div>"; //image
-        
-            
-        /*** Tasting Notes ***/
-        //echo "<div class=\"input-main-label float-left clear-left\" >";
-        //    echo "<p>Tasting Notes</p>";
-        //echo "</div>";
-
-        //echo "<div style=\"float:left; margin-left:5px; \" id=\"con_all_notes\"  >";
-        //    //listBox populated by /vintage/rpc_all_notes_html.php
-        //echo "</div>";
-
-        /*** Acquisitions ***/
-        //echo "<div class=\"input-main-label float-left clear-left top-spacer\" >";
-       //     echo "<p>Acquisitions</p>";
-        //echo "</div>";
-
-        //echo "<div style=\"float:left; margin-left:5px; \" id=\"con_all_acquisitions\"  >";
-            //listBox populated by
-        //echo "</div>";
-
   
     echo "</div>"; //second column
-    
-    //echo "<div class=\"clear\"></div>";
 
     echo "</form>"; //required for validation
 
 
-//push con_single_form bottom clear of all other divs
- //echo "<div class=\"clear\" ></div>";
 
 
 ?>

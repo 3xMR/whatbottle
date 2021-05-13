@@ -262,8 +262,8 @@ $(document).ready(function(){
     
     $( "#dialog_grape" ).dialog({
         autoOpen: false,
-        height: 270,
-        width: 345,
+        height: 300,
+        width: 352,
         modal: true,
         dialogClass: "clean-dialog",
         position: { my: "left bottom", at: "right top", of: '#con_listBox_grape_btn_add' },
@@ -348,24 +348,23 @@ $(document).ready(function(){
     
     
     <div id="dialog_grape" class="hidden" title="Add Grape">
-        <form id="frm_grape" name="frm_grape">
+        <form id="frm_grape" style="height:auto;" name="frm_grape">
             <h2 style="margin-bottom:20px;"> Add Grape</h2>
             <div class="input-main-label" >
                 <p>Grape Name</p>
             </div>
-            <div class="input-main" >
+            <div class="input-main" style="margin-bottom:10px;">
                 <input style="height:29px;" type="text" class="input-main" id="grape_text" ></input>
             </div>
             <div class="input-main-label" >
                 <p>Grape Colour</p>
             </div>
-            <div class="input-main" >
+            <div class="input-main" style="margin-bottom:0px;">
                 <select name="grape_colour" id="grape_colour" >
                     <option value="Red">Red
                     <option value="White">White
                 </select>
             </div>
-            <br/>
         </form>
     </div>
 

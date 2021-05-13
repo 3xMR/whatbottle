@@ -4,9 +4,8 @@ $root = $_SERVER['DOCUMENT_ROOT'];
 require_once("$root/includes/init.inc.php");
 require_once("$root/functions/function.php");
 require_once("$root/classes/class.db.php");
-//require_once("$root/classes/class.timer.php");
 require_once("$root/classes/class.wine_search.php");
-//$timer = new Timer();
+
 
 //get list of wines
 $search_obj = new wine_search();
@@ -16,12 +15,12 @@ $viewportHeight = filter_input(INPUT_POST, 'viewportHeight');
 $viewportHeight -= 150; //remove height of static elements
 $rowHeight = 45;
 $numRows = floor($viewportHeight/$rowHeight);
+
 if($numRows < 3){ $numRows = 10;}
 $search_obj ->set_results_per_page($numRows);
-
 $varSearchParam = isset($_SESSION['var_wine_search_criteria']) ? $_SESSION['var_wine_search_criteria'] : []; //get search parameters from session
-
 $results_filtered = array_sum($varSearchParam) > 0 ? 'true' : 'false'; //used to flag to JS function 'set_reset_button' on index.php that results are filtered and show reset button
+
 echo "<input type=\"hidden\" id=\"search_filter_status\" value=\"$results_filtered\" >";
 
 $varSearchParam['type'] = "wines"; //update parameters
@@ -54,10 +53,12 @@ if($results){
         $country = $row['country'];
         $region = $row['region'];
         $subregion = $row['subregion'];
-        $location = "$country, $region".($subregion ? ", $subregion" : ""); 
+        $location = "$country, $region".($subregion ? ", $subregion" : "");
+        $year = '';
 
-        $rst_vintages = $search_obj ->get_vintages($wine_id);
-        $vintage_count = count($rst_vintages);
+        $rst_vintages = $search_obj->get_vintages($wine_id);
+        $vintage_count = is_array($rst_vintages) ? count($rst_vintages) : null;
+        
 
         //display wine
         echo "<div class=\"wine_accordian\" id=\"wine_accordian_$wine_id\" >";
@@ -114,17 +115,16 @@ if($results){
         
             if($rst_vintages){
                 foreach ($rst_vintages as $key => $rowVintage ){
-                    //print_r($rowVintage);
-                    $vintage_id = $rowVintage['vintage_id'];
-                    $year = $rowVintage['year'] == 0 ? "n/a" : $rowVintage['year'];
+                    
+                    $vintage_id = isset($rowVintage['vintage_id']) ? $rowVintage['vintage_id'] : null;
+                    $year = isset($rowVintage['year']) ? $rowVintage['year'] : "n/a" ;
 
                     //ratings
-                    $vintage_quality = $rowVintage['vintage_quality'];
+                    $vintage_quality = isset($rowVintage['vintage_quality']) ? $rowVintage['vintage_quality'] : null;
                     $quality_width = ($vintage_quality*10)."px";
-                    $vintage_value = $rowVintage['vintage_value'];
+                    $vintage_value = isset($rowVintage['vintage_value']) ? $rowVintage['vintage_value'] : null;
                     $value_width = ($vintage_value*20)."px";
-
-
+                    
                     //vintage header bar
                     echo "<div class=\"vintage_accordian vintage_panel_toggle\" data-vintage_id=\"$vintage_id\" id=\"vintage_accordian_$vintage_id\" style=\"display:flex; flex-direction:row; align-items:center; width:100%; height:42px; background-color:#F8F8F8;\" >"; //container for vintage header row
                         echo "<div class=\"vintage_expanded_indicator click arrow_right\" data-vintage_id=\"$vintage_id\" id=\"arrow_indicator_vintage_$vintage_id\" style=\"width:16px; height:16px; margin-left:10px; background-color:;\" >";
@@ -390,7 +390,6 @@ if($results){
                                                 echo "<input type=\"image\" class=\"btn_edit_override\" style=\"float:left; margin-left:10px; \" value=\"$vintage_id\" id=\"override_$vintage_id\" name=\"btn_edit_override\" src=\"/images/edit_flat_grey_24.png\" width=\"16px\" height=\"16px\" >";
                                             }
                                         echo "</div>";
-                                        //echo "<div class=\"clear\"></div>";
                                         $obj_vintage = new vintage($vintage_id);
                                         $acquisition_bottle_count = $obj_vintage ->get_acquisition_bottle_count();
                                         if($acquisition_bottle_count){

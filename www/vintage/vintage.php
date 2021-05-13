@@ -140,11 +140,13 @@ require_once("$root/includes/script_libraries.inc.php"); ?>
 
 <!-- Pop-up Menus-->
 <div id='main_menu' class="pop_up" style="width:200px; display:none; position:fixed; z-index:35;">
-    <div class="ui-menu-item-first">New Note<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-first">New Note<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Wine<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
+    <div>New Acquisition<img style="float:right; margin-top:2px;" src="/images/add_black_128.png" height="21px" /></div>
     <div>Wines<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
-    <div class="ui-menu-item-last">Reference Data<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reporting<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div>Reference Data<img style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
+    <div class="ui-menu-item-last">Settings<img  style="float:right; margin-top:2px;" src="/images/arrow_next_black.svg" height="21px" /></div>
 </div>
     
     
@@ -168,19 +170,14 @@ $(document).ready(function(){
 
   
     //TODO: Make grapes select a modal form based on listbox
-    //TODO: Hide Vintage listbox until page has loaded
-    //TODO: Add ability to navigate to page with url for links
-    //FIX: Add image on new vintage then add note, when returning to vintage image is missing on vintage page but has been saved, likely relates to clean-up script on image manager page
-
-    
-
-
+   
 
     //____Global variables____
 
     var form_status = 0;
     var vintage_id = 0;
-    var this_page = "/vintage/vintage.php"; //self identification for page.control
+    var this_page = "/vintage/vintage.php";
+
  
     //page control object
     var obj_page = new page_control({
@@ -295,6 +292,7 @@ $(document).ready(function(){
     function save_to_session(url){
         //save to session before opening url if provided
         console.log('save_to_session');
+        var def = $.Deferred();
         var wine_id = $("#wine_id").val();
         var vintage_id = $("#vintage_id").val();
         var url = url;
@@ -320,9 +318,11 @@ $(document).ready(function(){
                         //var parent_url = this_page;
                         //page_flow_set(open_url, parent_url, true);
                         //open_grapes(vintage_id);
+                        def.resolve(data);
                     }else{
                         console.log('save to session failed');
                         console.log(data);
+                        def.reject(data);
                     }
 
             }, "json");
@@ -331,7 +331,7 @@ $(document).ready(function(){
             console.log('cannot save_to_session no wine_id provided');
         }
         
-        
+        return def;
     }
 
     
@@ -408,26 +408,26 @@ $(document).ready(function(){
     };
 
 
-    function edit_image(url){
-        //edit image
-        console.log('fnc: edit_image');
-
-        $.post("/vintage/rpc_vintage.php", {
-                action: 'put_image_vintage'
-                },
-                function(data){
-                    if(data.success){
-                        console.log('put_image_edit OK');
-                        console.log(url);
-                        obj_page.set_is_dirty(true);
-                        save_to_session(url);//save to temp and then redirect to provided url
-                    } else {
-                        console.log('put_image_edit FAILED');
-                    }
-
-         }, "json");
-
-    }
+//    function edit_image(url){
+//        //edit image
+//        console.log('fnc: edit_image');
+//
+//        $.post("/vintage/rpc_vintage.php", {
+//                action: 'put_image_vintage'
+//                },
+//                function(data){
+//                    if(data.success){
+//                        console.log('put_image_edit OK');
+//                        console.log(url);
+//                        obj_page.set_is_dirty(true);
+//                        save_to_session(url);//save to temp and then redirect to provided url
+//                    } else {
+//                        console.log('put_image_edit FAILED');
+//                    }
+//
+//         }, "json");
+//
+//    }
     
     
     function open_image_manager(){
@@ -440,7 +440,7 @@ $(document).ready(function(){
             dst_url:        "/vintage/select_image.php",
             rtn_url:        this_page,
             page_action:    'leave',
-            dst_type:       "image",
+            dst_type:       'image', 
             dst_action:     "open",
             parent_id:      vintage_id,
             child:          true,
@@ -698,7 +698,7 @@ $(document).ready(function(){
     });
     
     
-    $(document).on('click', "input", function(e){    
+    $(document).not('.button').on('click', "input", function(e){    
         //highlight input when it has focus
         console.log('input has focus = '+ $(this).attr('id'));
         
@@ -956,35 +956,42 @@ $(document).ready(function(){
             },      
             messages: {
                     year: {
-                    required: "A year is required",
-                    range: "Must be a 4 digit year e.g. 2005",
-                    number: "Must be a 4 digit year e.g. 2005",
-                    remote: "This vintage has already been added"
+                        required: "A vintage year is required",
+                        range: "Vintage year must be 4 digits e.g. 2005",
+                        number: "Vintage year must be 4 digits e.g. 2005",
+                        remote: "This vintage year has already been added"
                     },
                     drink_year_from: {
-                    number: "Must be a 4 digit year e.g. 2005",
-                    range: "Must be a 4 digit year e.g. 2005",
+                        number: "Drink from year must be 4 digits e.g. 2005",
+                        range: "Drink from year must be 4 digits e.g. 2005",
                     },
                     drink_year_to: {
-                    number: "Must be a 4 digit year e.g. 2005",
-                    range: "Must be a 4 digit year e.g. 2005",
+                        number: "Drink to year must be 4 digits e.g. 2005",
+                        range: "Drink to year must be 4 digits e.g. 2005",
+                    },
+                    alcohol: {
+                        number: "Alcohol must be a number"
                     }
                 },
-            errorPlacement: function(error, element){
-                //place error in new div after error div parent
-                d = document.createElement('div');
-                $(d).addClass('clear-left float-left error-validation').append(error);
-                element.parent().after($(d));
-                },
+            errorPlacement: function(error, element){}, 
             invalidHandler: function(event, validator){
-                $(".con_button_bar").notify("Validation Failed",{
-                    position: "top left",
-                    style: "msg",
-                    className: "warning",
-                    arrowShow: false,
-                    autoHideDelay: 1000
-                });
-                }
+                  //validation failed
+                  console.log('Validation failed');
+                  var errorMsg = validator.errorList;
+                  var errorMsgCombined = "";
+                  for(var key in errorMsg){
+                      errorMsgCombined = errorMsgCombined + errorMsg[key]['message'] + "\n";
+                  }
+
+                  $(".con_button_bar").notify(errorMsgCombined,{
+                      position: "top left",
+                      style: "msg",
+                      className: "warning",
+                      arrowShow: false,
+                      autoHideDelay: 3000
+                  });
+
+              }
         });
     }
 
@@ -1087,6 +1094,12 @@ $(document).ready(function(){
                     case 'Wines':
                         open_wines();
                         break;
+                    case 'Reporting':
+                        open_reporting();
+                        break;
+                    case 'Settings':
+                        open_settings();
+                        break;
                     case 'Reference Data':
                         open_reference_data();
                         break;
@@ -1112,15 +1125,7 @@ $(document).ready(function(){
     }
 
 
-    function open_reference_data(){
-        //open ref data page
-        obj_page.leave_page({
-            dst_url: "/admin/index_admin.php",
-            rtn_url: this_page,
-            dst_action: 'open',
-            page_action: 'leave'
-        });
-    }
+
 
 
     function add_wine(){
@@ -1149,8 +1154,37 @@ $(document).ready(function(){
         });
 
     };
-
-
+    
+    
+    function open_reporting(){
+        obj_page.leave_page({
+            dst_url: "/reporting/reporting_index.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });  
+    }
+    
+    
+    function open_reference_data(){
+        //open ref data page
+        obj_page.leave_page({
+            dst_url: "/admin/index_admin.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
+    function open_settings(){
+        obj_page.leave_page({
+            dst_url: "/user/settings.php",
+            rtn_url: this_page,
+            dst_action: 'open',
+            page_action: 'leave'
+        });
+    }
+    
 
     function add_note(vintage_id){
         //Add tasting note
@@ -1187,6 +1221,7 @@ $(document).ready(function(){
         }
         
     };
+    
     
     
 

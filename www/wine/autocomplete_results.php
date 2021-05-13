@@ -1,12 +1,19 @@
 <?php
+// autocomplete RPC for wine.php
 
 $root = $_SERVER['DOCUMENT_ROOT'];
-require_once("$root/includes/init.inc.php");
-require_once("$root/classes/class.db.php");
-require_once("$root/classes/class.producer.php");
 
+require_once("$root/classes/class.db.php");
+
+$record = []; //empty array to create return array
+$records = []; //empty array to create return array
 $term = trim(strip_tags($_GET['term']));      
-$term = mysql_real_escape_string($term);
+//$term = mysql_real_escape_string($term);
+
+if(!isset($_GET['category'])){
+    print "failed: No category provided";
+    return false;
+}
 
 switch($_GET['category']){
     
@@ -18,7 +25,7 @@ switch($_GET['category']){
 
         $value_field = 'producer';
         $key_field = 'producer_id';
-        
+
         break;
     
     case 'country':
@@ -49,6 +56,7 @@ switch($_GET['category']){
         
         $value_field = 'region';
         $key_field = 'region_id';
+
         
         break;
         
@@ -76,19 +84,24 @@ switch($_GET['category']){
 }
 
 
-$rst = mysql_query($query);
+$db = MyPDO::instance();
+$stmt = $db -> prepare($query);
+$stmt -> execute();
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all records in recordset as assoc. array
 
-
-if(mysql_num_rows($rst)>0) {
-    
-    while($row = mysql_fetch_array($rst)){// While there are results loop through them
-        $record['value'] = htmlspecialchars(stripslashes($row[$value_field]));
-        $record['id'] = $row[$key_field];
-        $records[] = $record; //build recordset
-    }
-    
-    echo json_encode($records);
-
+if(!$result){
+    return false; //failed
 }
+
+foreach($result as $row){ //tranfer recordset array names into names the autocomplete field can handle
+    //$record['value'] = htmlspecialchars(stripslashes($row[$value_field]));
+    $record['value'] = $row[$value_field];
+    $record['id'] = $row[$key_field];
+    $records[] = $record; //push into array
+}
+
+echo json_encode($records);
+
+
 
 ?>

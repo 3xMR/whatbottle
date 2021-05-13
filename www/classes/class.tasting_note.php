@@ -78,7 +78,7 @@ public $fieldlist = array(
     );
 
     
-    public function tasting_note($note_id=false){
+    function __construct($note_id=false){
         //constructor
         if($note_id > 0){
             $this -> note_id = $note_id;

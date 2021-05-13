@@ -4,11 +4,12 @@
 //inludes results from multiple categories and returns
 // value, label, category
 
-$root = $_SERVER['DOCUMENT_ROOT'];
-require_once("$root/includes/init.inc.php");
-require_once("$root/classes/class.wine_search.php");
-require_once("$root/classes/class.db.php");
-require_once("$root/classes/class.region.php");
+//$root = $_SERVER['DOCUMENT_ROOT'];
+define('__ROOT__', dirname(dirname(__FILE__)));
+require_once(__ROOT__.'/includes/init.inc.php');
+require_once(__ROOT__.'/classes/class.wine_search.php');
+require_once(__ROOT__.'/classes/class.db.php');
+require_once(__ROOT__.'/classes/class.region.php');
 
 
 $q = strtolower($_REQUEST['term']);
@@ -20,7 +21,9 @@ if (!$q) {
 
 $var_result = array();
 
-$term = mysql_escape_string(trim($q));
+//$term = mysql_escape_string(trim($q));
+
+$term=trim($q);
 
 $search_obj = new wine_search();
 
@@ -36,6 +39,8 @@ $varSearchParam['group'] = "tblWine.wine_id";
 $varSearchParam['order'] = "tblWine.wine ASC";
 
 $results = $search_obj -> search($varSearchParam); //search
+
+
 
 
 if(sizeof($results)>0){

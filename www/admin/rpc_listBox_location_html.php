@@ -35,6 +35,7 @@ require_once("$root/classes/class.db.php");
                     echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$value_1\" >";
                     echo "<input type=\"hidden\" class=\"listBox_value\" value=\"country\" >";
                     echo "<input type=\"hidden\" class=\"listBox_value\" id=\"flag_image\" value=\"$flag_file\" >";
+                    echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$index_1\" >";
                     
                     echo "<table class=\"listbox_table\">";
                         echo "<tr>";
@@ -82,6 +83,9 @@ require_once("$root/classes/class.db.php");
                                 //hidden input allows jquery to recover value
                                 echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$value_2\" >";
                                 echo "<input type=\"hidden\" class=\"listBox_value\" value=\"region\" >";
+                                echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$index_2\" >";
+                                echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$value_1\" >";
+                                echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$index_1\" >";
 
                                 echo "<table class=\"listbox_table\" id=\"child_table\">";
                                     echo "<tr>";
@@ -123,6 +127,11 @@ require_once("$root/classes/class.db.php");
                                             //hidden input allows jquery to recover value
                                             echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$value_3\" >";
                                             echo "<input type=\"hidden\" class=\"listBox_value\" value=\"subRegion\" >";
+                                            echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$index_3\" >";
+                                            echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$value_1\" >";
+                                            echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$index_1\" >";
+                                            echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$value_2\" >";
+                                            echo "<input type=\"hidden\" class=\"listBox_value\" value=\"$index_2\" >";
 
                                             echo "<table class=\"listbox_table\" id=\"baby_table\">";
                                                 echo "<tr>";

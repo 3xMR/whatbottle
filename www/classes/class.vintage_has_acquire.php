@@ -63,16 +63,22 @@ public $fieldlist = array(
        )
     );
 
-   function get_extended($where=false, $columns=false, $group=false, $sort=false, $limit=false){
+    
+    function get_extended($where=false, $columns=false, $group=false, $sort=false, $limit=false){
        //remove ambiguity in column usage
        $replacement = $this->table.'.acquire_id';
        $where = str_replace('acquire_id', $replacement, $where);
        $this->table = "trelVintageHasAcquire
                        LEFT JOIN tblAcquire ON trelVintageHasAcquire.acquire_id = tblAcquire.acquire_id
                        LEFT JOIN tblMerchant ON tblAcquire.merchant_id = tblMerchant.merchant_id";
+//                       LEFT JOIN tblVintage ON trelVintageHasAcquire.vintage_id = tblVintage.vintage_id
+//                       LEFT JOIN tblWine ON tblVintage.wine_id = tblWine.wine_id
+//                       LEFT JOIN tblCountry on tblWine.country_id = tblCountry.country_id";
+       
        return db::get($where, $columns, $group, $sort, $limit);
        
-   }
+    }
 
+    
 }
 ?>

@@ -111,9 +111,12 @@ echo "<div class=\"page_container\" >";
             
             //check if other vintages have any images set
             $obj_vintage = new vintage();
-            $columns = "vintage_id,year, image1";
-            $where = " wine_id = $wine_id AND vintage_id <> $vintage_id AND image1 > '' ";
-            $rst_vintages = $obj_vintage->get($where, $columns);
+            if($vintage_id){ //existing vintage so exclude its image from query
+                $where = " wine_id = $wine_id AND vintage_id <> $vintage_id AND image1 > '' ";
+            } else{ //new vintage so show all images for wine
+                $where = " wine_id = $wine_id AND image1 > '' ";
+            }
+            $rst_vintages = $obj_vintage->get($where);
 
             if($rst_vintages){
                 
