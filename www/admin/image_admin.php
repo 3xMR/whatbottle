@@ -20,6 +20,7 @@ require_once("$root/includes/script_libraries.inc.php");
 ?>
 <script type="text/javascript">
 
+//FIX: Leaving page with 'Close' button after saving image, but returning to new unsaved vintage results in image being lost
 $(document).ready(function(){
 
     $("#btn_delete_images").click(function(){

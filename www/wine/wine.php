@@ -1759,6 +1759,7 @@ $(document).ready(function(){
         });
 
     };
+    
 
 
     function open_reporting(){
